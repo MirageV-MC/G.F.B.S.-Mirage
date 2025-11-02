@@ -155,8 +155,12 @@ public class Mirage_gfbs {
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown", (context)->{
-                CommandExecutor.executeCommand("Notification @a 100 F.A.A.S. 暗物质反应堆紧急融毁程序启用.");
-                Dmr_Meltdown.execute(context);
+                Dmr_Meltdown.execute(context, true);
+            });
+        });
+        Task.spawn(()->{
+            MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
+                Dmr_Meltdown.execute(context, false);
             });
         });
     }

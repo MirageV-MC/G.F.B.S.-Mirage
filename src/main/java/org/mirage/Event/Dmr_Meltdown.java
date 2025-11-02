@@ -12,14 +12,21 @@ import java.util.Collection;
 import static org.mirage.CommandExecutor.executeCommand;
 
 public class Dmr_Meltdown {
-    public static void execute(MirageGFBsEventCommand.CommandContext context) {
+    public static void execute(MirageGFBsEventCommand.CommandContext context, boolean isNewMusic) {
         CommandSourceStack source = context.getSource();
         Collection<ServerPlayer> allPlayers = source.getServer().getPlayerList().getPlayers();
+
+        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                "暗物质反应堆紧急融毁程序启用.", 200);
 
         NeiBao(allPlayers);
 
         Task.delay(()->{
-            executeCommand("playsound mirage_gfbs:music.new_p1_m voice @a ~ ~ ~ 1 1 1");
+            if (isNewMusic){
+                executeCommand("playsound mirage_gfbs:music.new_p1_m voice @a ~ ~ ~ 1 1 1");
+            }else {
+                executeCommand("playsound mirage_gfbs:music.p1_m voice @a ~ ~ ~ 1 1 1");
+            }
 
             Task.delay(()->{
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -110,7 +117,12 @@ public class Dmr_Meltdown {
                 executeCommand("playsound mirage_gfbs:faas.f_b_c_r_t voice @a ~ ~ ~ 1 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "全体设施人员注意, 已发布黑色紧急指令, 请立即撤离至塔塔鲁斯上层区域.", 200);
-                executeCommand("playsound mirage_gfbs:music.new_p2_m voice @a ~ ~ ~ 1 1 1");
+
+                if (isNewMusic){
+                    executeCommand("playsound mirage_gfbs:music.new_p2_m voice @a ~ ~ ~ 1 1 1");
+                }else {
+                    executeCommand("playsound mirage_gfbs:music.p2_m voice @a ~ ~ ~ 1 1 1");
+                }
 
                 Task.delay(()->{
                     executeCommand("playsound mirage_gfbs:faas.f_m_c_s_o voice @a ~ ~ ~ 1 1 1");
