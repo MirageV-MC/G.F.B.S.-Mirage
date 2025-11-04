@@ -18,7 +18,10 @@
 
 package org.mirage.Event;
 
+import org.mirage.Command.CameraShakeCommand;
+import org.mirage.Command.FogCommand;
 import org.mirage.Command.MirageGFBsEventCommand;
+import org.mirage.Command.NotificationCommand;
 import org.mirage.CommandExecutor;
 import org.mirage.Tools.Task;
 
@@ -30,20 +33,20 @@ public class Main90Alpha {
         CommandExecutor.executeCommand("playsound mirage_gfbs:war.main90_alpha voice @a ~ ~ ~ 1 1 1");
 
         Task.delay(()->{
-            CommandExecutor.executeCommand("Notification @a 250 C.A.S.S.I.E. Alpha弹头引爆程序已启用, 地下设施将在倒计时-90秒后摧毁.");
+            NotificationCommand.sendNotificationToPlayers(context.getSource().getLevel().players(), "C.A.S.S.I.E.", "Alpha弹头引爆程序已启用, 地下设施将在倒计时-90秒后摧毁.", 250);
         }, 39836, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
-            CommandExecutor.executeCommand("CameraShake @a 10 0.9 5500 100 4900");
+            context.getSource().getLevel().players().forEach(p -> CameraShakeCommand.triggerCameraShake(p, 10f, 0.9f, 5500, 100, 4900));
 
             // 设置橙色浓雾（RGB: 1.0, 0.5, 0.0）
-            CommandExecutor.executeCommand("miragefog color 1.0 0.5 0.0");
+            FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), 1.0f, 0.5f, 0.0f, FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
             // 设置浓雾范围（近距离浓雾效果）
-            CommandExecutor.executeCommand("miragefog range 0.0 20.0");
+            FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), 0.0f, 20.0f, 1000);
             // 启用雾效果
-            CommandExecutor.executeCommand("miragefog toggle true");
+            FogCommand.setFogSettings(true, FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
             // 同步到所有客户端
-            CommandExecutor.executeCommand("miragefog sync");
+            FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
 
             startSmoothFogFadeOut();
 
@@ -82,7 +85,7 @@ public class Main90Alpha {
 
                 // 减少同步频率，只在关键步骤同步
                 if (finalI % 5 == 0 || finalI == fadeSteps) {
-                    CommandExecutor.executeCommand("miragefog sync");
+                    FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
                 }
 
                 if (finalI == fadeSteps) {
@@ -99,13 +102,13 @@ public class Main90Alpha {
                                 CommandExecutor.executeCommand("miragefog range " +
                                         startRange + " " + (200.0f + 50.0f * fadeProgress));
                                 if (finalJ % 2 == 0) {
-                                    CommandExecutor.executeCommand("miragefog sync");
+                                    FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
                                 }
 
                                 if (finalJ == 10) {
                                     Task.delay(()->{
-                                        CommandExecutor.executeCommand("miragefog toggle false");
-                                        CommandExecutor.executeCommand("miragefog sync");
+                                        FogCommand.setFogSettings(false, FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
+                                        FogCommand.setFogSettings(FogCommand.getFogSettings().getBoolean("active"), FogCommand.getFogSettings().getFloat("red"), FogCommand.getFogSettings().getFloat("green"), FogCommand.getFogSettings().getFloat("blue"), FogCommand.getFogSettings().getFloat("start"), FogCommand.getFogSettings().getFloat("end"), 1000);
                                     }, 200, TimeUnit.MILLISECONDS);
                                 }
                             }, j * 150, TimeUnit.MILLISECONDS);
