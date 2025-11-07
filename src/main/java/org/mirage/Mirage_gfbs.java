@@ -213,9 +213,7 @@ public class Mirage_gfbs {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            // Some client setup code
             LOGGER.info("CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
 
             customFogModule = new CustomFogModule();
         }

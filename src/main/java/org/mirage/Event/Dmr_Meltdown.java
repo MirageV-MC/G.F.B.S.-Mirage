@@ -122,6 +122,10 @@ public class Dmr_Meltdown {
             }, 274000, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
+                executeCommand("playsound mirage_gfbs:faas_s.f_s_476694 voice @a ~ ~ ~ 1.5 1 1");
+            }, 330993, TimeUnit.MILLISECONDS);
+
+            Task.delay(()->{
                 NeiBao(allPlayers);
                 executeCommand("playsound mirage_gfbs:faas.faas_a_p voice @a ~ ~ ~ 0.9 1 1");
             }, 337993, TimeUnit.MILLISECONDS);
@@ -180,10 +184,23 @@ public class Dmr_Meltdown {
                 }, 142786, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{
+                    executeCommand("playsound mirage_gfbs:faas_s.f_s_194506 voice @a ~ ~ ~ 1 1 1");
+                    NotificationCommand.sendNotificationToPlayers(allPlayers, "Deputy.Reactor.Supervisor.",
+                            "所有设施人员注意,我们发现反应堆腔室内泄露出大量辐射,我们正在减少损失并立即关闭塔塔鲁斯大门,所以那些还在设施里的人,请立即前往最近的防爆避难所.", 200);
+                }, 189059, TimeUnit.MILLISECONDS);
+
+                Task.delay(()->{
                     for (ServerPlayer player : allPlayers) {
                         CameraShakeCommand.triggerCameraShake(player, 30, 0.1f, 43600, 290, 10290);
                     }
                     executeCommand("playsound mirage_gfbs:boom.dmr_b voice @a ~ ~ ~ 2 1 1");
+
+                    Task.delay(()->{
+                        executeCommand("playsound mirage_gfbs:faas_s.f_s_785144 voice @a ~ ~ ~ 1 1 1");
+                        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                                "强引力源出现在核心腔室.", 200);
+                    }, 1000, TimeUnit.MILLISECONDS);
+
                 }, 196454, TimeUnit.MILLISECONDS);
 
             }, 360000, TimeUnit.MILLISECONDS);
