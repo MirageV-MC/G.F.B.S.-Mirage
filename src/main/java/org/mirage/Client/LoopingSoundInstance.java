@@ -21,12 +21,11 @@ public class LoopingSoundInstance extends AbstractTickableSoundInstance {
         this.minVolume = minVolume;
         this.looping = true;
         this.delay = 0;
-        this.relative = false; // 若想跟随玩家可改 true
+        this.relative = false;
     }
 
     @Override
     public void tick() {
-        // 不做任何检查，一直播放，直到被 stop
     }
 
     @Override

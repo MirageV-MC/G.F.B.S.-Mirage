@@ -225,6 +225,9 @@ public class Mirage_gfbs {
         PrivilegeCommand.register(event.getDispatcher());
 
         MirageGFBsEventCommand.register(event.getDispatcher());
+
+        MiragePlaysoundCommand.register(event.getDispatcher());
+        MirageStopsoundCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;
