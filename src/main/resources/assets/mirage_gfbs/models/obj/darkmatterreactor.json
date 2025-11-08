@@ -5,10 +5,16 @@
   "detectCullableFaces": false,
   "ambientToDiffuseLighting": true,
   "shadeQuads": true,
+  "gui_light": "front",
+
   "textures": {
-    "part1_diff": "mirage_gfbs:models/part1_diff.png",
-    "part1_nmap": "mirage_gfbs:models/part1_nmap.png",
-    "part1_spec": "mirage_gfbs:models/part1_spec.png"
+    "particle": "mirage_gfbs:block/darkmatterreactor/part1_diff"
   },
-  "materialLibraryOverride": "mirage_gfbs:models/obj/darkmatterreactor.mtl"
+
+  "custom": {
+    "flip-v": true,
+    "shader": false,
+    "matOverride": false,
+    "ignore_missing_textures": true
+  }
 }

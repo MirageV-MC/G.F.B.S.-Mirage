@@ -29,6 +29,12 @@
       "mirage_gfbs:alarm/overpressure_a"
     ]
   },
+  "alarm.portal_a": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:alarm/portal_a"
+    ]
+  },
   "alarm.war_a": {
     "category": "music",
     "sounds": [
@@ -735,6 +741,18 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:human/work/u_w_r_s"
+    ]
+  },
+  "human.reactor.meltdown_vo": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:human/reactor/meltdown_vo"
+    ]
+  },
+  "human.reactor.overload_vo": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:human/reactor/overload_vo"
     ]
   },
   "music.adminroom_chair_duang": {

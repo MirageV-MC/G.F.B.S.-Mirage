@@ -2,5 +2,6 @@
   "command.blackhole.create.success": "成功创建黑洞 '%s' 在位置 (%.1f, %.1f, %.1f)",
   "command.blackhole.create.failure": "创建黑洞失败，名称 '%s' 已存在",
   "command.blackhole.delete.success": "成功删除黑洞 '%s'",
-  "command.blackhole.delete.failure": "删除黑洞失败，未找到名称为 '%s' 的黑洞"
+  "command.blackhole.delete.failure": "删除黑洞失败，未找到名称为 '%s' 的黑洞",
+  "block.mirage_gfbs.darkmatterreactor": "暗物质反应堆"
 }

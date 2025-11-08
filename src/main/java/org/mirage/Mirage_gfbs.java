@@ -20,13 +20,17 @@ package org.mirage;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,6 +38,7 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,6 +52,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import org.mirage.Client.GravLensClient;
 import org.mirage.Command.*;
 import org.mirage.Event.Dmr_Meltdown;
 import org.mirage.Event.Main90Alpha;
@@ -178,6 +184,12 @@ public class Mirage_gfbs {
             CompoundTag fogSettings = FogCommand.getCurrentFogSettings();
             org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "fog_settings", fogSettings);
             LOGGER.debug("Synchronized fog settings to player: {}", player.getName().getString());
+
+            if (!(server.isDedicatedServer() && server.isPublished())){
+                ClientGameType = ((ServerPlayer) event.getEntity()).gameMode.getGameModeForPlayer();
+            }
+
+            player.displayClientMessage(Component.literal("[G.F.B.S.]欢迎使用GFBS模组,本模组使用LGPL-v3协议开源.(@Con89524)"), false);
         }
     }
 
@@ -187,6 +199,12 @@ public class Mirage_gfbs {
         LOGGER.info("server starting");
 
         setServerInstance(event.getServer());
+    }
+
+    @SubscribeEvent
+    public void onServerStarted(ServerStartedEvent event){
+        LOGGER.info("server started.");
+        AutoLanOpener.onServerStarted(event);
     }
 
     public static void setServerInstance(MinecraftServer serverInstance) {
@@ -211,6 +229,8 @@ public class Mirage_gfbs {
 
     public static CustomFogModule customFogModule;
 
+    public static GameType ClientGameType;
+
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
 
@@ -219,6 +239,11 @@ public class Mirage_gfbs {
             LOGGER.info("CLIENT SETUP");
 
             customFogModule = new CustomFogModule();
+
+            ModelResourceLocation modelLocation = new ModelResourceLocation(
+                    new ResourceLocation("mirage_gfbs", "darkmatterreactor"), "inventory");
+
+//            event.enqueueWork(GravLensClient::init);
         }
 
         @SubscribeEvent

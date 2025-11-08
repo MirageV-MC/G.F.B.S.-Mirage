@@ -1,0 +1,18 @@
+{
+  "vertex": "mirage_gfbs:grav_lens",
+  "fragment": "mirage_gfbs:grav_lens",
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ],
+  "attributes": [
+    "Position"
+  ],
+  "uniforms": [
+    {
+      "name": "InSize",
+      "type": "float",
+      "count": 2,
+      "values": [1.0, 1.0]
+    }
+  ]
+}
