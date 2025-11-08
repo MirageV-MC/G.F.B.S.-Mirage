@@ -19,11 +19,14 @@
 package org.mirage.Objects.blocks;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.registries.RegistryObject;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
 
 public class BlockRegistration {
+    public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
+            () -> new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
 
     public static void init(){}
 }

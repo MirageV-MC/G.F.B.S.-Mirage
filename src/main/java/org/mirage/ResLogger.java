@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.Collection;
 
 @Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class SoundLogger {
+public class ResLogger {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private static final String TARGET_MOD_ID = Mirage_gfbs.MODID;
@@ -41,6 +41,7 @@ public class SoundLogger {
             @Override
             public void onResourceManagerReload(ResourceManager manager) {
                 logSoundFiles(manager);
+                logTextureFiles(manager);
             }
         });
     }
@@ -57,6 +58,21 @@ public class SoundLogger {
         resources.forEach(loc -> {
             String path = loc.getPath();
             LOGGER.info("Found .ogg file: {}:{}", loc.getNamespace(), path);
+        });
+    }
+
+    private static void logTextureFiles(ResourceManager manager) {
+        String soundPath = "textures";
+
+        Collection<ResourceLocation> resources = manager.listResources(
+                soundPath,
+                location -> location.getNamespace().equals(TARGET_MOD_ID) &&
+                        location.getPath().endsWith(".png")
+        ).keySet();
+
+        resources.forEach(loc -> {
+            String path = loc.getPath();
+            LOGGER.info("Found .png file: {}:{}", loc.getNamespace(), path);
         });
     }
 }

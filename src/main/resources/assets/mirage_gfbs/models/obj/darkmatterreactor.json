@@ -1,0 +1,14 @@
+{
+  "loader": "forge:obj",
+  "model": "mirage_gfbs:models/obj/darkmatterreactor.obj",
+  "flip-v": true,
+  "detectCullableFaces": false,
+  "ambientToDiffuseLighting": true,
+  "shadeQuads": true,
+  "textures": {
+    "part1_diff": "mirage_gfbs:models/part1_diff.png",
+    "part1_nmap": "mirage_gfbs:models/part1_nmap.png",
+    "part1_spec": "mirage_gfbs:models/part1_spec.png"
+  },
+  "materialLibraryOverride": "mirage_gfbs:models/obj/darkmatterreactor.mtl"
+}

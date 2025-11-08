@@ -20,12 +20,16 @@ package org.mirage.Objects.items;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blocks.BlockRegistration;
 
 import static org.mirage.Mirage_gfbs.ITEMS;
 
 public class ItemRegistration {
+    public static final RegistryObject<Item> DARK_MATTER_REACTOR_ITEM =
+            ITEMS.register("darkmatterreactor",
+                    () -> new BlockItem(BlockRegistration.DARK_MATTER_REACTOR_BLOCK.get(), new Item.Properties()));
 
     public static void init(){}
 }

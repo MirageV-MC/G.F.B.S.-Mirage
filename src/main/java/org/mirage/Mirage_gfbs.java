@@ -30,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -49,6 +50,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.Command.*;
 import org.mirage.Event.Dmr_Meltdown;
 import org.mirage.Event.Main90Alpha;
+import org.mirage.Objects.CreativeModeTabRegistration;
 import org.mirage.Objects.Structure.Registrar;
 import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.items.ItemRegistration;
@@ -95,6 +97,7 @@ public class Mirage_gfbs {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        CreativeModeTabRegistration.CREATIVE_MODE_TABS.register(modEventBus);
 
         SOUND.register(modEventBus);
         SoundEventRegister.SOUND_EVENTS.register(modEventBus);
@@ -216,6 +219,10 @@ public class Mirage_gfbs {
             LOGGER.info("CLIENT SETUP");
 
             customFogModule = new CustomFogModule();
+        }
+
+        @SubscribeEvent
+        public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
         }
     }
 
