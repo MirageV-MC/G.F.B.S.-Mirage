@@ -5,12 +5,11 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import org.mirage.Sound.ModNetwork;
-import org.mirage.Sound.StopLoopSoundPacket;
+import org.mirage.LoopSoundTool.ModNetwork;
+import org.mirage.LoopSoundTool.StopLoopSoundPacket;
 
 import java.util.Collection;
 
