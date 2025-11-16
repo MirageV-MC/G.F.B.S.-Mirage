@@ -62,14 +62,17 @@ import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.items.ItemRegistration;
 import org.mirage.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.Phenomenon.FogApi.CustomFogModule;
+import org.mirage.Phenomenon.network.HexCrackerNetwork;
 import org.mirage.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.Phenomenon.network.packets.GlobalSoundPlayer;
+import org.mirage.Tools.HexCrackerUI;
 import org.mirage.Tools.Task;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 @Mod(Mirage_gfbs.MODID)
 public class Mirage_gfbs {
@@ -164,6 +167,8 @@ public class Mirage_gfbs {
         });
 
         event.enqueueWork(org.mirage.Phenomenon.network.versioncheck.NetworkHandler::register);
+
+        event.enqueueWork(HexCrackerNetwork::register);
     }
 
     private void onRegisterAllCommandExecs(){
@@ -173,7 +178,7 @@ public class Mirage_gfbs {
             });
         });
         Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown", (context)->{
+            MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
                 Dmr_Meltdown.execute(context, true);
             });
         });
