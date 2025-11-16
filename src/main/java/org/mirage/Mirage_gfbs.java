@@ -18,11 +18,8 @@
 
 package org.mirage;
 
-import com.mojang.blaze3d.audio.Channel;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +27,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameType;
@@ -38,7 +34,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -46,6 +41,7 @@ import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -53,10 +49,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import org.mirage.Client.GravLensClient;
 import org.mirage.Command.*;
 import org.mirage.Event.Dmr_Meltdown;
 import org.mirage.Event.Main90Alpha;
@@ -73,7 +69,6 @@ import org.mirage.Tools.Task;
 import org.slf4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 
 @Mod(Mirage_gfbs.MODID)
@@ -97,6 +92,15 @@ public class Mirage_gfbs {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         LOGGER.info("MOD "+MODID+" INIT...");
+
+        MinecraftForge.EVENT_BUS.register(org.mirage.Phenomenon.network.versioncheck.ServerEvents.class);
+
+        var modVersion = ModList.get()
+                .getModContainerById(MODID)
+                .map(c -> c.getModInfo().getVersion().toString())
+                .orElse("unknown");
+
+        LOGGER.info("G.F.B.S. Mod Version: {}", modVersion);
 
         BlockRegistration.init();
         ItemRegistration.init();
@@ -158,6 +162,8 @@ public class Mirage_gfbs {
             LOGGER.debug("Register all CommandEventExecs");
             onRegisterAllCommandExecs();
         });
+
+        event.enqueueWork(org.mirage.Phenomenon.network.versioncheck.NetworkHandler::register);
     }
 
     private void onRegisterAllCommandExecs(){
