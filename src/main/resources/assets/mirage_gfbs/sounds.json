@@ -1546,5 +1546,95 @@
     "sounds": [
       "mirage_gfbs:cics/c1a3_05_switchover"
     ]
+  },
+  "alarm.overload_s_c_g_s": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:alarm/overload_s_c_g_s"
+    ]
+  },
+  "boom.boom_8_what_b": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:boom/boom_8_what_b"
+    ]
+  },
+  "boom.dmr_b_q": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:boom/dmr_b_q"
+    ]
+  },
+  "faas.r_c_s_a_t_r": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/r_c_s_a_t_r"
+    ]
+  },
+  "faas.w_a_f_s_d": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/w_a_f_s_d"
+    ]
+  },
+  "surroundings.chj_sh_s": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/chj_sh_s"
+    ]
+  },
+  "surroundings.dmr_uord_s": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_uord_s"
+    ]
+  },
+  "surroundings.dmr_up_nb_b": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_b"
+    ]
+  },
+  "surroundings.dmr_up_nb_b2": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_b2"
+    ]
+  },
+  "surroundings.dmr_up_nb_b3": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_b3"
+    ]
+  },
+  "surroundings.dmr_up_nb_q_b": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_q_b"
+    ]
+  },
+  "surroundings.dmr_up_nb_q_b_nb": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_q_b_nb"
+    ]
+  },
+  "surroundings.ele_dmr_qbp": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/ele_dmr_qbp"
+    ]
+  },
+  "surroundings.dmr_bom_q_zl": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_bom_q_zl"
+    ]
+  },
+  "music.warhead_xy_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/warhead_xy_m"
+    ]
   }
 }

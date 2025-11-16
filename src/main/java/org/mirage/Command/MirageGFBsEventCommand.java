@@ -24,14 +24,16 @@ public class MirageGFBsEventCommand {
     public static boolean executeHandler(String eventId, CommandContext context) {
         Consumer<CommandContext> handler = handlers.get(eventId);
         if (handler != null) {
-            try {
-                handler.accept(context);
-                return true;
-            } catch (Exception e) {
-                Mirage_gfbs.LOGGER.error("执行事件处理器时发生异常，事件ID: " + eventId, e);
-                context.sendFailure("执行事件时发生异常: " + e.getMessage());
-                return false;
-            }
+            Thread executionThread = new Thread(() -> {
+                try {
+                    handler.accept(context);
+                } catch (Exception e) {
+                    Mirage_gfbs.LOGGER.error("执行事件处理器时发生异常，事件ID: " + eventId, e);
+                    context.sendFailure("执行事件时发生异常: " + e.getMessage());
+                }
+            });
+            executionThread.start();
+            return true;
         }
         return false;
     }

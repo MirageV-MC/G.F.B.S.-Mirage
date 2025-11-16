@@ -50,7 +50,6 @@ public class PacketHandler {
     }
 
     public static void sendToPlayer(NotificationPacket packet, ServerPlayer player) {
-        Mirage_gfbs.LOGGER.info("Send client Popup: {}", packet);
         INSTANCE.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 }

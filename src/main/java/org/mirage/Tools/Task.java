@@ -61,22 +61,13 @@ public class Task {
         return getScheduler().scheduleAtFixedRate(wrapTask(task), initialDelay, period, unit);
     }
 
-    /**
-     * 等待指定的毫秒数（非阻塞方式）
-     */
-    public static CompletableFuture<Void> sleep(long milliseconds) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        getScheduler().schedule(() -> future.complete(null), milliseconds, TimeUnit.MILLISECONDS);
-        return future;
-    }
-
-    /**
-     * 等待指定的时间（非阻塞方式）
-     */
-    public static CompletableFuture<Void> sleep(long delay, TimeUnit unit) {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-        getScheduler().schedule(() -> future.complete(null), delay, unit);
-        return future;
+    public static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Task.sleep() was interrupted: " + e.getMessage());
+        }
     }
 
     // 包装任务，添加异常处理
