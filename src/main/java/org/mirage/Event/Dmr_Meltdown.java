@@ -72,6 +72,7 @@ public class Dmr_Meltdown {
 
             Task.delay(()->{
                 Task.spawn(()->{
+                    isRedcode = false;
                     while (!isRedcode){
                         executeCommand("playsound mirage_gfbs:alarm.portal_a voice @a ~ ~ ~ 99999 1 1");
                         Task.sleep(2803);
