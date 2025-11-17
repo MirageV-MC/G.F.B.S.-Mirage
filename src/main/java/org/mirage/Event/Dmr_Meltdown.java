@@ -27,6 +27,7 @@ import org.mirage.Tools.Task;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
 
+import java.sql.Time;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.Collection;
@@ -66,6 +67,11 @@ public class Dmr_Meltdown {
                 executeCommandAsync("playsound mirage_gfbs:faas.r_c_s_a_t_r voice @a ~ ~ ~ 0.9 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "反应堆核心结构完整性监测系统出现故障, 正在尝试重启.", 200);
+
+                Task.delay(()->{
+                    executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
+                },6183, TimeUnit.MILLISECONDS);
+
                 Task.sleep(13000);
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "严重错误: 重启失败,系统完整性状态未知.", 200);
@@ -120,11 +126,15 @@ public class Dmr_Meltdown {
                 executeCommandAsync("playsound mirage_gfbs:human.dmr.s_t_b_e_r_a voice @a ~ ~ ~ 1 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Safety.Supervisor.",
                         "所有设施人员注意, 在DMR关闭之前一个人不准跑, 否则直接枪毙, 这是你唯一的警告.", 300);
-            }, 142541, TimeUnit.MILLISECONDS);
+            }, 144541, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
                 NeiBao(allPlayers);
-            }, 135616, TimeUnit.MILLISECONDS);
+
+                Task.sleep(3000);
+
+                executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
+            }, 137616, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -185,6 +195,8 @@ public class Dmr_Meltdown {
             Task.delay(()->{
                 NeiBao(allPlayers);
                 executeCommandAsync("playsound mirage_gfbs:faas.faas_a_p voice @a ~ ~ ~ 0.9 1 1");
+                NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                        "Severe syste-e-e-m damage-ge-ge-ge shutti-ti-ti-ti-ti-ting do-wn", 200);
                 HexCrackerNetwork.stopOnAll(server);
             }, 335993, TimeUnit.MILLISECONDS);
 
@@ -234,6 +246,22 @@ public class Dmr_Meltdown {
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "所有紧急工作装置全部依赖于紧急发电机, 现已降低整体耗电功率.", 200);
                 }, 82972, TimeUnit.MILLISECONDS);
+
+                Task.delay(()->{
+                    executeCommandAsync("playsound mirage_gfbs:surroundings.ele_dmr_qbp voice @a ~ ~ ~ 1 1 1");
+                    for (ServerPlayer player : allPlayers) {
+                        CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 990, 11290);
+                    }
+
+                    Task.sleep(1000);
+
+                    executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_435429 voice @a ~ ~ ~ 1 1 1");
+                    NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                            "注意, 在 R.0.洞穴 检测到高剂量辐射.", 200);
+
+                    Task.sleep(5172);
+                    executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_326982 voice @a ~ ~ ~ 1 1 1");
+                }, 100000, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{
                     executeCommandAsync("playsound mirage_gfbs:faas.f_l_b_a voice @a ~ ~ ~ 1 1 1");

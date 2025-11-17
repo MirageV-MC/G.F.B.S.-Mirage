@@ -1553,6 +1553,12 @@
       "mirage_gfbs:alarm/overload_s_c_g_s"
     ]
   },
+  "alarm.dmr_r_i_a": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:alarm/dmr_r_i_a"
+    ]
+  },
   "boom.boom_8_what_b": {
     "category": "music",
     "sounds": [
