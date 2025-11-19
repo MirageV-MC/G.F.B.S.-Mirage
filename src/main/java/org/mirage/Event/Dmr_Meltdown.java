@@ -93,7 +93,7 @@ public class Dmr_Meltdown {
             Task.delay(()->{
                 executeCommandAsync("playsound mirage_gfbs:human.emergency.c_r_p_e voice @a ~ ~ ~ 1 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Deputy.Reactor.Supervisor.",
-                        "所有设施人员注意，设施自动管理系统已发布红色警报。封锁代码已被指定代码\"Bravo-Niner\"覆盖,请立即前往塔塔鲁斯进行撤离. 这不是演习,我重复,这不是演习.", 200);
+                        "所有设施人员注意，设施自动管理系统已发布红色警报。封锁代码已被指定代码\"Bravo-Niner\"覆盖,请立即前往塔塔鲁斯进行撤离. 这不是演习,我重复,这不是演习.", 400);
             }, 55403, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
@@ -103,15 +103,16 @@ public class Dmr_Meltdown {
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b2 voice @a ~ ~ ~ 1 1 1");
 
                 for (ServerPlayer player : allPlayers) {
-                    CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 990, 11290);
+                    CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 124800, 990, 11290);
                 }
 
                 Task.sleep(16000);
 
                 isRedcode = true;
 
+                executeCommandAsync("playsound mirage_gfbs:faas.dmr_i_c_f voice @a ~ ~ ~ 1 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                        "红色代码宣布紧急情况, 请立即撤离.", 200);
+                        "注意, 暗物质反应堆完整性监测系统故障预处理程序已启动. 红色代码宣布紧急情况, 请立即撤离.", 200);
 
                 Task.sleep(6000);
 
@@ -190,6 +191,8 @@ public class Dmr_Meltdown {
 
             Task.delay(()->{
                 executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_476694 voice @a ~ ~ ~ 1.5 1 1");
+                NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                        "设施自动化管理系统错误.", 200);
             }, 330993, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
