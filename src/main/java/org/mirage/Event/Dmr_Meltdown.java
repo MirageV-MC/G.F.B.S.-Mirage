@@ -19,6 +19,10 @@
 
 package org.mirage.Event;
 
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
+import org.mirage.Command.FluorescentTubeCommandRegistry;
 import org.mirage.Command.MirageGFBsEventCommand;
 import org.mirage.Command.NotificationCommand;
 import org.mirage.Command.CameraShakeCommand;
@@ -29,6 +33,7 @@ import net.minecraft.commands.CommandSourceStack;
 
 import java.sql.Time;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.Collection;
 
@@ -36,7 +41,12 @@ import static org.mirage.CommandExecutor.executeCommandAsync;
 import static org.mirage.Mirage_gfbs.server;
 
 public class Dmr_Meltdown {
+    private static ServerLevel _serverLevel;
+
+    private static boolean meltdownFlashLoopActive = false;
+
     public static void execute(MirageGFBsEventCommand.CommandContext context, boolean isNewMusic) {
+        _serverLevel = context.getSource().getLevel();
         Task.spawn(()->{
             execute_s(context, isNewMusic);
         });
@@ -48,11 +58,17 @@ public class Dmr_Meltdown {
         CommandSourceStack source = context.getSource();
         Collection<ServerPlayer> allPlayers = source.getServer().getPlayerList().getPlayers();
 
+        FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
+
         executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_q_b_nb voice @a ~ ~ ~ 1 1 1");
 
         Task.sleep(40403);
 
         NeiBao(allPlayers);
+
+        meltdownFlashLoopActive = false;
+
+        startFlashLoop(_serverLevel);
 
         Task.sleep(2037);
 
@@ -166,6 +182,8 @@ public class Dmr_Meltdown {
                 }, 14614, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{
+                    FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 40, 3.0D);
+
                     executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_955935 voice @a ~ ~ ~ 1.2 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "通信网络出现故障, 正在尝试与东海岸通信基站重新建立连接.", 300);
@@ -184,7 +202,7 @@ public class Dmr_Meltdown {
 
             Task.delay(()->{
                 for (ServerPlayer player : allPlayers) {
-                    CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 1800, 290, 1290);
+                    CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 2800, 290, 1290);
                 }
                 executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_749446 voice @a ~ ~ ~ 1 1 1");
             }, 274000, TimeUnit.MILLISECONDS);
@@ -285,6 +303,10 @@ public class Dmr_Meltdown {
                     }
                     executeCommandAsync("playsound mirage_gfbs:boom.dmr_b voice @a ~ ~ ~ 2 1 1");
 
+                    meltdownFlashLoopActive = false;
+
+                    FluorescentTubeCommandRegistry.turnOffAllTubes(_serverLevel);
+
                     Task.delay(()->{
                         executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_785144 voice @a ~ ~ ~ 1 1 1");
                         NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -315,7 +337,42 @@ public class Dmr_Meltdown {
                 for (ServerPlayer player : players) {
                     CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 4800, 490, 3290);
                 }
+                FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 75, 3.0D);
             },500, TimeUnit.MILLISECONDS);
         });
+    }
+
+    private static void startFlashLoop(ServerLevel serverLevel) {
+        if (meltdownFlashLoopActive) {
+            return;
+        }
+
+        meltdownFlashLoopActive = true;
+
+        Thread thread = new Thread(() -> {
+            while (meltdownFlashLoopActive) {
+                int delayMs = ThreadLocalRandom.current().nextInt(20_000, 30_001);
+
+                try {
+                    Thread.sleep(delayMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+
+                if (!meltdownFlashLoopActive) {
+                    break;
+                }
+
+                serverLevel.getServer().execute(() -> {
+                    if (!meltdownFlashLoopActive) return;
+
+                    FluorescentTubeCommandRegistry.flashAllTubes(serverLevel, 60, 2.0D);
+                });
+            }
+        }, "dmr-meltdown-flash-loop");
+
+        thread.setDaemon(true);
+        thread.start();
     }
 }

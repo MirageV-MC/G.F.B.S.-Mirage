@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "all": "mirage_gfbs:block/fluorescent_tube_on"
+  },
+  "elements": [
+    {
+      "from": [0, 14, 6],
+      "to":   [16, 16, 10],
+      "faces": {
+        "north": { "texture": "#all", "emissive": true },
+        "south": { "texture": "#all", "emissive": true },
+        "east":  { "texture": "#all", "emissive": true },
+        "west":  { "texture": "#all", "emissive": true },
+        "up":    { "texture": "#all", "emissive": true },
+        "down":  { "texture": "#all", "emissive": true }
+      }
+    }
+  ]
+}

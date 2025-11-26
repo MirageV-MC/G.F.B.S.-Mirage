@@ -20,13 +20,34 @@ package org.mirage.Objects.blocks;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
+import org.mirage.Objects.blocks.classs.FluorescentTubeBlock;
+import org.mirage.Objects.blocks.classs.RedAlarmLampBlock;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
 
 public class BlockRegistration {
     public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
             () -> new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
+
+    public static final RegistryObject<Block> FLUORESCENT_TUBE =
+            BLOCKS.register("fluorescent_tube",
+                    () -> new FluorescentTubeBlock(
+                            BlockBehaviour.Properties
+                                    .of()
+                                    .mapColor(MapColor.METAL)
+                                    .strength(0.3F)
+                                    .noOcclusion()
+                                    .lightLevel(state -> state.getValue(FluorescentTubeBlock.LIT) ? 14 : 0)
+                                    .pushReaction(PushReaction.DESTROY)
+                    ));
+
+    public static final RegistryObject<Block> RED_ALARM_LAMP =
+            BLOCKS.register("red_alarm_lamp",
+                    RedAlarmLampBlock::new
+                    );
 
     public static void init(){}
 }

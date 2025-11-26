@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "facing=up,lit=false":  { "model": "mirage_gfbs:block/red_alarm_lamp_off" },
+    "facing=up,lit=true":   { "model": "mirage_gfbs:block/red_alarm_lamp_on"  },
+
+    "facing=down,lit=false": { "model": "mirage_gfbs:block/red_alarm_lamp_off", "x": 180 },
+    "facing=down,lit=true":  { "model": "mirage_gfbs:block/red_alarm_lamp_on",  "x": 180 },
+
+    "facing=north,lit=false": { "model": "mirage_gfbs:block/red_alarm_lamp_off", "x": 90 },
+    "facing=north,lit=true":  { "model": "mirage_gfbs:block/red_alarm_lamp_on",  "x": 90 },
+
+    "facing=south,lit=false": { "model": "mirage_gfbs:block/red_alarm_lamp_off", "x": 270 },
+    "facing=south,lit=true":  { "model": "mirage_gfbs:block/red_alarm_lamp_on",  "x": 270 },
+
+    "facing=west,lit=false":  { "model": "mirage_gfbs:block/red_alarm_lamp_off", "x": 90, "y": 270 },
+    "facing=west,lit=true":   { "model": "mirage_gfbs:block/red_alarm_lamp_on",  "x": 90, "y": 270 },
+
+    "facing=east,lit=false":  { "model": "mirage_gfbs:block/red_alarm_lamp_off", "x": 90, "y": 90 },
+    "facing=east,lit=true":   { "model": "mirage_gfbs:block/red_alarm_lamp_on",  "x": 90, "y": 90 }
+  }
+}

@@ -30,11 +30,11 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class CommandExecutor {
 
-    // 默认执行指令（在主世界/权限等级3）
+    // 默认执行指令（在主世界/权限等级4）
     public static int executeCommand(String command) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         ServerLevel overworld = server.overworld();
-        return executeCommand(command, overworld, 3);
+        return executeCommand(command, overworld, 4);
     }
 
     // 自定义执行指令

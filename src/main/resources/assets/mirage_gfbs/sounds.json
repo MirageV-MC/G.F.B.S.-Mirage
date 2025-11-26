@@ -1642,5 +1642,12 @@
     "sounds": [
       "mirage_gfbs:music/warhead_xy_m"
     ]
+  },
+  "surroundings.ding": {
+    "category": "block",
+    "sounds": [
+      "mirage_gfbs:surroundings/ding01",
+      "mirage_gfbs:surroundings/ding02"
+    ]
   }
 }

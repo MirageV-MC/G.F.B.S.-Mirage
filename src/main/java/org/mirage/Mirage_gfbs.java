@@ -166,6 +166,10 @@ public class Mirage_gfbs {
             onRegisterAllCommandExecs();
         });
 
+        event.enqueueWork(() -> {
+           ModSoundEvents.register();
+        });
+
         event.enqueueWork(org.mirage.Phenomenon.network.versioncheck.NetworkHandler::register);
 
         event.enqueueWork(HexCrackerNetwork::register);
@@ -242,6 +246,8 @@ public class Mirage_gfbs {
 
         MiragePlaysoundCommand.register(event.getDispatcher());
         MirageStopsoundCommand.register(event.getDispatcher());
+
+        FluorescentTubeCommandRegistry.onRegisterCommands(event);
     }
 
     public static CustomFogModule customFogModule;

@@ -1,0 +1,20 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "all": "mirage_gfbs:block/fluorescent_tube_off"
+  },
+  "elements": [
+    {
+      "from": [0, 14, 6],
+      "to":   [16, 16, 10],
+      "faces": {
+        "north": { "texture": "#all" },
+        "south": { "texture": "#all" },
+        "east":  { "texture": "#all" },
+        "west":  { "texture": "#all" },
+        "up":    { "texture": "#all" },
+        "down":  { "texture": "#all" }
+      }
+    }
+  ]
+}

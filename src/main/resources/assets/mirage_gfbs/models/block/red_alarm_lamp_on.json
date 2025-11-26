@@ -1,0 +1,50 @@
+{
+  "parent": "minecraft:block/block",
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "mirage_gfbs:block/red_alarm_lamp_on_glass",
+    "base": "mirage_gfbs:block/red_alarm_lamp_base",
+    "lamp": "mirage_gfbs:block/red_alarm_lamp_on_glass"
+  },
+  "elements": [
+    {
+      "name": "base",
+      "from": [2, 0, 2],
+      "to":   [14, 2, 14],
+      "faces": {
+        "down":  { "texture": "#base", "uv": [2, 2, 14, 14] },
+        "up":    { "texture": "#base", "uv": [2, 2, 14, 14] },
+        "north": { "texture": "#base", "uv": [2, 14, 14, 16] },
+        "south": { "texture": "#base", "uv": [2, 14, 14, 16] },
+        "west":  { "texture": "#base", "uv": [2, 14, 14, 16] },
+        "east":  { "texture": "#base", "uv": [2, 14, 14, 16] }
+      }
+    },
+    {
+      "name": "lamp_body",
+      "from": [4, 2, 4],
+      "to":   [12, 10, 12],
+      "faces": {
+        "down":  { "texture": "#lamp", "uv": [4, 4, 12, 12] },
+        "up":    { "texture": "#lamp", "uv": [4, 4, 12, 12] },
+        "north": { "texture": "#lamp", "uv": [4, 6, 12, 14] },
+        "south": { "texture": "#lamp", "uv": [4, 6, 12, 14] },
+        "west":  { "texture": "#lamp", "uv": [4, 6, 12, 14] },
+        "east":  { "texture": "#lamp", "uv": [4, 6, 12, 14] }
+      }
+    },
+    {
+      "name": "lamp_cap",
+      "from": [5, 10, 5],
+      "to":   [11, 12, 11],
+      "faces": {
+        "down":  { "texture": "#lamp", "uv": [5, 5, 11, 11] },
+        "up":    { "texture": "#lamp", "uv": [5, 5, 11, 11] },
+        "north": { "texture": "#lamp", "uv": [5, 14, 11, 16] },
+        "south": { "texture": "#lamp", "uv": [5, 14, 11, 16] },
+        "west":  { "texture": "#lamp", "uv": [5, 14, 11, 16] },
+        "east":  { "texture": "#lamp", "uv": [5, 14, 11, 16] }
+      }
+    }
+  ]
+}

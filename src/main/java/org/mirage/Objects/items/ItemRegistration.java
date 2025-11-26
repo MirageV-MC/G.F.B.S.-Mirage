@@ -31,5 +31,13 @@ public class ItemRegistration {
             ITEMS.register("darkmatterreactor",
                     () -> new BlockItem(BlockRegistration.DARK_MATTER_REACTOR_BLOCK.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> FLUORESCENT_TUBE_ITEM =
+            ITEMS.register("fluorescent_tube",
+                    () -> new BlockItem(BlockRegistration.FLUORESCENT_TUBE.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> RED_ALARM_LAMP_ITEM =
+            ITEMS.register("red_alarm_lamp",
+                    () -> new BlockItem(BlockRegistration.RED_ALARM_LAMP.get(), new Item.Properties()));
+
     public static void init(){}
 }
