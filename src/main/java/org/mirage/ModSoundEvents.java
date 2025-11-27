@@ -29,24 +29,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModSoundEvents {
+
+    // 声音注册表
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Mirage_gfbs.MODID);
 
-    public static final Map<String, RegistryObject<SoundEvent>> SOUND_EVENTS_MAP = new HashMap<>();
+    public static final RegistryObject<SoundEvent> SURROUNDINGS_DING =
+            register("surroundings.ding");
 
-    public static void register() {
+    private static RegistryObject<SoundEvent> register(String name) {
+        return SOUND_EVENTS.register(
+                name,
+                () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Mirage_gfbs.MODID, name))
+        );
     }
 
-    private static void registerToMap(String name) {
-        SOUND_EVENTS_MAP.put(name, SOUND_EVENTS.register(name, () ->
-                SoundEvent.createVariableRangeEvent(new ResourceLocation(Mirage_gfbs.MODID, name))));
-    }
-
-    public static RegistryObject<SoundEvent> getSoundEvent(String name) {
-        return SOUND_EVENTS_MAP.get(name);
-    }
-
-    public static void register(IEventBus eventBus) {
-        SOUND_EVENTS.register(eventBus);
+    public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
+        SOUND_EVENTS.register(bus);
     }
 }

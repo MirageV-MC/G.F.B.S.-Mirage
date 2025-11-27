@@ -111,6 +111,8 @@ public class Mirage_gfbs {
 
         modEventBus.addListener(this::commonSetup);
 
+        ModSoundEvents.register(modEventBus);
+
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -164,10 +166,6 @@ public class Mirage_gfbs {
         event.enqueueWork(() -> {
             LOGGER.debug("Register all CommandEventExecs");
             onRegisterAllCommandExecs();
-        });
-
-        event.enqueueWork(() -> {
-           ModSoundEvents.register();
         });
 
         event.enqueueWork(org.mirage.Phenomenon.network.versioncheck.NetworkHandler::register);

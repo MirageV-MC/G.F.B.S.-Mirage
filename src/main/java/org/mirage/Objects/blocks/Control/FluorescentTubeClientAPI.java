@@ -24,6 +24,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +35,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.CommandExecutor;
+import org.mirage.Mirage_gfbs;
+import org.mirage.ModSoundEvents;
 import org.mirage.Objects.blocks.classs.AbstractFluorescentLampBlock;
 import org.mirage.Phenomenon.network.Network.ClientEventHandler;
 
@@ -316,9 +322,34 @@ public final class FluorescentTubeClientAPI {
         }
 
         private void playToggleSound(BlockPos pos) {
-            CommandExecutor.executeCommand(
-                    "playsound mirage_gfbs:surroundings.ding block @a "
-                            + pos.getX() + " " + pos.getY() + " " + pos.getZ() + " 1 1 0"
+            Minecraft mc = Minecraft.getInstance();
+            ClientLevel level = mc.level;
+            if (level == null) {
+                return;
+            }
+
+            SoundEvent sound;
+            try {
+                sound = ModSoundEvents.SURROUNDINGS_DING.get();
+            } catch (Exception e) {
+                return;
+            }
+
+            if (sound == null) {
+                return;
+            }
+
+            double x = pos.getX() + 0.5;
+            double y = pos.getY() + 0.5;
+            double z = pos.getZ() + 0.5;
+
+            level.playLocalSound(
+                    x, y, z,
+                    sound,
+                    SoundSource.BLOCKS,
+                    1.0F,
+                    1.0F,
+                    false
             );
         }
     }
