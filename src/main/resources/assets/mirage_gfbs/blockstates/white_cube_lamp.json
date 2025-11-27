@@ -1,0 +1,17 @@
+{
+  "variants": {
+    "facing=up,lit=false":  { "model": "mirage_gfbs:block/white_cube_lamp_off" },
+    "facing=down,lit=false":{ "model": "mirage_gfbs:block/white_cube_lamp_off" },
+    "facing=north,lit=false":{ "model": "mirage_gfbs:block/white_cube_lamp_off" },
+    "facing=south,lit=false":{ "model": "mirage_gfbs:block/white_cube_lamp_off" },
+    "facing=west,lit=false": { "model": "mirage_gfbs:block/white_cube_lamp_off" },
+    "facing=east,lit=false": { "model": "mirage_gfbs:block/white_cube_lamp_off" },
+
+    "facing=up,lit=true":   { "model": "mirage_gfbs:block/white_cube_lamp_on" },
+    "facing=down,lit=true": { "model": "mirage_gfbs:block/white_cube_lamp_on" },
+    "facing=north,lit=true":{ "model": "mirage_gfbs:block/white_cube_lamp_on" },
+    "facing=south,lit=true":{ "model": "mirage_gfbs:block/white_cube_lamp_on" },
+    "facing=west,lit=true": { "model": "mirage_gfbs:block/white_cube_lamp_on" },
+    "facing=east,lit=true": { "model": "mirage_gfbs:block/white_cube_lamp_on" }
+  }
+}

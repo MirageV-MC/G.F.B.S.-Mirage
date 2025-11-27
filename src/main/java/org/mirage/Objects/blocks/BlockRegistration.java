@@ -25,6 +25,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blocks.classs.FluorescentTubeBlock;
 import org.mirage.Objects.blocks.classs.RedAlarmLampBlock;
+import org.mirage.Objects.blocks.classs.WhiteCubeLampBlock;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
 
@@ -48,6 +49,11 @@ public class BlockRegistration {
             BLOCKS.register("red_alarm_lamp",
                     RedAlarmLampBlock::new
                     );
+
+    public static final RegistryObject<Block> WHITE_CUBE_LAMP =
+            BLOCKS.register("white_cube_lamp",
+                    WhiteCubeLampBlock::new
+            );
 
     public static void init(){}
 }

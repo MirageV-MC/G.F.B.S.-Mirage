@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mirage_gfbs:block/white_illumar_lamp"
+  }
+}

@@ -39,5 +39,9 @@ public class ItemRegistration {
             ITEMS.register("red_alarm_lamp",
                     () -> new BlockItem(BlockRegistration.RED_ALARM_LAMP.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> WHITE_CUBE_LAMP_ITEM =
+            ITEMS.register("white_cube_lamp",
+                    () -> new BlockItem(BlockRegistration.WHITE_CUBE_LAMP.get(), new Item.Properties()));
+
     public static void init(){}
 }

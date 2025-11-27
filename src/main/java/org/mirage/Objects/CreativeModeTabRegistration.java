@@ -50,6 +50,7 @@ public class CreativeModeTabRegistration {
             event.accept(ItemRegistration.DARK_MATTER_REACTOR_ITEM.get());
             event.accept(ItemRegistration.FLUORESCENT_TUBE_ITEM.get());
             event.accept(ItemRegistration.RED_ALARM_LAMP_ITEM.get());
+            event.accept(ItemRegistration.WHITE_CUBE_LAMP_ITEM.get());
         }
     }
 }
