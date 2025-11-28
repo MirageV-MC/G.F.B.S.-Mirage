@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blocks.classs.FluorescentTubeBlock;
+import org.mirage.Objects.blocks.classs.GateBlock;
 import org.mirage.Objects.blocks.classs.RedAlarmLampBlock;
 import org.mirage.Objects.blocks.classs.WhiteCubeLampBlock;
 
@@ -54,6 +55,10 @@ public class BlockRegistration {
             BLOCKS.register("white_cube_lamp",
                     WhiteCubeLampBlock::new
             );
+
+    public static final RegistryObject<Block> GATE =
+            BLOCKS.register("big_gate", () ->
+                    new GateBlock(Block.Properties.of().strength(5.0F).noOcclusion()));
 
     public static void init(){}
 }

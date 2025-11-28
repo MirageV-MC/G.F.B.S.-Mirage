@@ -43,5 +43,9 @@ public class ItemRegistration {
             ITEMS.register("white_cube_lamp",
                     () -> new BlockItem(BlockRegistration.WHITE_CUBE_LAMP.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> GATE_ITEM =
+            ITEMS.register("big_gate",
+                    () -> new BlockItem(BlockRegistration.GATE.get(), new Item.Properties()));
+
     public static void init(){}
 }

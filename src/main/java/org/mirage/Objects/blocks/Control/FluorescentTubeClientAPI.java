@@ -245,6 +245,8 @@ public final class FluorescentTubeClientAPI {
         }
 
         void tick(Level level) {
+            soundsPlayedThisTick = 0;
+
             if (isFinished() || !(level instanceof ClientLevel)) {
                 return;
             }
@@ -321,7 +323,15 @@ public final class FluorescentTubeClientAPI {
             return new TubeBlinkState(initialLit, firstInterval);
         }
 
+        private static final int MAX_SOUNDS_PER_TICK = 3;
+        private static final double SOUND_MERGE_DISTANCE = 8.0;
+        private static int soundsPlayedThisTick = 0;
+
         private void playToggleSound(BlockPos pos) {
+            if (soundsPlayedThisTick >= MAX_SOUNDS_PER_TICK) {
+                return;
+            }
+
             Minecraft mc = Minecraft.getInstance();
             ClientLevel level = mc.level;
             if (level == null) {
@@ -339,18 +349,55 @@ public final class FluorescentTubeClientAPI {
                 return;
             }
 
-            double x = pos.getX() + 0.5;
-            double y = pos.getY() + 0.5;
-            double z = pos.getZ() + 0.5;
+            BlockPos mergedPos = findNearbySoundPosition(pos, level, this.tubeStates);
+
+            double x = mergedPos.getX() + 0.5;
+            double y = mergedPos.getY() + 0.5;
+            double z = mergedPos.getZ() + 0.5;
 
             level.playLocalSound(
                     x, y, z,
                     sound,
                     SoundSource.BLOCKS,
-                    1.0F,
+                    0.7F,
                     1.0F,
                     false
             );
+
+            soundsPlayedThisTick++;
+        }
+    }
+
+    private static BlockPos findNearbySoundPosition(BlockPos originalPos, ClientLevel level, Map<BlockPos, TubeBlinkState> tubeStates) {
+        synchronized (REGISTERED_TUBES) {
+            int totalX = originalPos.getX();
+            int totalY = originalPos.getY();
+            int totalZ = originalPos.getZ();
+            int count = 1;
+
+            for (BlockPos otherPos : REGISTERED_TUBES) {
+                if (!otherPos.equals(originalPos) &&
+                        otherPos.distSqr(originalPos) <= BlinkTask.SOUND_MERGE_DISTANCE * BlinkTask.SOUND_MERGE_DISTANCE) {
+
+                    TubeBlinkState otherState = tubeStates.get(otherPos);
+                    if (otherState != null && otherState.currentLit) {
+                        totalX += otherPos.getX();
+                        totalY += otherPos.getY();
+                        totalZ += otherPos.getZ();
+                        count++;
+                    }
+                }
+            }
+
+            if (count == 1) {
+                return originalPos;
+            }
+
+            int avgX = totalX / count;
+            int avgY = totalY / count;
+            int avgZ = totalZ / count;
+
+            return new BlockPos(avgX, avgY, avgZ);
         }
     }
 

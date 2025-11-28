@@ -57,6 +57,7 @@ import org.mirage.Command.*;
 import org.mirage.Event.Dmr_Meltdown;
 import org.mirage.Event.Main90Alpha;
 import org.mirage.Objects.CreativeModeTabRegistration;
+import org.mirage.Objects.ModBlockEntities;
 import org.mirage.Objects.Structure.Registrar;
 import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.items.ItemRegistration;
@@ -116,6 +117,7 @@ public class Mirage_gfbs {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CreativeModeTabRegistration.CREATIVE_MODE_TABS.register(modEventBus);
 
         SOUND.register(modEventBus);
