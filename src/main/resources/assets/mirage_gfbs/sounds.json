@@ -1649,5 +1649,72 @@
       "mirage_gfbs:surroundings/ding01",
       "mirage_gfbs:surroundings/ding02"
     ]
+  },
+  "music.leisure_1_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/leisure_1_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.end_2_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/end_2_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.end_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/end_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.hall_1_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/hall_1_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.hall_2_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/hall_2_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.hall_3_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/hall_3_m"
+    ],
+    "stream": true
+  },
+  "music.thereactor.handeng_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/thereactor/handeng_m"
+    ],
+    "stream": true
+  },
+  "surroundings.thereactor.abnormal": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/thereactor/abnormal"
+    ]
+  },
+  "surroundings.thereactor.reactor_s_none": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/thereactor/reactor_s_none"
+    ]
+  },
+  "surroundings.thereactor.reactor_s_overload": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/thereactor/reactor_s_overload"
+    ]
   }
 }

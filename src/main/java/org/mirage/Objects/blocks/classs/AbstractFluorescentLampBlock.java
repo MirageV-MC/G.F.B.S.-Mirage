@@ -96,21 +96,7 @@ public abstract class AbstractFluorescentLampBlock extends Block {
             FluorescentTubeSavedData.get(serverLevel).add(pos);
         }
     }
-
-    @Override
-    public void neighborChanged(@NotNull BlockState state, Level level, @NotNull BlockPos pos,
-                                @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
-        if (!level.isClientSide) {
-            boolean powered = level.hasNeighborSignal(pos);
-            boolean lit = state.getValue(LIT);
-            if (powered != lit) {
-                BlockState newState = state.setValue(LIT, powered);
-                level.setBlock(pos, newState, Block.UPDATE_ALL);
-                onPoweredStateChanged(level, pos, newState);
-            }
-        }
-    }
-
+    
     @Override
     public boolean isSignalSource(@NotNull BlockState state) {
         return false;
