@@ -23,6 +23,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blockEntity.GateBlockEntity;
+import org.mirage.Objects.blockEntity.QSTrademarkPictureBlockEntity;
 import org.mirage.Objects.blocks.BlockRegistration;
 
 public class ModBlockEntities {
@@ -31,9 +32,13 @@ public class ModBlockEntities {
             DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, "mirage_gfbs");
 
     public static final RegistryObject<BlockEntityType<GateBlockEntity>> GATE =
-            BLOCK_ENTITIES.register("big_gate",
+            BLOCK_ENTITIES.register("gate",
                     () -> BlockEntityType.Builder.of(
                             GateBlockEntity::new,
                             BlockRegistration.GATE.get()
                     ).build(null));
+
+    public static final RegistryObject<BlockEntityType<QSTrademarkPictureBlockEntity>> QS_TRADEMARK_PICTURE_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("qs_trademark_picture",
+                    () -> BlockEntityType.Builder.of(QSTrademarkPictureBlockEntity::new, BlockRegistration.QS_TRADEMARK_PICTURE_BLOCK.get()).build(null));
 }

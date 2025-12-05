@@ -18,6 +18,9 @@
 
 package org.mirage;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -25,26 +28,80 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModSoundEvents {
-
-    // 声音注册表
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Mirage_gfbs.MODID);
 
-    public static final RegistryObject<SoundEvent> SURROUNDINGS_DING =
-            register("surroundings.ding");
+    private static final Map<String, RegistryObject<SoundEvent>> SOUND_EVENT_MAP = new HashMap<>();
 
-    private static RegistryObject<SoundEvent> register(String name) {
-        return SOUND_EVENTS.register(
+    static {
+        loadAndRegisterFromSoundsJson();
+    }
+
+    private static void loadAndRegisterFromSoundsJson() {
+        String path = "/assets/" + Mirage_gfbs.MODID + "/sounds.json";
+
+        try (InputStream is = ModSoundEvents.class.getResourceAsStream(path)) {
+            if (is == null) {
+                Mirage_gfbs.LOGGER.warn("Cannot find " + path + ", will not register automatically.");
+                return;
+            }
+
+            try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                JsonElement root = JsonParser.parseReader(reader);
+                if (!root.isJsonObject()) {
+                    return;
+                }
+
+                JsonObject obj = root.getAsJsonObject();
+
+                for (String key : obj.keySet()) {
+                    registerSound(key);
+                }
+
+                Mirage_gfbs.LOGGER.info("Automatically registered " + SOUND_EVENT_MAP.size() + " SoundEvents from sounds.json.");
+            }
+        } catch (Exception e) {
+            Mirage_gfbs.LOGGER.error("Failed to automatically register SoundEvent from sounds.json:");
+            e.printStackTrace();
+        }
+    }
+
+    private static void registerSound(String name) {
+        RegistryObject<SoundEvent> reg = SOUND_EVENTS.register(
                 name,
                 () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Mirage_gfbs.MODID, name))
         );
+        SOUND_EVENT_MAP.put(name, reg);
     }
 
-    public static void register(net.minecraftforge.eventbus.api.IEventBus bus) {
-        SOUND_EVENTS.register(bus);
+    public static void register(IEventBus modEventBus) {
+        SOUND_EVENTS.register(modEventBus);
+    }
+
+    public static SoundEvent getSoundOrNull(String name) {
+        RegistryObject<SoundEvent> ro = SOUND_EVENT_MAP.get(name);
+        return ro != null ? ro.get() : null;
+    }
+
+    public static SoundEvent getSoundOrThrow(String name) {
+        RegistryObject<SoundEvent> ro = SOUND_EVENT_MAP.get(name);
+        if (ro == null) {
+            throw new IllegalArgumentException("未知 SoundEvent key: " + name);
+        }
+        return ro.get();
+    }
+
+    public static Collection<String> getAllKeys() {
+        return Collections.unmodifiableSet(SOUND_EVENT_MAP.keySet());
     }
 }

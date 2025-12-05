@@ -1037,6 +1037,12 @@
       "mirage_gfbs:surroundings/big_gate"
     ]
   },
+  "surroundings.big_gate_reverb": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/big_gate_reverb"
+    ]
+  },
   "war.main90": {
     "category": "music",
     "sounds": [

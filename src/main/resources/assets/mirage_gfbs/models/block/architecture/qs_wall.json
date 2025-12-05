@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mirage_gfbs:block/architecture/qs_wall_tile_512"
+  }
+}

@@ -340,7 +340,7 @@ public final class FluorescentTubeClientAPI {
 
             SoundEvent sound;
             try {
-                sound = ModSoundEvents.SURROUNDINGS_DING.get();
+                sound = ModSoundEvents.getSoundOrNull("surroundings.ding");
             } catch (Exception e) {
                 return;
             }

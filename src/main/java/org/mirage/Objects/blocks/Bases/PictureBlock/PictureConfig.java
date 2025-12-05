@@ -1,4 +1,4 @@
-package org.mirage.Objects.blockEntity;
+package org.mirage.Objects.blocks.Bases.PictureBlock;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -19,24 +19,20 @@ package org.mirage.Objects.blockEntity;
  */
 
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.mirage.Mirage_gfbs;
-import software.bernie.geckolib.model.GeoModel;
 
-public class GateBlockModel extends GeoModel<GateBlockEntity> {
+public interface PictureConfig {
 
-    @Override
-    public @NotNull ResourceLocation getModelResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "geo/gate.geo.json");
-    }
+    ResourceLocation texture();
 
-    @Override
-    public @NotNull ResourceLocation getTextureResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "textures/block/gate_core.png");
-    }
+    int widthPixels();
 
-    @Override
-    public @NotNull ResourceLocation getAnimationResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "animations/gate.animation.json");
+    int heightPixels();
+
+    ScalingMode scalingMode();
+
+    enum ScalingMode {
+        FIT_INSIDE,
+        STRETCH,
+        ORIGINAL_SIZE
     }
 }

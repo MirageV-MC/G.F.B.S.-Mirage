@@ -1,5 +1,10 @@
 package org.mirage.Objects.blockEntity;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import org.mirage.Objects.ModBlockEntities;
+import org.mirage.Objects.blocks.Bases.PictureBlock.PictureBlockEntity;
+
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
  * Copyright (C) 2025-2029 Convex89524
@@ -18,25 +23,8 @@ package org.mirage.Objects.blockEntity;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
-import org.mirage.Mirage_gfbs;
-import software.bernie.geckolib.model.GeoModel;
-
-public class GateBlockModel extends GeoModel<GateBlockEntity> {
-
-    @Override
-    public @NotNull ResourceLocation getModelResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "geo/gate.geo.json");
-    }
-
-    @Override
-    public @NotNull ResourceLocation getTextureResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "textures/block/gate_core.png");
-    }
-
-    @Override
-    public @NotNull ResourceLocation getAnimationResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "animations/gate.animation.json");
+public class QSTrademarkPictureBlockEntity extends PictureBlockEntity {
+    public QSTrademarkPictureBlockEntity(BlockPos pos, BlockState state) {
+        super(ModBlockEntities.QS_TRADEMARK_PICTURE_BLOCK_ENTITY.get(), pos, state);
     }
 }

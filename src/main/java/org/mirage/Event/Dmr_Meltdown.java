@@ -27,6 +27,7 @@ import org.mirage.Command.MirageGFBsEventCommand;
 import org.mirage.Command.NotificationCommand;
 import org.mirage.Command.CameraShakeCommand;
 import org.mirage.Phenomenon.network.HexCrackerNetwork;
+import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Tools.Task;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
@@ -238,6 +239,17 @@ public class Dmr_Meltdown {
                     executeCommandAsync("playsound mirage_gfbs:music.p2_m voice @a ~ ~ ~ 1 1 1");
                 }
 
+                Task.spawn(()->{
+                    executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b voice @a ~ ~ ~ 1 1 1");
+
+                    Task.sleep(20000);
+
+                    executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b2 voice @a ~ ~ ~ 1 1 1");
+
+                    Task.sleep(50000);
+                    executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b3 voice @a ~ ~ ~ 1 1 1");
+                });
+
                 Task.delay(()->{
                     executeCommandAsync("playsound mirage_gfbs:faas.f_m_c_s_o voice @a ~ ~ ~ 1 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -247,6 +259,21 @@ public class Dmr_Meltdown {
                         executeCommandAsync("playsound mirage_gfbs:human.dmr.p2 voice @a ~ ~ ~ 1 1 1");
                         NotificationCommand.sendNotificationToPlayers(allPlayers, "Facilities.Supervisor.",
                                 "所有反应堆操作小组人员注意, 这是我们阻止DMR彻底破坏的最后机会了, 爬到上层结构, 在1到3秒的时间内依次将所有燃料电池弹出, 以引发燃烧性熄火故障并关闭暗物质反应堆, 你还有1分钟的时间, 祝你好运.", 600);
+
+
+                        Task.delay(()->{
+                            NetworkHandler.sendToAll("open_all_gate");
+                            executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_535533 voice @a ~ ~ ~ 1 1 1");
+                            NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                                    "所有设施人员注意, 请立即前往最近的避[数据删除]难所.", 200);
+
+                            executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b2 voice @a ~ ~ ~ 1 1 1");
+
+                            for (ServerPlayer player : allPlayers) {
+                                CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 4800, 490, 3290);
+                            }
+                            FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 75, 3.0D);
+                        }, 85, TimeUnit.SECONDS);
                     }, 9673 , TimeUnit.MILLISECONDS);
                 }, 20523, TimeUnit.MILLISECONDS);
 
@@ -288,6 +315,12 @@ public class Dmr_Meltdown {
                     executeCommandAsync("playsound mirage_gfbs:faas.f_l_b_a voice @a ~ ~ ~ 1 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "注意, 封锁措施现已启动, 防爆门将在一分钟后关闭.", 200);
+
+                    Task.sleep(30000);
+
+                    executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_148446 voice @a ~ ~ ~ 1 1 1");
+                    NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                            "注意, 防爆门将在30秒后关闭.", 200);
                 }, 142786, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{
@@ -295,6 +328,8 @@ public class Dmr_Meltdown {
                     executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_194506 voice @a ~ ~ ~ 1 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "Deputy.Reactor.Supervisor.",
                             "所有设施人员注意,我们发现反应堆腔室内泄露出大量辐射,我们正在减少损失并立即关闭塔塔鲁斯大门,所以那些还在设施里的人,请立即前往最近的防爆避难所.", 200);
+
+                    NetworkHandler.sendToAll("close_all_gate");
                 }, 189059, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{

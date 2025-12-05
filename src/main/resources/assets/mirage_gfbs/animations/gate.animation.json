@@ -1,0 +1,72 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.gate.open": {
+			"animation_length": 12.5,
+			"bones": {
+				"door": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0.5, 0]
+						},
+						"0.125": {
+							"vector": [0, 1, 0],
+							"easing": "easeOutBack"
+						},
+						"12.125": {
+							"vector": [0, 45, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
+		},
+		"animation.gate.close": {
+			"animation_length": 12.2083,
+			"bones": {
+				"door": {
+					"position": {
+						"0.0": {
+							"vector": [0, 45, 0]
+						},
+						"12.2083": {
+							"vector": [0, 0.25, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
+		},
+		"animation.gate.open_idle": {
+			"animation_length": 1,
+			"bones": {
+				"door": {
+					"position": {
+						"0.0": {
+							"vector": [0, 45, 0]
+						},
+						"1.0": {
+							"vector": [0, 45, 0]
+						}
+					}
+				}
+			}
+		},
+		"animation.gate.idle": {
+			"animation_length": 1,
+			"bones": {
+				"door": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

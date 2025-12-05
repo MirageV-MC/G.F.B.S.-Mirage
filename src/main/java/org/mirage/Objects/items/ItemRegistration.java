@@ -47,5 +47,16 @@ public class ItemRegistration {
             ITEMS.register("big_gate",
                     () -> new BlockItem(BlockRegistration.GATE.get(), new Item.Properties()));
 
+    // 建筑方块
+
+    public static final RegistryObject<Item> QS_WALL_ITE =
+            ITEMS.register("qs_wall",
+                    () -> new BlockItem(BlockRegistration.QS_WALL.get(), new Item.Properties()));
+
+    // 贴图方块
+    public static final RegistryObject<Item> QS_TRADEMARK_PICTURE_ITEM =
+            ITEMS.register("qs_trademark_picture",
+                    () -> new BlockItem(BlockRegistration.QS_TRADEMARK_PICTURE_BLOCK.get(), new Item.Properties()));
+
     public static void init(){}
 }

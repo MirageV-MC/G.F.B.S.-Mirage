@@ -18,17 +18,16 @@
 
 package org.mirage.Objects.blocks;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
-import org.mirage.Objects.blocks.classs.FluorescentTubeBlock;
-import org.mirage.Objects.blocks.classs.GateBlock;
-import org.mirage.Objects.blocks.classs.RedAlarmLampBlock;
-import org.mirage.Objects.blocks.classs.WhiteCubeLampBlock;
+import org.mirage.Objects.blocks.classs.*;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
+import static org.mirage.Mirage_gfbs.MODID;
 
 public class BlockRegistration {
     public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
@@ -56,9 +55,34 @@ public class BlockRegistration {
                     WhiteCubeLampBlock::new
             );
 
+    public static final RegistryObject<Block> GATE_COLLISION =
+            BLOCKS.register("gate_collision", ()->
+                    new GateCollisionBlock(Block.Properties.of().strength(5.0F)
+                            .noOcclusion()
+                            .isViewBlocking((state, level, pos) -> false)
+                    )
+            );
+
     public static final RegistryObject<Block> GATE =
-            BLOCKS.register("big_gate", () ->
-                    new GateBlock(Block.Properties.of().strength(5.0F).noOcclusion()));
+            BLOCKS.register("gate", () ->
+                    new GateBlock(Block.Properties.of().strength(5.0F).noOcclusion(), BlockRegistration.GATE_COLLISION));
+
+    // 建筑方块
+
+    public static final RegistryObject<Block> QS_WALL =
+            BLOCKS.register("qs_wall", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
+
+    //画
+
+    public static final RegistryObject<Block> QS_TRADEMARK_PICTURE_BLOCK =
+            BLOCKS.register("qs_trademark_picture_block",
+                    () -> new QSTrademarkPictureBlock(
+                            Block.Properties.of().strength(2.0f),
+                            new ResourceLocation(MODID, "textures/block/picture/qs_trademark"),
+                            256,
+                            128
+                    ));
 
     public static void init(){}
 }

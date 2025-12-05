@@ -76,4 +76,17 @@ public class NetworkHandler {
             Mirage_gfbs.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
         }
     }
+
+    public static void sendToAll(String eventId) {
+        if (CHANNEL == null) {
+            Mirage_gfbs.LOGGER.error("Network channel not initialized. Cannot send event: {}", eventId);
+            return;
+        }
+
+        try {
+            CHANNEL.send(PacketDistributor.ALL.noArg(), new EventPacket(eventId, new CompoundTag()));
+        } catch (Exception e) {
+            Mirage_gfbs.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
+        }
+    }
 }

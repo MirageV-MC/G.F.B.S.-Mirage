@@ -19,6 +19,7 @@
 package org.mirage;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -59,16 +60,21 @@ import org.mirage.Event.Main90Alpha;
 import org.mirage.Objects.CreativeModeTabRegistration;
 import org.mirage.Objects.ModBlockEntities;
 import org.mirage.Objects.Structure.Registrar;
+import org.mirage.Objects.blockEntity.GateBlockModel;
 import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.items.ItemRegistration;
+import org.mirage.Objects.renderer.GateBlockRenderer;
+import org.mirage.Objects.renderer.PictureBlockRenderer;
 import org.mirage.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.Phenomenon.FogApi.CustomFogModule;
 import org.mirage.Phenomenon.network.HexCrackerNetwork;
+import org.mirage.Phenomenon.network.Network.ClientToServer;
 import org.mirage.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.Phenomenon.network.packets.GlobalSoundPlayer;
 import org.mirage.Tools.HexCrackerUI;
 import org.mirage.Tools.Task;
+import org.mirage.api.GateClientAPI;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -173,6 +179,8 @@ public class Mirage_gfbs {
         event.enqueueWork(org.mirage.Phenomenon.network.versioncheck.NetworkHandler::register);
 
         event.enqueueWork(HexCrackerNetwork::register);
+
+        ClientToServer.registerChannel();
     }
 
     private void onRegisterAllCommandExecs(){
@@ -248,6 +256,8 @@ public class Mirage_gfbs {
         MirageStopsoundCommand.register(event.getDispatcher());
 
         FluorescentTubeCommandRegistry.onRegisterCommands(event);
+
+        MirageGFBsGateApiCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;
@@ -266,7 +276,10 @@ public class Mirage_gfbs {
             ModelResourceLocation modelLocation = new ModelResourceLocation(
                     new ResourceLocation("mirage_gfbs", "darkmatterreactor"), "inventory");
 
-//            event.enqueueWork(GravLensClient::init);
+            BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
+            BlockEntityRenderers.register(ModBlockEntities.QS_TRADEMARK_PICTURE_BLOCK_ENTITY.get(), PictureBlockRenderer::new);
+
+            GateClientAPI.register();
         }
 
         @SubscribeEvent

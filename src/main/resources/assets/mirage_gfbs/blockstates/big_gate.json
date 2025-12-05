@@ -1,6 +1,0 @@
-{
-  "variants": {
-    "open=false": { "model": "mirage_gfbs:block/big_gate" },
-    "open=true":  { "model": "mirage_gfbs:block/big_gate" }
-  }
-}

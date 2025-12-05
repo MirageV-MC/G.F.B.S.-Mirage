@@ -50,6 +50,8 @@ public class CreativeModeTabRegistration {
             event.accept(ItemRegistration.RED_ALARM_LAMP_ITEM.get());
             event.accept(ItemRegistration.WHITE_CUBE_LAMP_ITEM.get());
             event.accept(ItemRegistration.GATE_ITEM.get());
+            event.accept(ItemRegistration.QS_WALL_ITE.get());
+            event.accept(ItemRegistration.QS_TRADEMARK_PICTURE_ITEM.get());
         }
     }
 }
