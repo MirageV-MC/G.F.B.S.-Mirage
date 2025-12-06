@@ -38,6 +38,7 @@ import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -74,6 +75,9 @@ import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.Phenomenon.network.packets.GlobalSoundPlayer;
 import org.mirage.Tools.HexCrackerUI;
 import org.mirage.Tools.Task;
+import org.mirage.Utils.SyncField.SyncField;
+import org.mirage.Utils.SyncField.SyncManager;
+import org.mirage.Utils.WorldWriteQueue;
 import org.mirage.api.GateClientAPI;
 import org.slf4j.Logger;
 
@@ -149,6 +153,8 @@ public class Mirage_gfbs {
         LOGGER.info("{} {}", Config.magicNumberIntroduction, Config.magicNumber);
 
         Config.items.forEach(item -> LOGGER.info("ITEM >> {}", item));
+
+        event.enqueueWork(SyncManager::init);
 
         event.enqueueWork(() -> {
             PacketHandler.register();
@@ -284,6 +290,13 @@ public class Mirage_gfbs {
 
         @SubscribeEvent
         public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
+        }
+    }
+
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            WorldWriteQueue.flush();
         }
     }
 

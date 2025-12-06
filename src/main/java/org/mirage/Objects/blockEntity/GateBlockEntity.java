@@ -33,6 +33,8 @@ import org.mirage.Objects.ModBlockEntities;
 import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.blocks.Control.GateServerManager;
 import org.mirage.Objects.blocks.classs.GateBlock;
+import org.mirage.Utils.SyncField.SyncField;
+import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.api.GateClientAPI;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -47,14 +49,17 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    @OnlyIn(Dist.CLIENT)
+    @SyncField
     private static final List<GateBlockEntity> CLIENT_GATES = new ArrayList<>();
 
+    @SyncField
     private boolean logicalOpen = false;
+
     private boolean lastLogicalOpen = false;
 
     public GateBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.GATE.get(), pos, state);
+        SyncManager.registerBlockEntity(this);
     }
 
     @Override
@@ -149,6 +154,8 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
         if (level == null) {
             return;
         }
+
+        SyncManager.unregisterBlockEntity(this);
 
         if (level.isClientSide) {
             CLIENT_GATES.remove(this);

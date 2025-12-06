@@ -78,6 +78,36 @@ public class GateClientAPI {
         });
     }
 
+    public static void openAllServer(Level level) {
+        List<BlockPos> gatePositions = GateServerManager.getGatesInLevel(level);
+
+        NetworkHandler.sendToAll("mirage_gate_busy");
+
+        for (BlockPos pos : gatePositions) {
+            BlockState state = level.getBlockState(pos);
+            if (state.getBlock() instanceof GateBlock gateBlock) {
+                gateBlock.applyOpenStateDirect(level, pos, true);
+            }
+        }
+
+        NetworkHandler.sendToAll("open_all_gate");
+    }
+
+    public static void closeAllServer(Level level) {
+        List<BlockPos> gatePositions = GateServerManager.getGatesInLevel(level);
+
+        NetworkHandler.sendToAll("mirage_gate_busy");
+
+        for (BlockPos pos : gatePositions) {
+            BlockState state = level.getBlockState(pos);
+            if (state.getBlock() instanceof GateBlock gateBlock) {
+                gateBlock.applyOpenStateDirect(level, pos, false);
+            }
+        }
+
+        NetworkHandler.sendToAll("close_all_gate");
+    }
+
     public static void applyStateToAllLoaded() {
         for (GateBlockEntity gate : GateBlockEntity.getClientGates()) {
             gate.setLogicalOpen(GLOBAL_GATE_STATE);

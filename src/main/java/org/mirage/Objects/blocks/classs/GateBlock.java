@@ -26,6 +26,8 @@ import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -164,48 +166,66 @@ public class GateBlock extends Block implements EntityBlock {
             return;
         }
 
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+        MinecraftServer server = serverLevel.getServer();
+
         BlockState gateState = level.getBlockState(gatePos);
-        Direction.Axis axis = gateState.hasProperty(AXIS) ? gateState.getValue(AXIS) : Direction.Axis.Z;
+        Direction.Axis axis = gateState.hasProperty(AXIS)
+                ? gateState.getValue(AXIS)
+                : Direction.Axis.Z;
 
         if (canSleep) {
             Task.delay(() -> {
-                BlockState currentState = level.getBlockState(gatePos);
-                if (!(currentState.getBlock() instanceof GateBlock)) {
-                    return;
-                }
-                if (currentState.hasProperty(OPEN) && currentState.getValue(OPEN)) {
-                    return;
-                }
-
-                Direction.Axis currentAxis = currentState.hasProperty(AXIS)
-                        ? currentState.getValue(AXIS)
-                        : Direction.Axis.Z;
-
-                for (BlockPos offset : COLLISION_OFFSETS) {
-                    BlockPos realOffset = rotateOffsetForAxis(offset, currentAxis);
-                    BlockPos targetPos = gatePos.offset(realOffset);
-                    BlockState existing = level.getBlockState(targetPos);
-                    if (existing.isAir() || existing.canBeReplaced()) {
-                        level.setBlock(targetPos, collisionBlock.defaultBlockState(), Block.UPDATE_ALL);
+                server.execute(() -> {
+                    BlockState currentState = level.getBlockState(gatePos);
+                    if (!(currentState.getBlock() instanceof GateBlock)) {
+                        return;
                     }
-                }
+                    if (currentState.hasProperty(OPEN) && currentState.getValue(OPEN)) {
+                        return;
+                    }
+
+                    Direction.Axis currentAxis = currentState.hasProperty(AXIS)
+                            ? currentState.getValue(AXIS)
+                            : Direction.Axis.Z;
+
+                    // 延迟产生的“核心区”碰撞箱（COLLISION_OFFSETS）
+                    for (BlockPos offset : COLLISION_OFFSETS) {
+                        BlockPos realOffset = rotateOffsetForAxis(offset, currentAxis);
+                        BlockPos targetPos = gatePos.offset(realOffset);
+                        BlockState existing = level.getBlockState(targetPos);
+                        if (existing.isAir() || existing.canBeReplaced()) {
+                            level.setBlock(targetPos,
+                                    collisionBlock.defaultBlockState(),
+                                    Block.UPDATE_ALL);
+                        }
+                    }
+                });
             }, 7, TimeUnit.SECONDS);
 
+            // COLLISION_OFFSETS_2 这部分是立刻创建的（调用点在主线程），可以直接改世界
             for (BlockPos offset : COLLISION_OFFSETS_2) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
                 BlockState existing = level.getBlockState(targetPos);
                 if (existing.isAir() || existing.canBeReplaced()) {
-                    level.setBlock(targetPos, collisionBlock.defaultBlockState(), Block.UPDATE_ALL);
+                    level.setBlock(targetPos,
+                            collisionBlock.defaultBlockState(),
+                            Block.UPDATE_ALL);
                 }
             }
         } else {
+            // 不需要 sleep：全部立即创建（仍然在主线程调用）
             for (BlockPos offset : COLLISION_OFFSETS) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
                 BlockState existing = level.getBlockState(targetPos);
                 if (existing.isAir() || existing.canBeReplaced()) {
-                    level.setBlock(targetPos, collisionBlock.defaultBlockState(), Block.UPDATE_ALL);
+                    level.setBlock(targetPos,
+                            collisionBlock.defaultBlockState(),
+                            Block.UPDATE_ALL);
                 }
             }
 
@@ -214,7 +234,9 @@ public class GateBlock extends Block implements EntityBlock {
                 BlockPos targetPos = gatePos.offset(realOffset);
                 BlockState existing = level.getBlockState(targetPos);
                 if (existing.isAir() || existing.canBeReplaced()) {
-                    level.setBlock(targetPos, collisionBlock.defaultBlockState(), Block.UPDATE_ALL);
+                    level.setBlock(targetPos,
+                            collisionBlock.defaultBlockState(),
+                            Block.UPDATE_ALL);
                 }
             }
         }

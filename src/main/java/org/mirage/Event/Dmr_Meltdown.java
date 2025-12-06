@@ -31,6 +31,7 @@ import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Tools.Task;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
+import org.mirage.api.GateClientAPI;
 
 import java.sql.Time;
 import java.util.concurrent.Future;
@@ -262,7 +263,7 @@ public class Dmr_Meltdown {
 
 
                         Task.delay(()->{
-                            NetworkHandler.sendToAll("open_all_gate");
+                            GateClientAPI.openAllServer(_serverLevel);
                             executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_535533 voice @a ~ ~ ~ 1 1 1");
                             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                                     "所有设施人员注意, 请立即前往最近的避[数据删除]难所.", 200);
@@ -329,7 +330,7 @@ public class Dmr_Meltdown {
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "Deputy.Reactor.Supervisor.",
                             "所有设施人员注意,我们发现反应堆腔室内泄露出大量辐射,我们正在减少损失并立即关闭塔塔鲁斯大门,所以那些还在设施里的人,请立即前往最近的防爆避难所.", 200);
 
-                    NetworkHandler.sendToAll("close_all_gate");
+                    GateClientAPI.closeAllServer(_serverLevel);
                 }, 189059, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{

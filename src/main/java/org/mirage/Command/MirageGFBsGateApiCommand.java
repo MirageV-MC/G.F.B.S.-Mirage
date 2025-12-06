@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Phenomenon.network.Network.ServerEventSender;
+import org.mirage.api.GateClientAPI;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -37,14 +38,14 @@ public class MirageGFBsGateApiCommand {
 
                         .then(Commands.literal("on")
                                 .executes(ctx -> {
-                                    NetworkHandler.sendToAll("open_all_gate");
+                                    GateClientAPI.openAllServer(ctx.getSource().getLevel());
                                     return 1;
                                 })
                         )
 
                         .then(Commands.literal("off")
                                 .executes(ctx -> {
-                                    NetworkHandler.sendToAll("close_all_gate");
+                                    GateClientAPI.closeAllServer(ctx.getSource().getLevel());
                                     return 1;
                                 })
                         )
