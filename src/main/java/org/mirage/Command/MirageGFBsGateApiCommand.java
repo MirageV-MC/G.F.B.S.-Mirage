@@ -1,6 +1,7 @@
 package org.mirage.Command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.PlayerMap;
@@ -9,7 +10,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Phenomenon.network.Network.ServerEventSender;
+import org.mirage.api.CheckPointGateClientAPI;
 import org.mirage.api.GateClientAPI;
+
+import java.util.Objects;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -37,18 +41,43 @@ public class MirageGFBsGateApiCommand {
                         .requires(source -> source.hasPermission(2))
 
                         .then(Commands.literal("on")
-                                .executes(ctx -> {
-                                    GateClientAPI.openAllServer(ctx.getSource().getLevel());
-                                    return 1;
-                                })
+                                .then(Commands.argument("GateType", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            String gateType = StringArgumentType.getString(ctx, "GateType");
+                                            exec(ctx.getSource().getLevel(), true, gateType);
+                                            return 1;
+                                        })
+                                )
                         )
 
                         .then(Commands.literal("off")
-                                .executes(ctx -> {
-                                    GateClientAPI.closeAllServer(ctx.getSource().getLevel());
-                                    return 1;
-                                })
+                                .then(Commands.argument("GateType", StringArgumentType.greedyString())
+                                        .executes(ctx -> {
+                                            String gateType = StringArgumentType.getString(ctx, "GateType");
+                                            exec(ctx.getSource().getLevel(), false, gateType);
+                                            return 1;
+                                        })
+                                )
                         )
         );
+    }
+
+    private static void exec(ServerLevel level, boolean isOpen, String type){
+        if (Objects.equals(type, "gate")){
+            System.out.println(type);
+            if (isOpen){
+                GateClientAPI.openAllServer(level);
+            }else {
+                GateClientAPI.closeAllServer(level);
+            }
+
+        }else if (Objects.equals(type, "check_point_gate")) {
+            if (isOpen) {
+                CheckPointGateClientAPI.openAllServer(level);
+            } else {
+                CheckPointGateClientAPI.closeAllServer(level);
+            }
+        }
+
     }
 }

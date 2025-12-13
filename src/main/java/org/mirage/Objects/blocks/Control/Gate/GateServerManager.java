@@ -1,4 +1,4 @@
-package org.mirage.Objects.blocks.Control;
+package org.mirage.Objects.blocks.Control.Gate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;

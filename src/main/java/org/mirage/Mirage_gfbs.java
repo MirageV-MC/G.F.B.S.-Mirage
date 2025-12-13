@@ -20,6 +20,7 @@ package org.mirage;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -51,20 +52,22 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import org.mirage.Command.*;
+import org.mirage.Encapsulation.MirageObject.MirageObjectRenderer;
 import org.mirage.Event.Dmr_Meltdown;
+import org.mirage.Event.DmrexAfter;
 import org.mirage.Event.Main90Alpha;
 import org.mirage.Objects.CreativeModeTabRegistration;
 import org.mirage.Objects.ModBlockEntities;
+import org.mirage.Objects.ModEntities;
 import org.mirage.Objects.Structure.Registrar;
-import org.mirage.Objects.blockEntity.GateBlockModel;
 import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.items.ItemRegistration;
-import org.mirage.Objects.renderer.GateBlockRenderer;
+import org.mirage.Objects.renderer.Gate.CheckPointGateBlockRenderer;
+import org.mirage.Objects.renderer.Gate.GateBlockRenderer;
 import org.mirage.Objects.renderer.PictureBlockRenderer;
 import org.mirage.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.Phenomenon.FogApi.CustomFogModule;
@@ -73,9 +76,7 @@ import org.mirage.Phenomenon.network.Network.ClientToServer;
 import org.mirage.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.Phenomenon.network.packets.GlobalSoundPlayer;
-import org.mirage.Tools.HexCrackerUI;
 import org.mirage.Tools.Task;
-import org.mirage.Utils.SyncField.SyncField;
 import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.Utils.WorldWriteQueue;
 import org.mirage.api.GateClientAPI;
@@ -83,7 +84,6 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.concurrent.TimeUnit;
 
 @Mod(Mirage_gfbs.MODID)
 public class Mirage_gfbs {
@@ -116,6 +116,10 @@ public class Mirage_gfbs {
 
         LOGGER.info("G.F.B.S. Mod Version: {}", modVersion);
 
+        ModEntities.init();
+
+        registryMirageObjects();
+
         BlockRegistration.init();
         ItemRegistration.init();
         Registrar.init();
@@ -124,6 +128,7 @@ public class Mirage_gfbs {
 
         ModSoundEvents.register(modEventBus);
 
+        ModEntities.ENTITIES.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
@@ -143,6 +148,9 @@ public class Mirage_gfbs {
         GlobalSoundPlayCommand.registerNetworkMessages();
 
         createscriptdir();
+    }
+
+    private void registryMirageObjects() {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -204,6 +212,11 @@ public class Mirage_gfbs {
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
                 Dmr_Meltdown.execute(context, false);
             });
+        });
+        Task.spawn(()->{
+           MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
+               DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers());
+           }));
         });
     }
 
@@ -282,10 +295,20 @@ public class Mirage_gfbs {
             ModelResourceLocation modelLocation = new ModelResourceLocation(
                     new ResourceLocation("mirage_gfbs", "darkmatterreactor"), "inventory");
 
-            BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
             BlockEntityRenderers.register(ModBlockEntities.QS_TRADEMARK_PICTURE_BLOCK_ENTITY.get(), PictureBlockRenderer::new);
 
+            // GATE
+            BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
+            BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), CheckPointGateBlockRenderer::new);
+
+            EntityRenderers.register(
+                    ModEntities.MIRAGE_OBJECT.get(),
+                    MirageObjectRenderer::new
+            );
+
             GateClientAPI.register();
+
+            DmrexAfter.clientExec();
         }
 
         @SubscribeEvent

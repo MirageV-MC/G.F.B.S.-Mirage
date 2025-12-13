@@ -1,4 +1,4 @@
-package org.mirage.Objects.blockEntity;
+package org.mirage.Objects.blockEntity.Gate;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod

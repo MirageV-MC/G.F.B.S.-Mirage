@@ -22,7 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.mirage.Objects.blockEntity.GateBlockEntity;
+import org.mirage.Objects.blockEntity.CheckPointGate.CheckPointGateBlockEntity;
+import org.mirage.Objects.blockEntity.Gate.GateBlockEntity;
 import org.mirage.Objects.blockEntity.QSTrademarkPictureBlockEntity;
 import org.mirage.Objects.blocks.BlockRegistration;
 
@@ -36,6 +37,13 @@ public class ModBlockEntities {
                     () -> BlockEntityType.Builder.of(
                             GateBlockEntity::new,
                             BlockRegistration.GATE.get()
+                    ).build(null));
+
+    public static final RegistryObject<BlockEntityType<CheckPointGateBlockEntity>> CHECK_POINT_GATE =
+            BLOCK_ENTITIES.register("check_point_gate",
+                    () -> BlockEntityType.Builder.of(
+                            CheckPointGateBlockEntity::new,
+                            BlockRegistration.CHECK_POINT_GATE.get()
                     ).build(null));
 
     public static final RegistryObject<BlockEntityType<QSTrademarkPictureBlockEntity>> QS_TRADEMARK_PICTURE_BLOCK_ENTITY =

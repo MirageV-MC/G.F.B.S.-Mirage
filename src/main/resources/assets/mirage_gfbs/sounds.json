@@ -1043,6 +1043,12 @@
       "mirage_gfbs:surroundings/big_gate_reverb"
     ]
   },
+  "surroundings.dmr_bh": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_bh"
+    ]
+  },
   "war.main90": {
     "category": "music",
     "sounds": [
@@ -1577,6 +1583,12 @@
       "mirage_gfbs:boom/dmr_b_q"
     ]
   },
+  "boom.boom2_s": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:boom/boom2_s"
+    ]
+  },
   "faas.r_c_s_a_t_r": {
     "category": "music",
     "sounds": [
@@ -1721,6 +1733,12 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:surroundings/thereactor/reactor_s_overload"
+    ]
+  },
+  "human.eas": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:human/eas"
     ]
   }
 }

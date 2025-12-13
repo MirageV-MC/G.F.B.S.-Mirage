@@ -1,4 +1,4 @@
-package org.mirage.Objects.blockEntity;
+package org.mirage.Objects.blockEntity.Gate;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -18,7 +18,6 @@ package org.mirage.Objects.blockEntity;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -27,12 +26,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.mirage.Mirage_gfbs;
 import org.mirage.ModSoundEvents;
 import org.mirage.Objects.ModBlockEntities;
-import org.mirage.Objects.blocks.BlockRegistration;
-import org.mirage.Objects.blocks.Control.GateServerManager;
-import org.mirage.Objects.blocks.classs.GateBlock;
+import org.mirage.Objects.blocks.Control.Gate.GateServerManager;
+import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 import org.mirage.Utils.SyncField.SyncField;
 import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.api.GateClientAPI;

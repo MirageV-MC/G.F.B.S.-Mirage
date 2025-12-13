@@ -1,4 +1,4 @@
-package org.mirage.Objects.renderer;
+package org.mirage.Objects.renderer.Gate;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -26,9 +26,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
-import org.mirage.Objects.blockEntity.GateBlockEntity;
-import org.mirage.Objects.blockEntity.GateBlockModel;
-import org.mirage.Objects.blocks.classs.GateBlock;
+import org.mirage.Objects.blockEntity.Gate.GateBlockEntity;
+import org.mirage.Objects.blockEntity.Gate.GateBlockModel;
+import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 

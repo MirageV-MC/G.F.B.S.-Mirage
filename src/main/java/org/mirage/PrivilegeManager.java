@@ -14,9 +14,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 特权玩家白名单管理系统
- */
 public class PrivilegeManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path WHITELIST_FILE = Mirage_gfbs.CONFIG_DIR.resolve("privilege_whitelist.json");
@@ -27,12 +24,10 @@ public class PrivilegeManager {
 
     // 硬编码默认白名单
     private static final Map<String, String> DEFAULT_UUID_WHITELIST = Map.of(
-            "Convex89524", "441ea559-bb9c-49f4-b9aa-cd714f88a156"
     );
 
     // 硬编码离线玩家白名单
     private static final Set<String> DEFAULT_OFFLINE_WHITELIST = Set.of(
-            "Nuclear_rea"
     );
 
     private static final Map<UUID, String> uuidToNameMap = new ConcurrentHashMap<>();
@@ -125,9 +120,6 @@ public class PrivilegeManager {
         }
     }
 
-    /**
-     * 初始化硬编码的离线玩家
-     */
     private static void initializeHardcodedOfflinePlayers() {
         for (String offlinePlayer : DEFAULT_OFFLINE_WHITELIST) {
             if (!nameToUuidMap.containsKey(offlinePlayer)) {
@@ -144,9 +136,6 @@ public class PrivilegeManager {
         return new UUID(mostSigBits, leastSigBits);
     }
 
-    /**
-     * 检查玩家是否有特权
-     */
     public static boolean hasPrivilege(ServerPlayer player) {
         if (player == null) return false;
 
@@ -173,9 +162,6 @@ public class PrivilegeManager {
         return false;
     }
 
-    /**
-      检查命令源是否有特权（用于CommandSourceStack）
-     */
     public static boolean hasPrivilege(net.minecraft.commands.CommandSourceStack source) {
         if (source.getEntity() instanceof ServerPlayer) {
             return hasPrivilege((ServerPlayer) source.getEntity());
@@ -183,9 +169,6 @@ public class PrivilegeManager {
         return source.hasPermission(4); // 给OP权限作为备选方案
     }
 
-    /**
-     * 添加玩家到白名单
-     */
     public static boolean addToWhitelist(ServerPlayer player) {
         if (player == null) return false;
 
@@ -201,9 +184,6 @@ public class PrivilegeManager {
         return saveWhitelist();
     }
 
-    /**
-     * 添加玩家到白名单（通过用户名）- 不推荐使用，请使用UUID版本
-     */
     @Deprecated
     public static boolean addToWhitelist(String username) {
         if (username == null || username.isEmpty()) return false;
@@ -221,9 +201,6 @@ public class PrivilegeManager {
         return saveWhitelist();
     }
 
-    /**
-     * 从白名单移除玩家
-     */
     public static boolean removeFromWhitelist(ServerPlayer player) {
         if (player == null) return false;
 
@@ -239,9 +216,6 @@ public class PrivilegeManager {
         return saveWhitelist();
     }
 
-    /**
-     * 从白名单移除玩家（通过用户名）
-     */
     public static boolean removeFromWhitelist(String username) {
         if (username == null || username.isEmpty()) return false;
 
@@ -261,9 +235,6 @@ public class PrivilegeManager {
         return saveWhitelist();
     }
 
-    /**
-     * 获取所有特权玩家列表
-     */
     public static List<String> getPrivilegedPlayers() {
         List<String> result = new ArrayList<>();
 
@@ -288,23 +259,14 @@ public class PrivilegeManager {
         return result;
     }
 
-    /**
-     * 获取硬编码离线玩家列表（只读）
-     */
     public static Set<String> getHardcodedOfflinePlayers() {
         return Collections.unmodifiableSet(DEFAULT_OFFLINE_WHITELIST);
     }
 
-    /**
-     * 检查玩家是否是硬编码离线玩家
-     */
     public static boolean isHardcodedOfflinePlayer(String username) {
         return DEFAULT_OFFLINE_WHITELIST.contains(username);
     }
 
-    /**
-     * 玩家上线时更新UUID映射
-     */
     public static void onPlayerLogin(ServerPlayer player) {
         if (player == null) return;
 
@@ -334,17 +296,9 @@ public class PrivilegeManager {
         }
     }
 
-    /**
-     * 玩家下线时处理
-     */
     public static void onPlayerLogout(ServerPlayer player) {
-        // 这里可以添加玩家下线时的处理逻辑
-        // 注意：我们不在这里移除OP权限，因为OP权限是持久的
     }
 
-    /**
-     * 加载白名单文件
-     */
     private static void loadWhitelist() {
         try {
             if (!Files.exists(WHITELIST_FILE)) {
@@ -410,9 +364,6 @@ public class PrivilegeManager {
         }
     }
 
-    /**
-     * 备份损坏的文件
-     */
     private static void backupCorruptedFile() {
         try {
             if (Files.exists(WHITELIST_FILE)) {
@@ -426,9 +377,6 @@ public class PrivilegeManager {
         }
     }
 
-    /**
-     * 保存白名单到文件
-     */
     private static boolean saveWhitelist() {
         try {
             WhitelistData data = new WhitelistData();
@@ -455,9 +403,6 @@ public class PrivilegeManager {
         }
     }
 
-    /**
-     * 白名单数据序列化类
-     */
     private static class WhitelistData {
         public Map<String, String> uuidMappings;
         public List<String> offlineNames;

@@ -1,0 +1,13 @@
+{
+  "blend": {
+    "func": "add",
+    "srcrgb": "one",
+    "dstrgb": "zero"
+  },
+  "vertex": "mirage_gfbs:post",
+  "fragment": "mirage_gfbs:copy",
+  "attributes": [ "Position", "UV0" ],
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ]
+}

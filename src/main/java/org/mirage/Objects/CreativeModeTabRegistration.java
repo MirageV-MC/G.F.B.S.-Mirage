@@ -45,11 +45,16 @@ public class CreativeModeTabRegistration {
     @SubscribeEvent
     public static void addCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == GFBS_TAB.get()) {
+            event.accept(ItemRegistration.getMirageObjectPlacerItem().get());
+
             event.accept(ItemRegistration.DARK_MATTER_REACTOR_ITEM.get());
             event.accept(ItemRegistration.FLUORESCENT_TUBE_ITEM.get());
             event.accept(ItemRegistration.RED_ALARM_LAMP_ITEM.get());
             event.accept(ItemRegistration.WHITE_CUBE_LAMP_ITEM.get());
+
             event.accept(ItemRegistration.GATE_ITEM.get());
+            event.accept(ItemRegistration.CHECK_POINT_GATE_ITEM.get());
+
             event.accept(ItemRegistration.QS_WALL_ITE.get());
             event.accept(ItemRegistration.QS_TRADEMARK_PICTURE_ITEM.get());
         }

@@ -1,0 +1,92 @@
+package org.mirage.tween;
+
+/**
+ * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
+ * Copyright (C) 2025-2029 Convex89524
+ * <p>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+public final class TweenInfo {
+    public final double timeSeconds;
+    public final EasingStyle easingStyle;
+    public final EasingDirection easingDirection;
+    public final int repeatCount;      // -1 = infinite
+    public final boolean reverses;     // yoyo
+    public final double delayTime;     // start delay
+    public final double repeatDelay;   // delay between loops
+
+    private TweenInfo(Builder b) {
+        this.timeSeconds = Math.max(0.0, b.timeSeconds);
+        this.easingStyle = b.easingStyle;
+        this.easingDirection = b.easingDirection;
+        this.repeatCount = b.repeatCount;
+        this.reverses = b.reverses;
+        this.delayTime = Math.max(0.0, b.delayTime);
+        this.repeatDelay = Math.max(0.0, b.repeatDelay);
+    }
+
+    public static Builder of(double timeSeconds) {
+        return new Builder(timeSeconds);
+    }
+
+    public static final class Builder {
+        private double timeSeconds;
+        private EasingStyle easingStyle = EasingStyle.QUAD;
+        private EasingDirection easingDirection = EasingDirection.OUT;
+        private int repeatCount = 0;
+        private boolean reverses = false;
+        private double delayTime = 0.0;
+        private double repeatDelay = 0.0;
+
+        private Builder(double timeSeconds) {
+            this.timeSeconds = timeSeconds;
+        }
+
+        public Builder easing(EasingStyle style, EasingDirection dir) {
+            this.easingStyle = (style == null) ? EasingStyle.LINEAR : style;
+            this.easingDirection = (dir == null) ? EasingDirection.IN_OUT : dir;
+            return this;
+        }
+
+        public Builder repeat(int repeatCount) {
+            this.repeatCount = repeatCount;
+            return this;
+        }
+
+        public Builder infinite() {
+            this.repeatCount = -1;
+            return this;
+        }
+
+        public Builder reverses(boolean reverses) {
+            this.reverses = reverses;
+            return this;
+        }
+
+        public Builder delay(double delaySeconds) {
+            this.delayTime = delaySeconds;
+            return this;
+        }
+
+        public Builder repeatDelay(double delaySeconds) {
+            this.repeatDelay = delaySeconds;
+            return this;
+        }
+
+        public TweenInfo build() {
+            return new TweenInfo(this);
+        }
+    }
+}

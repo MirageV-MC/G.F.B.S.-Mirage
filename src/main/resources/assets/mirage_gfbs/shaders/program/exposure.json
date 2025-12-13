@@ -1,0 +1,10 @@
+{
+  "blend": { "func": "add", "srcrgb": "one", "dstrgb": "zero" },
+  "vertex": "mirage_gfbs:post",
+  "fragment": "mirage_gfbs:exposure",
+  "attributes": [ "Position", "UV0" ],
+  "samplers": [ { "name": "DiffuseSampler" } ],
+  "uniforms": [
+    { "name": "Exposure", "type": "float", "count": 1, "values": [ 0.0 ] }
+  ]
+}

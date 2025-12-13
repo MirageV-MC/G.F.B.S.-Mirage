@@ -25,6 +25,8 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blocks.classs.*;
+import org.mirage.Objects.blocks.classs.Gate.CheckPointGateBlock;
+import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
 import static org.mirage.Mirage_gfbs.MODID;
@@ -63,9 +65,15 @@ public class BlockRegistration {
                     )
             );
 
+    // 门
+
     public static final RegistryObject<Block> GATE =
             BLOCKS.register("gate", () ->
                     new GateBlock(Block.Properties.of().strength(5.0F).noOcclusion(), BlockRegistration.GATE_COLLISION));
+
+    public static final RegistryObject<Block> CHECK_POINT_GATE =
+            BLOCKS.register("check_point_gate", () ->
+                    new CheckPointGateBlock(Block.Properties.of().strength(5.0F).noOcclusion(), BlockRegistration.GATE_COLLISION));
 
     // 建筑方块
 
