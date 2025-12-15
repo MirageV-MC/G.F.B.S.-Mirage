@@ -1,6 +1,6 @@
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
- * Copyright (C) 2025-2029 Convex89524
+ * Copyright (C) 2025-2029 Mirage-MC
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 
 package org.mirage.Event;
 

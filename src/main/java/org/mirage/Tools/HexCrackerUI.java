@@ -1,6 +1,6 @@
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
- * Copyright (C) 2025-2029 Convex89524
+ * Copyright (C) 2025-2029 Mirage-MC
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,7 +306,7 @@ public class HexCrackerUI {
         graphics.fill(panelX, baseY, panelX + panelWidth, baseY + panelHeight, bgColor);
 
         // 标题栏
-        String title = "F.A.A.S. 破解节点窗口";
+        String title = "F.A.A.S.代码破解窗口";
         graphics.pose().pushPose();
         float titleScale = scale * 1.5f;
         graphics.pose().scale(titleScale, titleScale, 1);

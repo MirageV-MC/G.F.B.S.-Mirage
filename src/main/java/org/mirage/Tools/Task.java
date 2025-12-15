@@ -1,6 +1,6 @@
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
- * Copyright (C) 2025-2029 Convex89524
+ * Copyright (C) 2025-2029 Mirage-MC
 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
