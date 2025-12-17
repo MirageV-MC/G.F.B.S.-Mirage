@@ -22,6 +22,8 @@ import com.mojang.blaze3d.audio.Channel;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.EXTEfx;
 import org.mirage.Client.audio.MirageReverb;
+import org.mirage.ClientConfig.GFBSClientConfigAPI;
+import org.mirage.ClientConfig.instance.GFBSClientAudioConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,9 +35,14 @@ public abstract class ChannelMixin {
 
     @Shadow private int source;
 
-    @Inject(method = "<init>", at = @At("RETURN"))
-    private void mirage$attachGlobalReverb(int sourceId, CallbackInfo ci) {
-        MirageReverb.ensureInitialized();
+    @Inject(method = "play", at = @At("HEAD"))
+    private void mirage$gfbs_applyReverb(CallbackInfo ci) {
+        if (!GFBSClientConfigAPI.get(GFBSClientAudioConfig.ENABLE_REVERB)) {
+            return;
+        }
+
+        MirageReverb.ensureInit();
+
         int auxSlot = MirageReverb.getAuxSlot();
         if (auxSlot == 0) {
             return;

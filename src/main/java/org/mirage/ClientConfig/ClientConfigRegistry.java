@@ -21,6 +21,7 @@ package org.mirage.ClientConfig;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.mirage.ClientConfig.instance.GFBSClientAudioConfig;
 import org.mirage.Mirage_gfbs;
 
 import java.nio.file.Path;
@@ -152,15 +153,15 @@ public final class ClientConfigRegistry {
             root.add("values", valuesObj);
         }
 
-        // hydrate known keys with defaults
+        Map<String, Object> oldValues = new HashMap<>(VALUES);
+
         for (ClientConfigKey<?> key : KEYS.values()) {
-            VALUES.putIfAbsent(key.id(), key.defaultValue());
+            VALUES.put(key.id(), key.defaultValue());
         }
 
-        // apply file values
         for (Map.Entry<String, JsonElement> e : valuesObj.entrySet()) {
             ClientConfigKey<?> key = KEYS.get(e.getKey());
-            if (key == null) continue; // unknown key (maybe removed), keep in file
+            if (key == null) continue;
             Object parsed = parseJsonValue(key, e.getValue());
             if (parsed != null) {
                 VALUES.put(key.id(), parsed);
@@ -168,7 +169,15 @@ public final class ClientConfigRegistry {
         }
 
         loadedOnce = true;
-        save(); // normalize file (adds defaults, keeps unknown keys)
+
+        for (ClientConfigKey<?> key : KEYS.values()) {
+            Object newValue = VALUES.get(key.id());
+            Object oldValue = oldValues.get(key.id());
+
+            if (!Objects.equals(oldValue, newValue)) {
+                triggerChangeListeners(key, oldValue, newValue);
+            }
+        }
     }
 
     public static synchronized void save() {
@@ -188,6 +197,26 @@ public final class ClientConfigRegistry {
         }
 
         ClientConfigIO.write(FILE, root);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> void triggerChangeListeners(ClientConfigKey<T> key, Object oldValue, Object newValue) {
+        List<ClientConfigChangeListener<?>> list = LISTENERS.get(key.id());
+        if (list != null) {
+            for (ClientConfigChangeListener<?> l : new ArrayList<>(list)) {
+                ClientConfigChangeListener<T> lt = (ClientConfigChangeListener<T>) l;
+                try {
+                    lt.onChanged(key, (T) oldValue, (T) newValue);
+                } catch (Exception ignored) {}
+            }
+        }
+
+        AnyChange change = new AnyChange(key, oldValue, newValue);
+        synchronized (ANY_LISTENERS) {
+            for (Consumer<AnyChange> l : new ArrayList<>(ANY_LISTENERS)) {
+                try { l.accept(change); } catch (Exception ignored) {}
+            }
+        }
     }
 
     // ---------------- validation + json conversion ----------------

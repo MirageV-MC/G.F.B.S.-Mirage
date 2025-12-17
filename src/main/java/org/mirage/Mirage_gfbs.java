@@ -38,23 +38,30 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import org.mirage.Client.audio.MirageReverb;
+import org.mirage.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.Command.*;
 import org.mirage.Encapsulation.MirageObject.MirageObjectRenderer;
 import org.mirage.Event.Dmr_Meltdown;
@@ -116,6 +123,8 @@ public class Mirage_gfbs {
 
         LOGGER.info("G.F.B.S. Mod Version: {}", modVersion);
 
+        registerShutdownHook();
+
         ModEntities.init();
 
         registryMirageObjects();
@@ -142,8 +151,6 @@ public class Mirage_gfbs {
 
         modEventBus.addListener(this::addCreative);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-
         GlobalSoundPlayer.registerNetworkMessages();
         GlobalSoundPlayCommand.registerNetworkMessages();
 
@@ -154,13 +161,6 @@ public class Mirage_gfbs {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        if (Config.logDirtBlock) {
-            LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-        }
-
-        LOGGER.info("{} {}", Config.magicNumberIntroduction, Config.magicNumber);
-
-        Config.items.forEach(item -> LOGGER.info("ITEM >> {}", item));
 
         event.enqueueWork(SyncManager::init);
 
@@ -292,9 +292,6 @@ public class Mirage_gfbs {
 
             customFogModule = new CustomFogModule();
 
-            ModelResourceLocation modelLocation = new ModelResourceLocation(
-                    new ResourceLocation("mirage_gfbs", "darkmatterreactor"), "inventory");
-
             BlockEntityRenderers.register(ModBlockEntities.QS_TRADEMARK_PICTURE_BLOCK_ENTITY.get(), PictureBlockRenderer::new);
 
             // GATE
@@ -314,6 +311,17 @@ public class Mirage_gfbs {
         @SubscribeEvent
         public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
         }
+    }
+
+    private void registerShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            onJvmShutdown();
+        }, "G.F.B.S.-ShutdownHook"));
+    }
+
+    private void onJvmShutdown() {
+        GFBSClientConfigAPI.saveToDisk();
+        LOGGER.info("已保存所有客户端配置.");
     }
 
     @SubscribeEvent

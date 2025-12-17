@@ -36,8 +36,6 @@ public final class ClientConfigMenuHook {
 
     private ClientConfigMenuHook() {}
 
-    private static final int LINE_HEIGHT = 24;
-
     @SubscribeEvent
     public static void onScreenInit(ScreenEvent.Init.Post event) {
         if (!(event.getScreen() instanceof OptionsScreen optionsScreen)) return;
