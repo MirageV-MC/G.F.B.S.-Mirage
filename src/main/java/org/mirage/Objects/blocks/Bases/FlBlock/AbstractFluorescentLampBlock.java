@@ -1,4 +1,4 @@
-package org.mirage.Objects.blocks.classs;
+package org.mirage.Objects.blocks.Bases.FlBlock;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -27,7 +27,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -36,6 +35,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.mirage.Objects.blocks.Control.FluorescentTubeRegistry;
 import org.mirage.Objects.blocks.Control.FluorescentTubeSavedData;
@@ -95,8 +96,25 @@ public abstract class AbstractFluorescentLampBlock extends Block {
             FluorescentTubeRegistry.register(serverLevel, pos);
             FluorescentTubeSavedData.get(serverLevel).add(pos);
         }
+
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            try {
+                Class<?> api = Class.forName("org.mirage.Objects.blocks.Control.FluorescentTubeClientAPI");
+                api.getMethod("registerTube", BlockPos.class).invoke(null, pos);
+                if (level.isClientSide) {
+                    boolean desired = api.getField("globalState").getBoolean(null);
+                    BlockState cur = level.getBlockState(pos);
+                    if (cur.getBlock() instanceof AbstractFluorescentLampBlock) {
+                        if (!java.util.Objects.equals(cur.getValue(LIT), desired)) {
+                            level.setBlock(pos, cur.setValue(LIT, desired), Block.UPDATE_CLIENTS);
+                        }
+                    }
+                }
+            } catch (Throwable ignored) {
+            }
+        });
     }
-    
+
     @Override
     public boolean isSignalSource(@NotNull BlockState state) {
         return false;
@@ -115,6 +133,15 @@ public abstract class AbstractFluorescentLampBlock extends Block {
                 && state.getBlock() != newState.getBlock()) {
             FluorescentTubeRegistry.unregister(serverLevel, pos);
             FluorescentTubeSavedData.get(serverLevel).remove(pos);
+        }
+        if (level.isClientSide && state.getBlock() != newState.getBlock()) {
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                try {
+                    Class<?> api = Class.forName("org.mirage.Objects.blocks.Control.FluorescentTubeClientAPI");
+                    api.getMethod("unregisterTube", BlockPos.class).invoke(null, pos);
+                } catch (Throwable ignored) {
+                }
+            });
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }

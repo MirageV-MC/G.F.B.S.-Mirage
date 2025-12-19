@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.mirage.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 
 public class WhiteCubeLampBlock extends AbstractFluorescentLampBlock {
     private static final VoxelShape SHAPE = Block.box(

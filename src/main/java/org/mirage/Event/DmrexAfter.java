@@ -55,7 +55,7 @@ public class DmrexAfter {
         Task.sleep(970);
 
         for (ServerPlayer player : allPlayers) {
-            CameraShakeCommand.triggerCameraShake(player, 30, 0.1f, 5600, 120, 1029);
+            CameraShakeCommand.triggerCameraShake(player, 30, 0.1f, 5600, 20, 1029);
         }
 
         NetworkHandler.sendToAll("mirage_dmr_boom_h_event_client_a1");

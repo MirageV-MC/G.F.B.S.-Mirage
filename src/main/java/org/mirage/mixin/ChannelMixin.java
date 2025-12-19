@@ -55,5 +55,8 @@ public abstract class ChannelMixin {
                 0,
                 EXTEfx.AL_FILTER_NULL
         );
+
+        AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL11.AL_TRUE);
+        AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL11.AL_TRUE);
     }
 }

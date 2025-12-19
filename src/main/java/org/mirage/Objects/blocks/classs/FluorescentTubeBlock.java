@@ -29,6 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.mirage.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 
 public class FluorescentTubeBlock extends AbstractFluorescentLampBlock {
 

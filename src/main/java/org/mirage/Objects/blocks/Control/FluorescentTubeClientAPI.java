@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -35,11 +34,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.mirage.CommandExecutor;
-import org.mirage.Mirage_gfbs;
 import org.mirage.ModSoundEvents;
-import org.mirage.Objects.blocks.classs.AbstractFluorescentLampBlock;
+import org.mirage.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 import org.mirage.Phenomenon.network.Network.ClientEventHandler;
 
 import javax.annotation.Nullable;
@@ -53,6 +49,12 @@ public final class FluorescentTubeClientAPI {
 
     private static final List<BlinkTask> BLINK_TASKS = new ArrayList<>();
 
+
+    /**
+     * 客户端全局灯状态：用于区块重新加载/客户端重进时快速恢复视觉状态。
+     * true=亮, false=灭
+     */
+    public static volatile boolean globalState = false;
     static {
         registerNetworkReceivers();
     }
@@ -71,6 +73,9 @@ public final class FluorescentTubeClientAPI {
         if (durationTicks <= 0 || frequencyHz <= 0.0) {
             return;
         }
+        if (finalState != null) {
+            globalState = finalState;
+        }
         synchronized (BLINK_TASKS) {
             BLINK_TASKS.clear();
             BLINK_TASKS.add(new BlinkTask(durationTicks, frequencyHz, finalState));
@@ -78,10 +83,12 @@ public final class FluorescentTubeClientAPI {
     }
 
     public static void turnOffAll() {
+        globalState = false;
         flashAll(40, 5.0, Boolean.FALSE);
     }
 
     public static void turnOnAll() {
+        globalState = true;
         flashAll(40, 5.0, Boolean.TRUE);
     }
 
@@ -196,6 +203,7 @@ public final class FluorescentTubeClientAPI {
     }
 
     private static void applyLitStateToAll(boolean lit) {
+        globalState = lit;
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
         if (level == null) {
