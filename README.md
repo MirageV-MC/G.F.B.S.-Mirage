@@ -8,7 +8,8 @@
 - MirageV 服务器官方群聊: QQ 568707834
 
 - 模组开发成员
-  - Convex89524 : 主要规划、代码
+  - Convex89524 : 主要代码、制作
+  - Nuclear_rea : 主要规划
   - Maverick0527th(新成员) : 尚未知
   - Foxugar(新成员) : 美术
 
