@@ -43,7 +43,7 @@ public class DmrexAfter {
                 CameraShakeCommand.triggerCameraShake(player, 35, 2.7f, 5600, 2, 1029);
             }
 
-            Task.sleep(2000);
+            Task.sleep(5000);
 
             executeCommandAsync("playsound mirage_gfbs:human.eas voice @a ~ ~ ~ 1 1 1");
 

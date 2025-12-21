@@ -1,4 +1,4 @@
-package org.mirage.Objects.blocks.classs;
+package org.mirage.Objects.blocks.classs.FlBlock;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod

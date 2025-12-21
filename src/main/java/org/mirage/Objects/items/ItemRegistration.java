@@ -55,6 +55,7 @@ public class ItemRegistration {
             ITEMS.register("darkmatterreactor",
                     () -> new BlockItem(BlockRegistration.DARK_MATTER_REACTOR_BLOCK.get(), new Item.Properties()));
 
+    // 灯
     public static final RegistryObject<Item> FLUORESCENT_TUBE_ITEM =
             ITEMS.register("fluorescent_tube",
                     () -> new BlockItem(BlockRegistration.FLUORESCENT_TUBE.get(), new Item.Properties()));
@@ -66,6 +67,10 @@ public class ItemRegistration {
     public static final RegistryObject<Item> WHITE_CUBE_LAMP_ITEM =
             ITEMS.register("white_cube_lamp",
                     () -> new BlockItem(BlockRegistration.WHITE_CUBE_LAMP.get(), new Item.Properties()));
+
+    public static final RegistryObject<Item> ARC_LAMP_ITEM =
+            ITEMS.register("arclamp",
+                    () -> new BlockItem(BlockRegistration.ARC_LAMP.get(), new Item.Properties()));
 
     // 门
     public static final RegistryObject<Item> GATE_ITEM =

@@ -32,6 +32,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.mirage.Encapsulation.MirageObject.MirageObject;
 import org.mirage.Encapsulation.MirageObject.MirageObjectEntity;
 import org.mirage.Encapsulation.MirageObject.MirageObjectRegistry;
@@ -56,8 +58,10 @@ public class MirageObjectPlacerItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isShiftKeyDown()) {
-            if (!level.isClientSide) {
-                openSettingsMenu((ServerPlayer) player, stack, hand);
+            if (level.isClientSide) {
+                DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                    MirageObjectPlacerClient.open(hand);
+                });
             }
             return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
         }

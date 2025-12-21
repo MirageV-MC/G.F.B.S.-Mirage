@@ -188,12 +188,6 @@ public class ClientShakeHandler {
 
         double fore = improvedNoise(t * 5.0 + 70.0) * base * 1.25;
 
-        if (random.nextFloat() < 0.004f * intensity) {
-            double kick = (random.nextFloat() * 2.0 - 1.0) * base * (2.0 + 2.5 * intensity);
-            fore += kick;
-            side += kick * 0.25;
-        }
-
         Vec3 target = new Vec3(side, up, fore);
         double stiffness = 0.22 + 0.10 * intensity;
         double damping = 0.80;
@@ -250,12 +244,13 @@ public class ClientShakeHandler {
         Vec3 rot = baseRot.add(microRot).add(rotImpulse).add(inertial);
 
         event.setYaw((float) (event.getYaw() + rot.x * 12.0 * nonLinearity * dampingFactor));
-        event.setPitch((float) (event.getPitch() + rot.y * 7.5 * nonLinearity * dampingFactor));
-        event.setRoll((float) (event.getRoll() + rot.z * 5.2 * nonLinearity * dampingFactor));
+        event.setPitch((float) (event.getPitch() + rot.y * 13.5 * nonLinearity * dampingFactor));
+        event.setRoll((float) (event.getRoll() + rot.z * 12.2 * nonLinearity * dampingFactor));
 
         double facingBias = (0.6 + 0.4 * intensity) * amp;
         event.setYaw((float) (event.getYaw() + improvedNoise(t * 6.0 + 300.0) * facingBias * 2.4));
         event.setPitch((float) (event.getPitch() + improvedNoise(t * 6.5 + 500.0) * facingBias * 1.6));
+        event.setRoll((float) (event.getRoll() + improvedNoise(t * 6.2 + 700.0) * facingBias * 1.8));
     }
 
     // ===== Helpers =====

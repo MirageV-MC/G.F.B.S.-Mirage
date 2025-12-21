@@ -1,4 +1,4 @@
-package org.mirage.Objects.blocks.classs;
+package org.mirage.Objects.blocks.classs.FlBlock;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -18,38 +18,23 @@ package org.mirage.Objects.blocks.classs;
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.mirage.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 
-public class WhiteCubeLampBlock extends AbstractFluorescentLampBlock {
-    private static final VoxelShape SHAPE = Block.box(
-            0.0D, 0.0D, 0.0D,
-            16.0D, 16.0D, 16.0D
-    );
+public class RedAlarmLampBlock extends AbstractFluorescentLampBlock {
 
-    public WhiteCubeLampBlock() {
-        super(
-                AbstractFluorescentLampBlock.defaultProperties()
-                        .lightLevel(state -> state.getValue(LIT) ? 15 : 0)
+    public RedAlarmLampBlock() {
+        super(BlockBehaviour.Properties.of()
+                .strength(0.3F)
+                .noOcclusion()
+                .lightLevel(state -> state.getValue(LIT) ? 15 : 0)
         );
     }
 
     @Override
     protected int getLitLightLevel(@NotNull BlockState state) {
         return 15;
-    }
-
-    @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState state,
-                                        @NotNull BlockGetter level,
-                                        @NotNull BlockPos pos,
-                                        @NotNull CollisionContext context) {
-        return SHAPE;
     }
 }

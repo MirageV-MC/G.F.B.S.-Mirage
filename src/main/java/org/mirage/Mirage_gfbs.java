@@ -194,6 +194,8 @@ public class Mirage_gfbs {
 
         event.enqueueWork(HexCrackerNetwork::register);
 
+        event.enqueueWork(org.mirage.Objects.items.MirageObjectPlacer.ModNetwork::register);
+
         ClientToServer.registerChannel();
     }
 
@@ -211,6 +213,11 @@ public class Mirage_gfbs {
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
                 Dmr_Meltdown.execute(context, false);
+            });
+        });
+        Task.spawn(()->{
+            MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
+                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), false);
             });
         });
         Task.spawn(()->{

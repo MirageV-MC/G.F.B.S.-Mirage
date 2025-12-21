@@ -25,6 +25,10 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.Objects.blocks.classs.*;
+import org.mirage.Objects.blocks.classs.FlBlock.ArcLampBlock;
+import org.mirage.Objects.blocks.classs.FlBlock.FluorescentTubeBlock;
+import org.mirage.Objects.blocks.classs.FlBlock.RedAlarmLampBlock;
+import org.mirage.Objects.blocks.classs.FlBlock.WhiteCubeLampBlock;
 import org.mirage.Objects.blocks.classs.Gate.CheckPointGateBlock;
 import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 
@@ -33,7 +37,9 @@ import static org.mirage.Mirage_gfbs.MODID;
 
 public class BlockRegistration {
     public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
-            () -> new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
+            () -> new Block(BlockBehaviour.Properties.of().strength(3.0F)));
+
+    // 灯
 
     public static final RegistryObject<Block> FLUORESCENT_TUBE =
             BLOCKS.register("fluorescent_tube",
@@ -42,7 +48,6 @@ public class BlockRegistration {
                                     .of()
                                     .mapColor(MapColor.METAL)
                                     .strength(0.3F)
-                                    .noOcclusion()
                                     .lightLevel(state -> state.getValue(FluorescentTubeBlock.LIT) ? 14 : 0)
                                     .pushReaction(PushReaction.DESTROY)
                     ));
@@ -57,10 +62,19 @@ public class BlockRegistration {
                     WhiteCubeLampBlock::new
             );
 
+    public static final RegistryObject<Block> ARC_LAMP =
+            BLOCKS.register("arclamp",
+                    () -> new ArcLampBlock(
+                            BlockBehaviour.Properties.of()
+                                    .strength(5F, 3F)
+                                    .lightLevel(state -> 15)
+                    ));
+
+    // 辅助
+
     public static final RegistryObject<Block> GATE_COLLISION =
             BLOCKS.register("gate_collision", ()->
                     new GateCollisionBlock(Block.Properties.of().strength(5.0F)
-                            .noOcclusion()
                             .isViewBlocking((state, level, pos) -> false)
                     )
             );
@@ -69,17 +83,17 @@ public class BlockRegistration {
 
     public static final RegistryObject<Block> GATE =
             BLOCKS.register("gate", () ->
-                    new GateBlock(Block.Properties.of().strength(5.0F).noOcclusion(), BlockRegistration.GATE_COLLISION));
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION));
 
     public static final RegistryObject<Block> CHECK_POINT_GATE =
             BLOCKS.register("check_point_gate", () ->
-                    new CheckPointGateBlock(Block.Properties.of().strength(5.0F).noOcclusion(), BlockRegistration.GATE_COLLISION));
+                    new CheckPointGateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION));
 
     // 建筑方块
 
     public static final RegistryObject<Block> QS_WALL =
             BLOCKS.register("qs_wall", () ->
-                    new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
 
     //画
 
