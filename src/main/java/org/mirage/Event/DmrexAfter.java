@@ -50,7 +50,7 @@ public class DmrexAfter {
             Task.sleep(33460);
 
             NetworkHandler.sendToAll("mirage_dmr_boom_h_event_client_a3");
-        }, 2584, TimeUnit.MILLISECONDS);
+        }, 4584, TimeUnit.MILLISECONDS);
 
         Task.sleep(970);
 

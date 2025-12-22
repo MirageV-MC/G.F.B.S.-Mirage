@@ -6,7 +6,6 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.mirage.Encapsulation.MirageObject.MirageObjectEntity;
 
 import static org.mirage.Mirage_gfbs.MODID;
 
@@ -31,15 +30,5 @@ import static org.mirage.Mirage_gfbs.MODID;
 public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES =
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MODID);
-
-    public static final RegistryObject<EntityType<MirageObjectEntity>> MIRAGE_OBJECT =
-            ENTITIES.register("mirage_object", () ->
-                    EntityType.Builder.<MirageObjectEntity>of(MirageObjectEntity::new, MobCategory.MISC)
-                            .sized(0.8F, 1.8F)
-                            .build(new ResourceLocation(MODID, "mirage_object").toString())
-            );
-
-    public static void init(){
-        var a = MIRAGE_OBJECT;
-    }
+    public static void init(){}
 }

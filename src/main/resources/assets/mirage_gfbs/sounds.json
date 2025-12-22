@@ -1740,5 +1740,11 @@
     "sounds": [
       "mirage_gfbs:human/eas"
     ]
+  },
+  "hybrid.meltdown_a_b": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:hybrid/meltdown_a_b"
+    ]
   }
 }

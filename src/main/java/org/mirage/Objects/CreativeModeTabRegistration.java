@@ -45,8 +45,6 @@ public class CreativeModeTabRegistration {
     @SubscribeEvent
     public static void addCreativeTabContents(BuildCreativeModeTabContentsEvent event) {
         if (event.getTab() == GFBS_TAB.get()) {
-            event.accept(ItemRegistration.getMirageObjectPlacerItem().get());
-
             event.accept(ItemRegistration.DARK_MATTER_REACTOR_ITEM.get());
 
             event.accept(ItemRegistration.FLUORESCENT_TUBE_ITEM.get());

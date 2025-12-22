@@ -18,37 +18,16 @@
 
 package org.mirage.Objects.items;
 
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
-import org.mirage.Encapsulation.MirageObject.MirageObjectEntity;
-import org.mirage.Objects.ModEntities;
 import org.mirage.Objects.blocks.BlockRegistration;
-import org.mirage.Objects.items.MirageObjectPlacer.MirageObjectPlacerItem;
 
 import static org.mirage.Mirage_gfbs.ITEMS;
 
 public class ItemRegistration {
     // 工具
     private static RegistryObject<Item> MIRAGE_OBJECT_PLACER_ITEM;
-
-    public static RegistryObject<Item> getMirageObjectPlacerItem() {
-        if (MIRAGE_OBJECT_PLACER_ITEM == null) {
-            MIRAGE_OBJECT_PLACER_ITEM = ITEMS.register("mirage_object_placer_item",
-                    () -> {
-                        RegistryObject<EntityType<MirageObjectEntity>> miragaObject = ModEntities.MIRAGE_OBJECT;
-                        if (miragaObject == null || !miragaObject.isPresent()) {
-                            return new Item(new Item.Properties().stacksTo(1)) {
-                            };
-                        }
-                        EntityType<?> entityType = miragaObject.get();
-                        return new MirageObjectPlacerItem((EntityType<? extends MirageObjectEntity>) entityType, new Item.Properties().stacksTo(1));
-                    });
-        }
-        return MIRAGE_OBJECT_PLACER_ITEM;
-    }
 
     // 杂类
     public static final RegistryObject<Item> DARK_MATTER_REACTOR_ITEM =
@@ -92,7 +71,5 @@ public class ItemRegistration {
             ITEMS.register("qs_trademark_picture",
                     () -> new BlockItem(BlockRegistration.QS_TRADEMARK_PICTURE_BLOCK.get(), new Item.Properties()));
 
-    public static void init(){
-        getMirageObjectPlacerItem();
-    }
+    public static void init(){}
 }

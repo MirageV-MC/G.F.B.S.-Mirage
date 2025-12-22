@@ -20,12 +20,9 @@ package org.mirage;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -33,37 +30,27 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLanguageProvider;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import org.mirage.Client.audio.MirageReverb;
 import org.mirage.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.Command.*;
-import org.mirage.Encapsulation.MirageObject.MirageObjectRenderer;
 import org.mirage.Event.Dmr_Meltdown;
 import org.mirage.Event.DmrexAfter;
 import org.mirage.Event.Main90Alpha;
@@ -87,6 +74,7 @@ import org.mirage.Tools.Task;
 import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.Utils.WorldWriteQueue;
 import org.mirage.api.GateClientAPI;
+
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -194,8 +182,6 @@ public class Mirage_gfbs {
 
         event.enqueueWork(HexCrackerNetwork::register);
 
-        event.enqueueWork(org.mirage.Objects.items.MirageObjectPlacer.ModNetwork::register);
-
         ClientToServer.registerChannel();
     }
 
@@ -217,7 +203,12 @@ public class Mirage_gfbs {
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
-                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), false);
+                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false);
+            });
+        });
+        Task.spawn(()->{
+            MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
+                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true);
             });
         });
         Task.spawn(()->{
@@ -304,11 +295,6 @@ public class Mirage_gfbs {
             // GATE
             BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
             BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), CheckPointGateBlockRenderer::new);
-
-            EntityRenderers.register(
-                    ModEntities.MIRAGE_OBJECT.get(),
-                    MirageObjectRenderer::new
-            );
 
             GateClientAPI.register();
 

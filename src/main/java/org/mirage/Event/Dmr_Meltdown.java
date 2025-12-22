@@ -186,6 +186,13 @@ public class Dmr_Meltdown {
                     executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_502887 voice @a ~ ~ ~ 1.2 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "注意, 反应堆操作小组已发出求救信号.", 300);
+
+                    Task.delay(()->{
+                        executeCommandAsync("playsound mirage_gfbs:boom.boom_b voice @a ~ ~ ~ 1 1 1");
+                        for (ServerPlayer player : allPlayers) {
+                            CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 290, 11290);
+                        }
+                    }, 6473, TimeUnit.MILLISECONDS);
                 }, 14614, TimeUnit.MILLISECONDS);
 
                 Task.delay(()->{
@@ -235,7 +242,7 @@ public class Dmr_Meltdown {
             }, 347000, TimeUnit.MILLISECONDS);
 
             Task.delay(()->{
-                p2(allPlayers, isNewMusic);
+                p2(allPlayers, _serverLevel, isNewMusic);
             }, 360000, TimeUnit.MILLISECONDS);
 
         }, 5000, TimeUnit.MILLISECONDS);
@@ -244,7 +251,9 @@ public class Dmr_Meltdown {
         }, 27500, TimeUnit.MILLISECONDS);
     }
 
-    public static void p2(Collection<ServerPlayer> allPlayers, boolean isNewMusic) {
+    public static void p2(Collection<ServerPlayer> allPlayers, ServerLevel level, boolean isNewMusic) {
+        _serverLevel = level;
+
         executeCommandAsync("playsound mirage_gfbs:faas.f_b_c_r_t voice @a ~ ~ ~ 1 1 1");
         NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                 "全体设施人员注意, 已发布黑色紧急指令, 请立即撤离至塔塔鲁斯上层区域.", 200);
@@ -318,6 +327,18 @@ public class Dmr_Meltdown {
             executeCommandAsync("playsound mirage_gfbs:faas.f_e_p_o_n voice @a ~ ~ ~ 1 1 1");
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                     "所有紧急工作装置全部依赖于紧急发电机, 现已降低整体耗电功率.", 200);
+
+            executeCommandAsync("playsound mirage_gfbs:hybrid.meltdown_a_b voice @a ~ ~ ~ 1 1 1");
+            for (ServerPlayer player : allPlayers) {
+                CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 290, 11290);
+            }
+
+            Task.sleep(17060);
+            executeCommandAsync("playsound mirage_gfbs:boom.boom_b voice @a ~ ~ ~ 1 1 1");
+            for (ServerPlayer player : allPlayers) {
+                CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 290, 11290);
+            }
+
         }, 82972, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
@@ -367,11 +388,9 @@ public class Dmr_Meltdown {
 
             FluorescentTubeCommandRegistry.turnOffAllTubes(_serverLevel);
 
-            Task.delay(()->{
-                executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_785144 voice @a ~ ~ ~ 1 1 1");
-                NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                        "强引力源出现在核心腔室.", 200);
-            }, 3000, TimeUnit.MILLISECONDS);
+            executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_785144 voice @a ~ ~ ~ 1 1 1");
+            NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                    "强引力源出现在核心腔室.", 200);
 
             Task.delay(()->{
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_bh voice @a ~ ~ ~ 1 1 1");

@@ -57,7 +57,7 @@ public class MirageGFBsGateApiCommand {
         );
     }
 
-    private static void exec(ServerLevel level, boolean isOpen, String type){
+    public static void exec(ServerLevel level, boolean isOpen, String type){
         if (Objects.equals(type, "gate")){
             System.out.println(type);
             if (isOpen){
