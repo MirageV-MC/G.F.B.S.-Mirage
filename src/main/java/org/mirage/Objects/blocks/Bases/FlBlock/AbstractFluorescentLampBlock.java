@@ -70,7 +70,7 @@ public abstract class AbstractFluorescentLampBlock extends Block {
     }
 
     protected int getLitLightLevel(@NotNull BlockState state) {
-        return 14;
+        return 15;
     }
 
     protected void onPoweredStateChanged(Level level, BlockPos pos, BlockState newState) {

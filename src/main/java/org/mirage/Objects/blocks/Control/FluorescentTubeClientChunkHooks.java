@@ -26,10 +26,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mirage.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
+
+import static org.mirage.Objects.blocks.Control.FluorescentTubeClientAPI.globalState;
 
 @Mod.EventBusSubscriber(modid = "mirage_gfbs", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class FluorescentTubeClientChunkHooks {
@@ -42,7 +45,7 @@ public final class FluorescentTubeClientChunkHooks {
         if (!(event.getLevel() instanceof ClientLevel level)) return;
         if (!(event.getChunk() instanceof LevelChunk chunk)) return;
 
-        boolean desired = FluorescentTubeClientAPI.globalState;
+        boolean desired = globalState;
         scanChunk(chunk, level, desired, true);
     }
 
@@ -79,13 +82,15 @@ public final class FluorescentTubeClientChunkHooks {
 
                         FluorescentTubeClientAPI.registerTube(pos);
 
-                        // 强制重新计算方块光照（修复区块重载后亮度不正确的问题）
-                        level.getChunkSource().getLightEngine().checkBlock(pos);
-
                         if (applyState) {
                             Boolean lit = state.getValue(AbstractFluorescentLampBlock.LIT);
                             if (lit == null || lit.booleanValue() != desiredLit) {
-                                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit), Block.UPDATE_ALL);
+                                level.setBlock(
+                                        pos,
+                                        state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit),
+                                        Block.UPDATE_CLIENTS
+                                );
+                            } else {
                             }
                         } else {
                             FluorescentTubeClientAPI.unregisterTube(pos);
