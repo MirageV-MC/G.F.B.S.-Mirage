@@ -291,7 +291,7 @@ public final class FluorescentTubeClientAPI {
                             level.setBlock(
                                     pos,
                                     state.setValue(AbstractFluorescentLampBlock.LIT, tubeState.currentLit),
-                                    Block.UPDATE_CLIENTS
+                                    Block.UPDATE_ALL
                             );
                         }
                     }

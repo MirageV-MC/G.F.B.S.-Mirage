@@ -51,6 +51,7 @@ public abstract class AbstractFluorescentLampBlock extends Block {
         return BlockBehaviour.Properties.of()
                 .strength(0.3F)
                 .sound(SoundType.GLASS)
+                .lightLevel(state -> state.getValue(LIT) ? 15 : 0)
                 .noOcclusion();
     }
 

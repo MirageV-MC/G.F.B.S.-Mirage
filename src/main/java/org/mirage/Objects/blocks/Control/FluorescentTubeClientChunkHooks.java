@@ -79,10 +79,13 @@ public final class FluorescentTubeClientChunkHooks {
 
                         FluorescentTubeClientAPI.registerTube(pos);
 
+                        // 强制重新计算方块光照（修复区块重载后亮度不正确的问题）
+                        level.getChunkSource().getLightEngine().checkBlock(pos);
+
                         if (applyState) {
                             Boolean lit = state.getValue(AbstractFluorescentLampBlock.LIT);
                             if (lit == null || lit.booleanValue() != desiredLit) {
-                                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit), Block.UPDATE_CLIENTS);
+                                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit), Block.UPDATE_ALL);
                             }
                         } else {
                             FluorescentTubeClientAPI.unregisterTube(pos);
