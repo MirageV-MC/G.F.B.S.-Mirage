@@ -13,6 +13,9 @@
   - Maverick0527th(新成员) : 尚未知
   - Foxugar(新成员) : 美术
 
+- 本MOD依赖的MOD:
+  - GeckoLib
+
 - 本项目中所有音频均非原创, 来自互联网公开资源, 部分来源已不可考
 - 我们和QASST(量子结构科学团队)没有任何关系, 也没有从那获得任何授权。
 - QS能源研究设施Wiki: https://quantum-science.fandom.com/wiki/Quantum_Science_Energy_Research_Facility
