@@ -21,10 +21,7 @@ package org.mirage.Event;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import org.mirage.Command.FluorescentTubeCommandRegistry;
-import org.mirage.Command.MirageGFBsEventCommand;
-import org.mirage.Command.NotificationCommand;
-import org.mirage.Command.CameraShakeCommand;
+import org.mirage.Command.*;
 import org.mirage.Phenomenon.network.HexCrackerNetwork;
 import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Tools.Task;
@@ -287,7 +284,8 @@ public class Dmr_Meltdown {
 
 
                 Task.delay(()->{
-                    Task.spawn(()->GateClientAPI.openAllServer(_serverLevel));
+                    server.execute(()->MirageGFBsGateApiCommand.exec(_serverLevel, true, "gate"));
+
                     executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_535533 voice @a ~ ~ ~ 1 1 1");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "所有设施人员注意, 请立即前往最近的避[数据删除]难所.", 200);
@@ -375,7 +373,10 @@ public class Dmr_Meltdown {
             NotificationCommand.sendNotificationToPlayers(allPlayers, "Deputy.Reactor.Supervisor.",
                     "所有设施人员注意,我们发现反应堆腔室内泄露出大量辐射,我们正在减少损失并立即关闭塔塔鲁斯大门,所以那些还在设施里的人,请立即前往最近的防爆避难所.", 200);
 
-            GateClientAPI.closeAllServer(_serverLevel);
+            server.execute(()->{
+                MirageGFBsGateApiCommand.exec(_serverLevel, false, "gate");
+                MirageGFBsGateApiCommand.exec(_serverLevel, false, "check_point_gate");
+            });
         }, 189059, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
@@ -398,7 +399,7 @@ public class Dmr_Meltdown {
 
             Task.spawn(()->{
                 Task.sleep(42047);
-                DmrexAfter.exec(allPlayers);
+                DmrexAfter.exec(allPlayers, _serverLevel);
             });
 
         }, 198788, TimeUnit.MILLISECONDS);

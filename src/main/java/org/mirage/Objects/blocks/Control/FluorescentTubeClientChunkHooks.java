@@ -84,13 +84,18 @@ public final class FluorescentTubeClientChunkHooks {
 
                         if (applyState) {
                             Boolean lit = state.getValue(AbstractFluorescentLampBlock.LIT);
-                            if (lit == null || lit.booleanValue() != desiredLit) {
+                            if (lit == null || lit != desiredLit) {
                                 level.setBlock(
                                         pos,
                                         state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit),
-                                        Block.UPDATE_CLIENTS
+                                        Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS
                                 );
                             } else {
+                                level.setBlock(
+                                        pos,
+                                        state.setValue(AbstractFluorescentLampBlock.LIT, desiredLit),
+                                        Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS | Block.UPDATE_IMMEDIATE
+                                );
                             }
                         } else {
                             FluorescentTubeClientAPI.unregisterTube(pos);

@@ -27,7 +27,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.mirage.Objects.blocks.classs.Gate.CheckPointGateBlock;
 import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 
 public class GateCollisionBlock extends Block {
@@ -70,8 +69,7 @@ public class GateCollisionBlock extends Block {
         if (!state.is(newState.getBlock())) {
             if (!level.isClientSide) {
                 boolean nonPlayerRemoval =
-                        GateBlock.isNonPlayerRemoval(pos)
-                                || CheckPointGateBlock.isNonPlayerRemoval(pos);
+                        GateBlock.isNonPlayerRemoval(pos);
 
                 if (nonPlayerRemoval) {
                     super.onRemove(state, level, pos, newState, isMoving);
@@ -88,9 +86,6 @@ public class GateCollisionBlock extends Block {
 
                             if (bs.getBlock() instanceof GateBlock gateBlock) {
                                 gateBlock.destroyFromCollision(level, checkPos);
-                                break outer;
-                            } else if (bs.getBlock() instanceof CheckPointGateBlock checkPointGateBlock) {
-                                checkPointGateBlock.destroyFromCollision(level, checkPos);
                                 break outer;
                             }
                         }

@@ -29,8 +29,8 @@ import org.mirage.Objects.blocks.classs.FlBlock.ArcLampBlock;
 import org.mirage.Objects.blocks.classs.FlBlock.FluorescentTubeBlock;
 import org.mirage.Objects.blocks.classs.FlBlock.RedAlarmLampBlock;
 import org.mirage.Objects.blocks.classs.FlBlock.WhiteCubeLampBlock;
-import org.mirage.Objects.blocks.classs.Gate.CheckPointGateBlock;
 import org.mirage.Objects.blocks.classs.Gate.GateBlock;
+import org.mirage.Objects.blocks.Control.Gate.GateTypes;
 
 import static org.mirage.Mirage_gfbs.BLOCKS;
 import static org.mirage.Mirage_gfbs.MODID;
@@ -83,11 +83,11 @@ public class BlockRegistration {
 
     public static final RegistryObject<Block> GATE =
             BLOCKS.register("gate", () ->
-                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION));
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.STANDARD));
 
     public static final RegistryObject<Block> CHECK_POINT_GATE =
             BLOCKS.register("check_point_gate", () ->
-                    new CheckPointGateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION));
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.CHECK_POINT));
 
     // 建筑方块
 

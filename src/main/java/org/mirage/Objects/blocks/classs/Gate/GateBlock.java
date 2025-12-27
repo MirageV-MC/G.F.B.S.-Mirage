@@ -24,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.mirage.Objects.blocks.Control.Gate.GateType;
+import org.mirage.Objects.blocks.Control.Gate.GateTypes;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
@@ -57,6 +60,7 @@ public class GateBlock extends Block implements EntityBlock {
     private static final Set<BlockPos> NON_PLAYER_REMOVAL_POSITIONS = ConcurrentHashMap.newKeySet();
 
     private final Supplier<Block> collisionBlockSupplier;
+    private final GateType gateType;
 
     private static final BlockPos[] COLLISION_OFFSETS = new BlockPos[]{
             new BlockPos(0, 0, 0),
@@ -85,9 +89,10 @@ public class GateBlock extends Block implements EntityBlock {
             new BlockPos(0, 2, -3),
     };
 
-    public GateBlock(Properties properties, Supplier<Block> collisionBlockSupplier) {
+    public GateBlock(Properties properties, Supplier<Block> collisionBlockSupplier, GateType gateType) {
         super(properties);
         this.collisionBlockSupplier = collisionBlockSupplier;
+        this.gateType = (gateType == null ? GateTypes.STANDARD : gateType);
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(OPEN, Boolean.FALSE)
@@ -186,7 +191,6 @@ public class GateBlock extends Block implements EntityBlock {
                             ? currentState.getValue(AXIS)
                             : Direction.Axis.Z;
 
-                    // 延迟产生的“核心区”碰撞箱（COLLISION_OFFSETS）
                     for (BlockPos offset : COLLISION_OFFSETS) {
                         BlockPos realOffset = rotateOffsetForAxis(offset, currentAxis);
                         BlockPos targetPos = gatePos.offset(realOffset);
@@ -200,7 +204,6 @@ public class GateBlock extends Block implements EntityBlock {
                 });
             }, 7, TimeUnit.SECONDS);
 
-            // COLLISION_OFFSETS_2 这部分是立刻创建的（调用点在主线程），可以直接改世界
             for (BlockPos offset : COLLISION_OFFSETS_2) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
@@ -212,7 +215,6 @@ public class GateBlock extends Block implements EntityBlock {
                 }
             }
         } else {
-            // 不需要 sleep：全部立即创建（仍然在主线程调用）
             for (BlockPos offset : COLLISION_OFFSETS) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
@@ -323,6 +325,11 @@ public class GateBlock extends Block implements EntityBlock {
         return NON_PLAYER_REMOVAL_POSITIONS.contains(pos);
     }
 
+    public GateType getGateType() {
+        return gateType;
+    }
+
+
     public void applyOpenStateDirect(Level level, BlockPos gatePos, boolean open) {
         if (level.isClientSide) return;
 
@@ -337,6 +344,10 @@ public class GateBlock extends Block implements EntityBlock {
 
         if (state.getValue(OPEN) != open) {
             level.setBlock(gatePos, state.setValue(OPEN, open), Block.UPDATE_ALL);
+        }
+
+        if (level.getBlockEntity(gatePos) instanceof GateBlockEntity gateBe) {
+            gateBe.setLogicalOpenNoWorld(open);
         }
     }
 

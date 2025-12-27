@@ -59,13 +59,14 @@ import org.mirage.Objects.ModBlockEntities;
 import org.mirage.Objects.ModEntities;
 import org.mirage.Objects.Structure.Registrar;
 import org.mirage.Objects.blocks.BlockRegistration;
+import org.mirage.Objects.blocks.Control.Gate.GateTypes;
 import org.mirage.Objects.items.ItemRegistration;
-import org.mirage.Objects.renderer.Gate.CheckPointGateBlockRenderer;
 import org.mirage.Objects.renderer.Gate.GateBlockRenderer;
 import org.mirage.Objects.renderer.PictureBlockRenderer;
 import org.mirage.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.Phenomenon.FogApi.CustomFogModule;
 import org.mirage.Phenomenon.network.HexCrackerNetwork;
+import org.mirage.Phenomenon.network.Network.ClientEventHandler;
 import org.mirage.Phenomenon.network.Network.ClientToServer;
 import org.mirage.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
@@ -212,9 +213,9 @@ public class Mirage_gfbs {
             });
         });
         Task.spawn(()->{
-           MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
-               DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers());
-           }));
+            MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
+                DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel());
+            }));
         });
     }
 
@@ -234,10 +235,18 @@ public class Mirage_gfbs {
             }
 
             player.displayClientMessage(Component.literal("[G.F.B.S.]欢迎使用GFBS模组,本模组使用LGPL-v3协议开源.(@Con89524)"), false);
+
+
+            // GATE UPD
+            var gfbs_gate_upd_joined_data = new CompoundTag();
+
+            gfbs_gate_upd_joined_data.putBoolean("gate", GateClientAPI.getGlobalState(GateTypes.STANDARD));
+            gfbs_gate_upd_joined_data.putBoolean("check_point_gate", GateClientAPI.getGlobalState(GateTypes.CHECK_POINT));
+
+            org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
         }
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("server starting");
@@ -248,6 +257,9 @@ public class Mirage_gfbs {
     @SubscribeEvent
     public void onServerStarted(ServerStartedEvent event){
         LOGGER.info("server started.");
+
+        MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), true, "check_point_gate");
+        MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), false, "gate");
     }
 
     public static void setServerInstance(MinecraftServer serverInstance) {
@@ -294,11 +306,18 @@ public class Mirage_gfbs {
 
             // GATE
             BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
-            BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), CheckPointGateBlockRenderer::new);
+            BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), GateBlockRenderer::new);
 
             GateClientAPI.register();
 
             DmrexAfter.clientExec();
+
+            ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
+                GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
+                GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
+
+                GateClientAPI.applyStateToAllLoaded();
+            });
         }
 
         @SubscribeEvent

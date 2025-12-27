@@ -32,7 +32,7 @@ public class GateBlockModel extends GeoModel<GateBlockEntity> {
 
     @Override
     public @NotNull ResourceLocation getTextureResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "textures/block/gate_core.png");
+        return new ResourceLocation(Mirage_gfbs.MODID, animatable.getGateType().texturePath());
     }
 
     @Override
