@@ -1,9 +1,11 @@
 package org.mirage.Event;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.mirage.Client.ExposureController;
 import org.mirage.Command.CameraShakeCommand;
+import org.mirage.Command.MirageGFBsGateApiCommand;
 import org.mirage.Phenomenon.network.Network.ClientEventHandler;
 import org.mirage.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.Tools.Task;
@@ -13,6 +15,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import static org.mirage.CommandExecutor.executeCommandAsync;
+import static org.mirage.Mirage_gfbs.server;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -33,7 +36,7 @@ import static org.mirage.CommandExecutor.executeCommandAsync;
  */
 
 public class DmrexAfter {
-    public static void exec(Collection<ServerPlayer> allPlayers) {
+    public static void exec(Collection<ServerPlayer> allPlayers, ServerLevel _serverLevel) {
         executeCommandAsync("playsound mirage_gfbs:boom.boom2_b voice @a ~ ~ ~ 1 1 1");
 
         Task.delay(()->{
@@ -50,6 +53,9 @@ public class DmrexAfter {
             Task.sleep(33460);
 
             NetworkHandler.sendToAll("mirage_dmr_boom_h_event_client_a3");
+            server.execute(()->{
+                MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate");
+            });
         }, 4584, TimeUnit.MILLISECONDS);
 
         Task.sleep(970);

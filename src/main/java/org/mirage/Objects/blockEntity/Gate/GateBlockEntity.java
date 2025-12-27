@@ -22,13 +22,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mirage.ModSoundEvents;
 import org.mirage.Objects.ModBlockEntities;
+import org.mirage.Objects.blocks.BlockRegistration;
 import org.mirage.Objects.blocks.Control.Gate.GateServerManager;
+import org.mirage.Objects.blocks.Control.Gate.GateType;
+import org.mirage.Objects.blocks.Control.Gate.GateTypes;
 import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 import org.mirage.Utils.SyncField.SyncField;
 import org.mirage.Utils.SyncField.SyncManager;
@@ -47,15 +51,14 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     @SyncField
-    private static final List<GateBlockEntity> CLIENT_GATES = new ArrayList<>();
-
+    private static final java.util.concurrent.ConcurrentHashMap<String, java.util.concurrent.CopyOnWriteArrayList<GateBlockEntity>> CLIENT_GATES_BY_TYPE = new java.util.concurrent.ConcurrentHashMap<>();
     @SyncField
     private boolean logicalOpen = false;
 
     private boolean lastLogicalOpen = false;
 
     public GateBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.GATE.get(), pos, state);
+        super(resolveType(state), pos, state);
         SyncManager.registerBlockEntity(this);
     }
 
@@ -74,11 +77,18 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
     public void setLogicalOpen(boolean open) {
         this.logicalOpen = open;
 
-        BlockState state = this.level.getBlockState(this.worldPosition);
-        if (state.getBlock() instanceof GateBlock gateBlock) {
-            gateBlock.applyOpenState(this.level, this.getBlockPos(), open);
+        if (this.level != null && !this.level.isClientSide) {
+            BlockState state = this.level.getBlockState(this.worldPosition);
+            if (state.getBlock() instanceof GateBlock gateBlock) {
+                gateBlock.applyOpenStateDirect(this.level, this.getBlockPos(), open);
+            }
         }
 
+        this.setChanged();
+    }
+
+    public void setLogicalOpenNoWorld(boolean open) {
+        this.logicalOpen = open;
         this.setChanged();
     }
 
@@ -90,11 +100,16 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
         }
 
         if (level.isClientSide) {
-            CLIENT_GATES.add(this);
-            this.logicalOpen = GateClientAPI.GLOBAL_GATE_STATE;
+            String typeId = getGateType().id();
+            CLIENT_GATES_BY_TYPE.computeIfAbsent(typeId, k -> new java.util.concurrent.CopyOnWriteArrayList<>()).add(this);
+            this.logicalOpen = GateClientAPI.getGlobalState(getGateType());
             this.lastLogicalOpen = this.logicalOpen;
         } else {
-            GateServerManager.registerGate(level, worldPosition);
+            BlockState st = this.getBlockState();
+            if (st.hasProperty(GateBlock.OPEN)) {
+                this.logicalOpen = st.getValue(GateBlock.OPEN);
+            }
+            GateServerManager.registerGate(level, getGateType(), worldPosition);
         }
     }
 
@@ -155,24 +170,53 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
         SyncManager.unregisterBlockEntity(this);
 
         if (level.isClientSide) {
-            CLIENT_GATES.remove(this);
+            String typeId = getGateType().id();
+            java.util.concurrent.CopyOnWriteArrayList<GateBlockEntity> list = CLIENT_GATES_BY_TYPE.get(typeId);
+            if (list != null) {
+                list.remove(this);
+                if (list.isEmpty()) {
+                    CLIENT_GATES_BY_TYPE.remove(typeId);
+                }
+            }
         } else {
-            GateServerManager.unregisterGate(level, worldPosition);
+            GateServerManager.unregisterGate(level, getGateType(), worldPosition);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static List<GateBlockEntity> getClientGates() {
-        return CLIENT_GATES;
+    public static java.util.List<GateBlockEntity> getClientGates() {
+        return getClientGates(GateTypes.STANDARD);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public static java.util.List<GateBlockEntity> getClientGates(GateType type) {
+        java.util.concurrent.CopyOnWriteArrayList<GateBlockEntity> list = CLIENT_GATES_BY_TYPE.get(type.id());
+        return list == null ? java.util.Collections.emptyList() : list;
+    }
     @Override
     public AABB getRenderBoundingBox() {
+        final double R = 3.0E7;
+
         BlockPos pos = this.worldPosition;
+        double cx = pos.getX() + 0.5;
+        double cy = pos.getY() + 0.5;
+        double cz = pos.getZ() + 0.5;
+
         return new AABB(
-                pos.getX() - 3, pos.getY(),     pos.getZ() - 3,
-                pos.getX() + 3, pos.getY() + 4, pos.getZ() + 3
+                cx - R, cy - R, cz - R,
+                cx + R, cy + R, cz + R
         );
+    }
+
+    public GateType getGateType() {
+        if (this.level != null) {
+            BlockState st = this.getBlockState();
+            if (st.getBlock() instanceof GateBlock gateBlock) {
+                GateType t = gateBlock.getGateType();
+                return t == null ? GateTypes.STANDARD : t;
+            }
+        }
+        return GateTypes.STANDARD;
     }
 
     public Direction.Axis getAxis() {
@@ -181,5 +225,12 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
             return state.getValue(GateBlock.AXIS);
         }
         return Direction.Axis.Z;
+    }
+
+    private static BlockEntityType<?> resolveType(BlockState state) {
+        if (state.is(BlockRegistration.CHECK_POINT_GATE.get())) {
+            return ModBlockEntities.CHECK_POINT_GATE.get();
+        }
+        return ModBlockEntities.GATE.get();
     }
 }

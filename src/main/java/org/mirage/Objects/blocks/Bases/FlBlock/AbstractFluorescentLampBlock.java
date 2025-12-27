@@ -3,17 +3,17 @@ package org.mirage.Objects.blocks.Bases.FlBlock;
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
  * Copyright (C) 2025-2029 Mirage-MC
-
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
-
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
@@ -40,18 +40,19 @@ import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.mirage.Objects.blocks.Control.FluorescentTubeRegistry;
 import org.mirage.Objects.blocks.Control.FluorescentTubeSavedData;
+import org.mirage.Utils.SyncField.SyncField;
 
 public abstract class AbstractFluorescentLampBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
+    @SyncField
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     public static BlockBehaviour.Properties defaultProperties() {
         return BlockBehaviour.Properties.of()
                 .strength(0.3F)
-                .sound(SoundType.GLASS)
-                .noOcclusion();
+                .sound(SoundType.GLASS);
     }
 
     protected AbstractFluorescentLampBlock(BlockBehaviour.Properties properties) {
@@ -68,11 +69,37 @@ public abstract class AbstractFluorescentLampBlock extends Block {
         builder.add(FACING, LIT);
     }
 
-    protected int getLitLightLevel(@NotNull BlockState state) {
-        return 14;
+    protected void onPoweredStateChanged(Level level, BlockPos pos, BlockState newState) {
     }
 
-    protected void onPoweredStateChanged(Level level, BlockPos pos, BlockState newState) {
+    @Override
+    public void onPlace(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+                        @NotNull BlockState oldState, boolean isMoving) {
+        super.onPlace(state, level, pos, oldState, isMoving);
+        if (!level.isClientSide) {
+            boolean powered = level.hasNeighborSignal(pos);
+            if (state.getValue(LIT) != powered) {
+                BlockState newState = state.setValue(LIT, powered);
+                level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+                onPoweredStateChanged(level, pos, newState);
+            }
+        }
+    }
+
+    @Override
+    public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos,
+                                @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
+        if (!level.isClientSide) {
+            boolean powered = level.hasNeighborSignal(pos);
+            boolean lit = state.getValue(LIT);
+
+            if (lit != powered) {
+                BlockState newState = state.setValue(LIT, powered);
+                level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+                onPoweredStateChanged(level, pos, newState);
+            }
+        }
+        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
     }
 
     @Override
@@ -92,24 +119,23 @@ public abstract class AbstractFluorescentLampBlock extends Block {
     public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
                             LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
+
         if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
             FluorescentTubeRegistry.register(serverLevel, pos);
             FluorescentTubeSavedData.get(serverLevel).add(pos);
+
+            boolean powered = level.hasNeighborSignal(pos);
+            if (state.getValue(LIT) != powered) {
+                BlockState newState = state.setValue(LIT, powered);
+                level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
+                onPoweredStateChanged(level, pos, newState);
+            }
         }
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             try {
                 Class<?> api = Class.forName("org.mirage.Objects.blocks.Control.FluorescentTubeClientAPI");
                 api.getMethod("registerTube", BlockPos.class).invoke(null, pos);
-                if (level.isClientSide) {
-                    boolean desired = api.getField("globalState").getBoolean(null);
-                    BlockState cur = level.getBlockState(pos);
-                    if (cur.getBlock() instanceof AbstractFluorescentLampBlock) {
-                        if (!java.util.Objects.equals(cur.getValue(LIT), desired)) {
-                            level.setBlock(pos, cur.setValue(LIT, desired), Block.UPDATE_CLIENTS);
-                        }
-                    }
-                }
             } catch (Throwable ignored) {
             }
         });
@@ -123,6 +149,10 @@ public abstract class AbstractFluorescentLampBlock extends Block {
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getValue(LIT) ? getLitLightLevel(state) : 0;
+    }
+
+    protected int getLitLightLevel(BlockState state) {
+        return 15;
     }
 
     @Override

@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -291,7 +292,7 @@ public final class FluorescentTubeClientAPI {
                             level.setBlock(
                                     pos,
                                     state.setValue(AbstractFluorescentLampBlock.LIT, tubeState.currentLit),
-                                    Block.UPDATE_CLIENTS
+                                    Block.UPDATE_ALL
                             );
                         }
                     }

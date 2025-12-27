@@ -5,10 +5,9 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
-import org.mirage.api.CheckPointGateClientAPI;
 import org.mirage.api.GateClientAPI;
+import org.mirage.Objects.blocks.Control.Gate.GateTypes;
 
-import java.util.Objects;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
@@ -58,21 +57,7 @@ public class MirageGFBsGateApiCommand {
     }
 
     public static void exec(ServerLevel level, boolean isOpen, String type){
-        if (Objects.equals(type, "gate")){
-            System.out.println(type);
-            if (isOpen){
-                GateClientAPI.openAllServer(level);
-            }else {
-                GateClientAPI.closeAllServer(level);
-            }
-
-        }else if (Objects.equals(type, "check_point_gate")) {
-            if (isOpen) {
-                CheckPointGateClientAPI.openAllServer(level);
-            } else {
-                CheckPointGateClientAPI.closeAllServer(level);
-            }
-        }
-
+        // accepts: "gate", "check_point_gate", or any GateType id registered in GateTypes
+        GateClientAPI.setAllServer(level, GateTypes.get(type), isOpen);
     }
 }
