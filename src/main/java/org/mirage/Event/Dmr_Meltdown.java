@@ -126,7 +126,7 @@ public class Dmr_Meltdown {
                     CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 124800, 990, 11290);
                 }
 
-                Task.sleep(16000);
+                Task.sleep(16000); //old:18000
 
                 isRedcode = true;
 
@@ -152,10 +152,10 @@ public class Dmr_Meltdown {
             Task.delay(()->{
                 NeiBao(allPlayers);
 
-                Task.sleep(3000);
+                Task.sleep(2500);
 
                 executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
-            }, 137516, TimeUnit.MILLISECONDS);
+            }, 138116, TimeUnit.MILLISECONDS); //old:137516
 
             Task.delay(()->{
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
