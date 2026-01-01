@@ -145,6 +145,13 @@ repositories {
     // }
 
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+
+    repositories {
+        maven {
+            url "https://maven.squiddev.cc"
+            content { includeGroup "cc.tweaked" }
+        }
+    }
 }
 
 dependencies {
@@ -176,6 +183,9 @@ dependencies {
     implementation 'net.java.dev.jna:jna-platform:5.13.0'
 
     implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.20.1:4.4.2")
+
+    // cc!
+    implementation fg.deobf("cc.tweaked:cc-tweaked-1.20.1-forge:1.116.2")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

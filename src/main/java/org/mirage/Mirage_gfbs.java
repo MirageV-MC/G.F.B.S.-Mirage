@@ -45,6 +45,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -76,6 +77,10 @@ import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.Utils.WorldWriteQueue;
 import org.mirage.api.GateClientAPI;
 
+import org.mirage.ccio.CCIoInit;
+import org.mirage.ccio.CCIoRegistry;
+import org.mirage.ccio.app.ApiRegisterer;
+
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -103,6 +108,8 @@ public class Mirage_gfbs {
 
         LOGGER.info("MOD "+MODID+" INIT...");
 
+        CCIoInit.init(modEventBus);
+
         MinecraftForge.EVENT_BUS.register(org.mirage.Phenomenon.network.versioncheck.ServerEvents.class);
 
         var modVersion = ModList.get()
@@ -120,6 +127,8 @@ public class Mirage_gfbs {
 
         BlockRegistration.init();
         ItemRegistration.init();
+        CCIoRegistry.init();
+
         Registrar.init();
 
         modEventBus.addListener(this::commonSetup);
@@ -144,6 +153,15 @@ public class Mirage_gfbs {
         GlobalSoundPlayCommand.registerNetworkMessages();
 
         createscriptdir();
+
+        if (FMLEnvironment.dist == Dist.CLIENT){
+            ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
+                GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
+                GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
+
+                GateClientAPI.applyStateToAllLoaded();
+            });
+        }
     }
 
     private void registryMirageObjects() {
@@ -236,14 +254,28 @@ public class Mirage_gfbs {
 
             player.displayClientMessage(Component.literal("[G.F.B.S.]欢迎使用GFBS模组,本模组使用LGPL-v3协议开源.(@Con89524)"), false);
 
+            MinecraftForge.EVENT_BUS.register(new Object() {
+                int ticks = 0;
 
-            // GATE UPD
-            var gfbs_gate_upd_joined_data = new CompoundTag();
+                @SubscribeEvent
+                public void onServerTick(TickEvent.ServerTickEvent tickEvent) {
+                    if (tickEvent.phase != TickEvent.Phase.END) return;
 
-            gfbs_gate_upd_joined_data.putBoolean("gate", GateClientAPI.getGlobalState(GateTypes.STANDARD));
-            gfbs_gate_upd_joined_data.putBoolean("check_point_gate", GateClientAPI.getGlobalState(GateTypes.CHECK_POINT));
+                    ticks++;
+                    if (ticks >= 40) {
+                        // GATE UPD
+                        var gfbs_gate_upd_joined_data = new CompoundTag();
 
-            org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
+                        gfbs_gate_upd_joined_data.putBoolean("gate", GateClientAPI.getGlobalState(GateTypes.STANDARD));
+                        gfbs_gate_upd_joined_data.putBoolean("check_point_gate", GateClientAPI.getGlobalState(GateTypes.CHECK_POINT));
+
+                        org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
+
+                        // END
+                        MinecraftForge.EVENT_BUS.unregister(this);
+                    }
+                }
+            });
         }
     }
 
@@ -252,6 +284,8 @@ public class Mirage_gfbs {
         LOGGER.info("server starting");
 
         setServerInstance(event.getServer());
+
+        ApiRegisterer.register(server);
     }
 
     @SubscribeEvent
@@ -311,13 +345,6 @@ public class Mirage_gfbs {
             GateClientAPI.register();
 
             DmrexAfter.clientExec();
-
-            ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
-                GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
-                GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
-
-                GateClientAPI.applyStateToAllLoaded();
-            });
         }
 
         @SubscribeEvent
