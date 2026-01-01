@@ -68,6 +68,7 @@ public class BlockRegistration {
                             BlockBehaviour.Properties.of()
                                     .strength(5F, 3F)
                                     .lightLevel(state -> 15)
+                                    .noOcclusion()
                     ));
 
     // 辅助

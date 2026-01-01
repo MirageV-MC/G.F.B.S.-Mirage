@@ -28,3 +28,9 @@ mandatory=true
 versionRange="[4.4,)"
 ordering="NONE"
 side="BOTH"
+[[dependencies."${mod_id}"]]
+modId="computercraft"
+mandatory=true
+versionRange="[1.109.0,)"
+ordering="NONE"
+side="BOTH"

@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "mirage_gfbs:block/cc_io_bridge" }
+}
