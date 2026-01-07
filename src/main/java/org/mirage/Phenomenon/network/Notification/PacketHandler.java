@@ -25,28 +25,34 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.mirage.Mirage_gfbs;
 
-public class PacketHandler {
+public final class PacketHandler {
+
     private static final String PROTOCOL_VERSION = "1";
-    private static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation("mirage", "notifications"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
-    private static int packetId = 0;
+
+    private static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
+            .named(new ResourceLocation(Mirage_gfbs.MODID, "notifications"))
+            .networkProtocolVersion(() -> PROTOCOL_VERSION)
+            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+            .simpleChannel();
 
     private static boolean registered = false;
+    private static int packetId = 0;
+
+    private PacketHandler() {}
 
     public static void register() {
         if (registered) return;
         registered = true;
 
-        INSTANCE.registerMessage(packetId++, NotificationPacket.class,
-                NotificationPacket::toBytes,
-                NotificationPacket::new,
-                NotificationPacket::handle);
+        INSTANCE.messageBuilder(NotificationPacket.class, packetId++, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(NotificationPacket::toBytes)
+                .decoder(NotificationPacket::new)
+                .consumerMainThread(NotificationPacket::handle)
+                .add();
 
-        Mirage_gfbs.LOGGER.info("Registered notification network channel");
+        Mirage_gfbs.LOGGER.info("Registered notification network channel: {}",
+                new ResourceLocation(Mirage_gfbs.MODID, "notifications"));
     }
 
     public static void sendToPlayer(NotificationPacket packet, ServerPlayer player) {

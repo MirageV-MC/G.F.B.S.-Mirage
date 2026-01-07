@@ -76,14 +76,12 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     public void setLogicalOpen(boolean open) {
         this.logicalOpen = open;
-
         if (this.level != null && !this.level.isClientSide) {
             BlockState state = this.level.getBlockState(this.worldPosition);
             if (state.getBlock() instanceof GateBlock gateBlock) {
                 gateBlock.applyOpenStateDirect(this.level, this.getBlockPos(), open);
             }
         }
-
         this.setChanged();
     }
 
@@ -232,5 +230,9 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
             return ModBlockEntities.CHECK_POINT_GATE.get();
         }
         return ModBlockEntities.GATE.get();
+    }
+
+    public void refreshAnimationState() {
+        this.lastLogicalOpen = !this.logicalOpen;
     }
 }
