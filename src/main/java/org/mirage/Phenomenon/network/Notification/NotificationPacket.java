@@ -25,6 +25,7 @@ import org.mirage.Tools.NotifucationGUI.NotificationGUI;
 import java.util.function.Supplier;
 
 public class NotificationPacket {
+
     private final String title;
     private final String message;
     private final int displayTime;
@@ -36,8 +37,8 @@ public class NotificationPacket {
     }
 
     public NotificationPacket(FriendlyByteBuf buf) {
-        this.title = buf.readUtf();
-        this.message = buf.readUtf();
+        this.title = buf.readUtf(32767);
+        this.message = buf.readUtf(32767);
         this.displayTime = buf.readInt();
     }
 
@@ -47,16 +48,16 @@ public class NotificationPacket {
         buf.writeInt(displayTime);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> supplier) {
-        NetworkEvent.Context context = supplier.get();
-        context.enqueueWork(() -> {
+    public static void handle(NotificationPacket msg, Supplier<NetworkEvent.Context> supplier) {
+        NetworkEvent.Context ctx = supplier.get();
+        ctx.enqueueWork(() -> {
             try {
-                NotificationGUI.showNotification(title, message, displayTime);
+                NotificationGUI.showNotification(msg.title, msg.message, msg.displayTime);
             } catch (Exception e) {
                 System.err.println("Error in showNotification: " + e.getMessage());
                 e.printStackTrace();
             }
         });
-        return true;
+        ctx.setPacketHandled(true);
     }
 }

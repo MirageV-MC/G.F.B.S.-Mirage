@@ -54,6 +54,7 @@ public class GateClientAPI {
         setGlobalState(type, open);
         for (GateBlockEntity gate : GateBlockEntity.getClientGates(type)) {
             gate.setLogicalOpen(open);
+            gate.refreshAnimationState();
         }
     }
 
@@ -155,6 +156,9 @@ public class GateClientAPI {
         boolean open = getGlobalState(type);
         for (GateBlockEntity gate : GateBlockEntity.getClientGates(type)) {
             gate.setLogicalOpen(open);
+            if (gate.getLevel() != null && gate.getLevel().isClientSide) {
+                gate.refreshAnimationState();
+            }
         }
     }
 

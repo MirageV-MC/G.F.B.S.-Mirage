@@ -29,7 +29,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,6 +52,7 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import org.mirage.Client.ClientShake.ShakeQsClient;
 import org.mirage.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.Command.*;
 import org.mirage.Event.Dmr_Meltdown;
@@ -60,7 +63,10 @@ import org.mirage.Objects.ModBlockEntities;
 import org.mirage.Objects.ModEntities;
 import org.mirage.Objects.Structure.Registrar;
 import org.mirage.Objects.blocks.BlockRegistration;
+import org.mirage.Objects.blocks.Control.Gate.GateServerManager;
+import org.mirage.Objects.blocks.Control.Gate.GateType;
 import org.mirage.Objects.blocks.Control.Gate.GateTypes;
+import org.mirage.Objects.blocks.classs.Gate.GateBlock;
 import org.mirage.Objects.items.ItemRegistration;
 import org.mirage.Objects.renderer.Gate.GateBlockRenderer;
 import org.mirage.Objects.renderer.PictureBlockRenderer;
@@ -143,7 +149,6 @@ public class Mirage_gfbs {
         CreativeModeTabRegistration.CREATIVE_MODE_TABS.register(modEventBus);
 
         SOUND.register(modEventBus);
-        SoundEventRegister.SOUND_EVENTS.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -158,10 +163,10 @@ public class Mirage_gfbs {
             ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
                 GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
                 GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
-
-                GateClientAPI.applyStateToAllLoaded();
             });
         }
+
+        modEventBus.register(org.mirage.Tools.CountdownPopup.ClientBootstrap.class);
     }
 
     private void registryMirageObjects() {
@@ -201,7 +206,11 @@ public class Mirage_gfbs {
 
         event.enqueueWork(HexCrackerNetwork::register);
 
+        event.enqueueWork(org.mirage.Tools.CountdownPopup.ModNetworking::init);
+
         ClientToServer.registerChannel();
+
+        new ShakeQsClient();
     }
 
     private void onRegisterAllCommandExecs(){
@@ -212,22 +221,27 @@ public class Mirage_gfbs {
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
-                Dmr_Meltdown.execute(context, true);
+                Dmr_Meltdown.execute(context, true, true);
             });
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
-                Dmr_Meltdown.execute(context, false);
+                Dmr_Meltdown.execute(context, false, true);
+            });
+        });
+        Task.spawn(()->{
+            MirageGFBsEventCommand.registerHandler("dmr_meltdown_none_music", (context)->{
+                Dmr_Meltdown.execute(context, false, false);
             });
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
-                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false);
+                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
             });
         });
         Task.spawn(()->{
             MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
-                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true);
+                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
             });
         });
         Task.spawn(()->{
@@ -266,8 +280,19 @@ public class Mirage_gfbs {
                         // GATE UPD
                         var gfbs_gate_upd_joined_data = new CompoundTag();
 
-                        gfbs_gate_upd_joined_data.putBoolean("gate", GateClientAPI.getGlobalState(GateTypes.STANDARD));
-                        gfbs_gate_upd_joined_data.putBoolean("check_point_gate", GateClientAPI.getGlobalState(GateTypes.CHECK_POINT));
+                        var level = tickEvent.getServer().getLevel(Level.OVERWORLD);
+
+                        var pos1 = GateServerManager.getGatesInLevel(level, GateTypes.STANDARD).get(0);
+                        if (pos1 != null){
+                            BlockState state_gate = level.getBlockState(pos1);
+                            gfbs_gate_upd_joined_data.putBoolean("gate", state_gate.getValue(GateBlock.OPEN));
+                        }
+
+                        var pos2 = GateServerManager.getGatesInLevel(level, GateTypes.CHECK_POINT).get(0);
+                        if (pos2 != null){
+                            BlockState state_cp_gate = level.getBlockState(pos2);
+                            gfbs_gate_upd_joined_data.putBoolean("check_point_gate", state_cp_gate.getValue(GateBlock.OPEN));
+                        }
 
                         org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
 
@@ -321,6 +346,10 @@ public class Mirage_gfbs {
         FluorescentTubeCommandRegistry.onRegisterCommands(event);
 
         MirageGFBsGateApiCommand.register(event.getDispatcher());
+
+        MirageGFBsEnvExplosionCommand.register(event.getDispatcher());
+
+        CountdownCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;

@@ -8,7 +8,9 @@
     "MixinLevelForceRelightForFluorescentLamp"
   ],
   "client": [
-    "ChannelMixin"
+    "ChannelMixin",
+    "MixinCameraPublicAccess",
+    "MixinCameraShake"
   ],
   "injectors": {
     "defaultRequire": 1
