@@ -79,6 +79,7 @@ import org.mirage.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.Phenomenon.network.packets.GlobalSoundPlayer;
 import org.mirage.Tools.Task;
+import org.mirage.Utils.GateUtils;
 import org.mirage.Utils.SyncField.SyncManager;
 import org.mirage.Utils.WorldWriteQueue;
 import org.mirage.api.GateClientAPI;
@@ -282,17 +283,15 @@ public class Mirage_gfbs {
 
                         var level = tickEvent.getServer().getLevel(Level.OVERWORLD);
 
-                        var pos1 = GateServerManager.getGatesInLevel(level, GateTypes.STANDARD).get(0);
-                        if (pos1 != null){
-                            BlockState state_gate = level.getBlockState(pos1);
-                            gfbs_gate_upd_joined_data.putBoolean("gate", state_gate.getValue(GateBlock.OPEN));
-                        }
+                        GateUtils.getGateOpenState(level, GateTypes.STANDARD)
+                                .ifPresent(open ->
+                                        gfbs_gate_upd_joined_data.putBoolean("gate", open)
+                                );
 
-                        var pos2 = GateServerManager.getGatesInLevel(level, GateTypes.CHECK_POINT).get(0);
-                        if (pos2 != null){
-                            BlockState state_cp_gate = level.getBlockState(pos2);
-                            gfbs_gate_upd_joined_data.putBoolean("check_point_gate", state_cp_gate.getValue(GateBlock.OPEN));
-                        }
+                        GateUtils.getGateOpenState(level, GateTypes.CHECK_POINT)
+                                .ifPresent(open ->
+                                        gfbs_gate_upd_joined_data.putBoolean("check_point_gate", open)
+                                );
 
                         org.mirage.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
 
