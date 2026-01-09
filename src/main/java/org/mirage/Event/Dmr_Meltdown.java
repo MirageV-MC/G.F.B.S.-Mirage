@@ -279,46 +279,48 @@ public class Dmr_Meltdown {
                 AtomicBoolean isA = new AtomicBoolean(false);
 
                 CountdownEndHooks.register((player)->{
-                    if (isA.get()) return;
-                    isA.set(true);
+                    Task.spawn(()->{
+                        if (isA.get()) return;
+                        isA.set(true);
 
-                    CountdownEndHooks.unregisterAll();
+                        CountdownEndHooks.unregisterAll();
 
-                    executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_749446 voice @a ~ ~ ~ 1 1 1");
-                    isP1Evec = true;
+                        executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_749446 voice @a ~ ~ ~ 1 1 1");
+                        isP1Evec = true;
 
-                    Task.sleep(6100);
+                        Task.sleep(6100);
 
-                    implosion(allPlayers, false);
+                        implosion(allPlayers, false);
 
-                    CountdownEndHooks.resetAll();
+                        CountdownEndHooks.resetAll();
 
-                    executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_476694 voice @a ~ ~ ~ 1.5 1 1");
-                    NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                            "设施自动化管理系统错误.", 200);
+                        executeCommandAsync("playsound mirage_gfbs:faas_s.f_s_476694 voice @a ~ ~ ~ 1.5 1 1");
+                        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                                "设施自动化管理系统错误.", 200);
 
-                    Task.sleep(4428);
+                        Task.sleep(4428);
 
-                    executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
+                        executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
 
-                    executeCommandAsync("playsound mirage_gfbs:faas.faas_a_p voice @a ~ ~ ~ 0.9 1 1");
-                    NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                            "Severe syste-e-e-m damage-ge-ge-ge shutti-ti-ti-ti-ti-ting do-wn", 200);
-                    HexCrackerNetwork.stopOnAll(server);
+                        executeCommandAsync("playsound mirage_gfbs:faas.faas_a_p voice @a ~ ~ ~ 0.9 1 1");
+                        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                                "Severe syste-e-e-m damage-ge-ge-ge shutti-ti-ti-ti-ti-ting do-wn", 200);
+                        HexCrackerNetwork.stopOnAll(server);
 
-                    Task.sleep(7151);
+                        Task.sleep(7151);
 
-                    executeCommandAsync("playsound mirage_gfbs:alarm.a2.warning_a voice @a ~ ~ ~ 1 1 1");
+                        executeCommandAsync("playsound mirage_gfbs:alarm.a2.warning_a voice @a ~ ~ ~ 1 1 1");
 
-                    Task.sleep(6554);
+                        Task.sleep(6554);
 
-                    executeCommandAsync("playsound mirage_gfbs:faas.dmr_w_s_i_f_m voice @a ~ ~ ~ 1 1 1");
-                    NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                            "危险, DMR预计将在倒计时-5分钟后爆炸, 反应堆关机选项现已失效.", 200);
+                        executeCommandAsync("playsound mirage_gfbs:faas.dmr_w_s_i_f_m voice @a ~ ~ ~ 1 1 1");
+                        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                                "危险, DMR预计将在倒计时-5分钟后爆炸, 反应堆关机选项现已失效.", 200);
 
-                    Task.sleep(13000);
+                        Task.sleep(13000);
 
-                    p2(allPlayers, _serverLevel, isNewMusic, haveMusic);
+                        p2(allPlayers, _serverLevel, isNewMusic, haveMusic);
+                    });
                 });
             });
 
@@ -371,7 +373,6 @@ public class Dmr_Meltdown {
                 executeCommandAsync("playsound mirage_gfbs:human.dmr.p2 voice @a ~ ~ ~ 1 1 1");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Facilities.Supervisor.",
                         "所有反应堆操作小组人员注意, 这是我们阻止DMR彻底破坏的最后机会了, 爬到上层结构, 在1到3秒的时间内依次将所有燃料电池弹出, 以引发燃烧性熄火故障并关闭暗物质反应堆, 你还有1分钟的时间, 祝你好运.", 600);
-
 
                 Task.delay(()->{
                     server.execute(()->MirageGFBsGateApiCommand.exec(_serverLevel, true, "gate"));
