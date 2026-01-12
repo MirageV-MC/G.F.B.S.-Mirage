@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "org.mirage.mixin",
+  "package": "org.mirage.gfbs.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "mirage_gfbs.refmap.json",
   "mixins": [
