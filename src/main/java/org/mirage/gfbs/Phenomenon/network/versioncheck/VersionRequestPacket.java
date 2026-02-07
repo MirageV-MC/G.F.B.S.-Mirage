@@ -21,7 +21,7 @@ package org.mirage.gfbs.Phenomenon.network.versioncheck;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkEvent;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.function.Supplier;
 
@@ -42,7 +42,7 @@ public class VersionRequestPacket {
 
         ctx.enqueueWork(() -> {
             String clientVersion = ModList.get()
-                    .getModContainerById(Mirage_gfbs.MODID)
+                    .getModContainerById(MirageGFBS.MODID)
                     .map(c -> c.getModInfo().getVersion().toString())
                     .orElse("unknown");
 

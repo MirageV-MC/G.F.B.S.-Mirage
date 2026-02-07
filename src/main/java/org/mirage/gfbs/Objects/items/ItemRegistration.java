@@ -23,7 +23,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.gfbs.Objects.blocks.BlockRegistration;
 
-import static org.mirage.gfbs.Mirage_gfbs.ITEMS;
+import static org.mirage.gfbs.MirageGFBS.ITEMS;
 
 public class ItemRegistration {
     // 工具
@@ -59,6 +59,12 @@ public class ItemRegistration {
     public static final RegistryObject<Item> CHECK_POINT_GATE_ITEM =
             ITEMS.register("check_point_gate",
                     () -> new BlockItem(BlockRegistration.CHECK_POINT_GATE.get(), new Item.Properties()));
+
+    // 特效类
+
+    public static final RegistryObject<Item> RWL_ITEM =
+            ITEMS.register("rwl",
+                    () -> new BlockItem(BlockRegistration.RWL.get(), new Item.Properties()));
 
     // 建筑方块
 

@@ -34,13 +34,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL13;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.List;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class BlackHoleRenderer {
-    private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(Mirage_gfbs.MODID, "textures/entity/black_hole.png");
+    private static final ResourceLocation EVENT_HORIZON_TEXTURE = new ResourceLocation(MirageGFBS.MODID, "textures/entity/black_hole.png");
 
     // 最大支持的黑洞数量，与着色器中的数组大小保持一致
     private static final int MAX_BLACK_HOLES = 8;

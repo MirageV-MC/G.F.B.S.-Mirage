@@ -26,7 +26,7 @@ import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static org.mirage.gfbs.Mirage_gfbs.MODID;
+import static org.mirage.gfbs.MirageGFBS.MODID;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID)
 public class GravLensClient {

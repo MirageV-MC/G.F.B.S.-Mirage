@@ -28,8 +28,8 @@ import org.mirage.gfbs.ccio.block.CCIoBridgeBlock;
 import org.mirage.gfbs.ccio.blockentity.CCIoBridgeBlockEntity;
 import org.mirage.gfbs.ccio.item.CCIoBridgeBlockItem;
 
-import static org.mirage.gfbs.Mirage_gfbs.BLOCKS;
-import static org.mirage.gfbs.Mirage_gfbs.ITEMS;
+import static org.mirage.gfbs.MirageGFBS.BLOCKS;
+import static org.mirage.gfbs.MirageGFBS.ITEMS;
 import static org.mirage.gfbs.Objects.ModBlockEntities.BLOCK_ENTITIES;
 
 public final class CCIoRegistry {

@@ -1,0 +1,57 @@
+{
+  "vertex": "mirage_gfbs:rwl_volumelight",
+  "fragment": "mirage_gfbs:rwl_volumelight",
+  "samplers": [],
+  "attributes": [
+    "Position",
+    "Color",
+    "UV0"
+  ],
+  "uniforms": [
+    {
+      "name": "ModelViewMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0,0.0,0.0,0.0,
+        0.0,1.0,0.0,0.0,
+        0.0,0.0,1.0,0.0,
+        0.0,0.0,0.0,1.0
+      ]
+    },
+    {
+      "name": "ProjMat",
+      "type": "matrix4x4",
+      "count": 16,
+      "values": [
+        1.0,0.0,0.0,0.0,
+        0.0,1.0,0.0,0.0,
+        0.0,0.0,1.0,0.0,
+        0.0,0.0,0.0,1.0
+      ]
+    },
+    {
+      "name": "ColorModulator",
+      "type": "float",
+      "count": 4,
+      "values": [ 1.0, 1.0, 1.0, 1.0 ]
+    },
+    {
+      "name": "GameTime",
+      "type": "float",
+      "count": 1,
+      "values": [ 0.0 ]
+    },
+
+    { "name": "EdgeSoft0",    "type": "float", "count": 1, "values": [ 0.78 ] },
+    { "name": "EdgeSoft1",    "type": "float", "count": 1, "values": [ 1.02 ] },
+    { "name": "LongPow",      "type": "float", "count": 1, "values": [ 1.35 ] },
+    { "name": "FogDensity",   "type": "float", "count": 1, "values": [ 1.55 ] },
+    { "name": "CoreU",        "type": "float", "count": 1, "values": [ 0.12 ] },
+    { "name": "CoreBoost",    "type": "float", "count": 1, "values": [ 2.25 ] },
+    { "name": "NoiseScale",   "type": "float", "count": 1, "values": [ 10.0 ] },
+    { "name": "NoiseSpeed",   "type": "float", "count": 1, "values": [ 0.65 ] },
+    { "name": "NoiseAmount",  "type": "float", "count": 1, "values": [ 0.22 ] },
+    { "name": "ViewFadeDist", "type": "float", "count": 1, "values": [ 28.0 ] }
+  ]
+}

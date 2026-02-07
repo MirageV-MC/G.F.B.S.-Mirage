@@ -1,0 +1,108 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "mirage_gfbs:rwl_spotlight_simple",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "auxtargets": [
+        {
+          "name": "DepthSampler",
+          "id": "minecraft:depth"
+        }
+      ],
+      "uniforms": [
+        {
+          "name": "Enable",
+          "values": [
+            0.0
+          ]
+        },
+        {
+          "name": "Color",
+          "values": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "LampPos",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "LampDir",
+          "values": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "AngleCos",
+          "values": [
+            0.85
+          ]
+        },
+        {
+          "name": "MaxDist",
+          "values": [
+            16.0
+          ]
+        },
+        {
+          "name": "Intensity",
+          "values": [
+            0.95
+          ]
+        },
+        {
+          "name": "Softness",
+          "values": [
+            0.1
+          ]
+        },
+        {
+          "name": "InvViewProj",
+          "values": [
+            1.0,
+            0,
+            0,
+            0,
+            0,
+            1.0,
+            0,
+            0,
+            0,
+            0,
+            1.0,
+            0,
+            0,
+            0,
+            0,
+            1.0
+          ]
+        },
+        {
+          "name": "CameraPos",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "minecraft:blit",
+      "intarget": "swap",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

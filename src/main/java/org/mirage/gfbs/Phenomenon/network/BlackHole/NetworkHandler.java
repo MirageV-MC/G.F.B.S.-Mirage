@@ -21,14 +21,14 @@ package org.mirage.gfbs.Phenomenon.network.BlackHole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Phenomenon.network.packets.BlackHole.BlackHoleCreatePacket;
 import org.mirage.gfbs.Phenomenon.network.packets.BlackHole.BlackHoleRemovePacket;
 
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Mirage_gfbs.MODID, "main_black_hole"),
+            new ResourceLocation(MirageGFBS.MODID, "main_black_hole"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals

@@ -19,7 +19,7 @@ package org.mirage.gfbs.mixin;
  */
 
 import net.minecraft.client.Camera;
-import org.mirage.gfbs.Client.ClientShake.ICameraPublicAccess;
+import org.mirage.gfbs.accessor.ICameraPublicAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 

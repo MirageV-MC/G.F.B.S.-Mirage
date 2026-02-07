@@ -4,7 +4,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static org.mirage.gfbs.Mirage_gfbs.MODID;
+import static org.mirage.gfbs.MirageGFBS.MODID;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod

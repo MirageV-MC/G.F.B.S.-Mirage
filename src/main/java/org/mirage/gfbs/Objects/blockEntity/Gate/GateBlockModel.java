@@ -20,23 +20,23 @@ package org.mirage.gfbs.Objects.blockEntity.Gate;
 
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import software.bernie.geckolib.model.GeoModel;
 
 public class GateBlockModel extends GeoModel<GateBlockEntity> {
 
     @Override
     public @NotNull ResourceLocation getModelResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "geo/gate.geo.json");
+        return new ResourceLocation(MirageGFBS.MODID, "geo/gate.geo.json");
     }
 
     @Override
     public @NotNull ResourceLocation getTextureResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, animatable.getGateType().texturePath());
+        return new ResourceLocation(MirageGFBS.MODID, animatable.getGateType().texturePath());
     }
 
     @Override
     public @NotNull ResourceLocation getAnimationResource(GateBlockEntity animatable) {
-        return new ResourceLocation(Mirage_gfbs.MODID, "animations/gate.animation.json");
+        return new ResourceLocation(MirageGFBS.MODID, "animations/gate.animation.json");
     }
 }

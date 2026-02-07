@@ -23,7 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.PrivilegeManager;
 
 import java.nio.file.Files;
@@ -60,7 +60,7 @@ public class DeleteScriptCommand {
 
     private static boolean deleteScript(String scriptId, CommandSourceStack source) {
         try {
-            Path scriptPath = Mirage_gfbs.SCRIPTS_DIR.resolve(scriptId + ".txt");
+            Path scriptPath = MirageGFBS.SCRIPTS_DIR.resolve(scriptId + ".txt");
 
             if (!Files.exists(scriptPath)) {
                 return false;
@@ -76,7 +76,7 @@ public class DeleteScriptCommand {
 
     public static boolean deleteScriptDirectly(CommandSourceStack source, String scriptId) {
         try {
-            Path scriptPath = Mirage_gfbs.SCRIPTS_DIR.resolve(scriptId + ".txt");
+            Path scriptPath = MirageGFBS.SCRIPTS_DIR.resolve(scriptId + ".txt");
 
             if (!Files.exists(scriptPath)) {
                 source.sendFailure(Component.literal("脚本不存在: " + scriptId));

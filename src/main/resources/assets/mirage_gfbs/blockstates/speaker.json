@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "mirage_gfbs:obj/speaker"
+    },
+    "facing=south": {
+      "model": "mirage_gfbs:obj/speaker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "mirage_gfbs:obj/speaker",
+      "y": 270
+    },
+    "facing=east": {
+      "model": "mirage_gfbs:obj/speaker",
+      "y": 90
+    }
+  }
+}

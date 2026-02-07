@@ -32,14 +32,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Objects.blocks.Control.FluorescentTubeRegistry;
 import org.mirage.gfbs.Objects.blocks.Control.FluorescentTubeSavedData;
 import org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler;
 
 import java.util.Collection;
 
-@Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = MirageGFBS.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class FluorescentTubeCommandRegistry {
 
     private FluorescentTubeCommandRegistry() {}

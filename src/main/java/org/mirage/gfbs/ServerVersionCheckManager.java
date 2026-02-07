@@ -60,7 +60,7 @@ public class ServerVersionCheckManager {
         PENDING.remove(uuid);
 
         String serverVersion = ModList.get()
-                .getModContainerById(Mirage_gfbs.MODID)
+                .getModContainerById(MirageGFBS.MODID)
                 .map(c -> c.getModInfo().getVersion().toString())
                 .orElse("unknown");
 

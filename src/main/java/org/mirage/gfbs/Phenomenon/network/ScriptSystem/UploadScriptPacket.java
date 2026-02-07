@@ -22,7 +22,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.network.NetworkEvent;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,7 +53,7 @@ public class UploadScriptPacket {
             MinecraftServer server = ctx.get().getSender().getServer();
             server.execute(() -> {
                 try {
-                    Path scriptPath = Mirage_gfbs.SCRIPTS_DIR.resolve(scriptId + ".txt");
+                    Path scriptPath = MirageGFBS.SCRIPTS_DIR.resolve(scriptId + ".txt");
                     Files.write(scriptPath, fileData, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
                     ctx.get().getSender().sendSystemMessage(

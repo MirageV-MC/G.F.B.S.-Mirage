@@ -41,7 +41,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static org.mirage.gfbs.Mirage_gfbs.MODID;
+import static org.mirage.gfbs.MirageGFBS.MODID;
 
 public class SyncManager {
 

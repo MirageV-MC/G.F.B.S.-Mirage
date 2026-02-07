@@ -23,7 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.gfbs.Phenomenon.network.ScriptSystem.UploadScriptPacket;
 
@@ -32,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = MirageGFBS.MODID, value = Dist.CLIENT)
 public class ClientHandler {
     public static void uploadScript(String scriptId, Path filePath) {
         try {

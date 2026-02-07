@@ -23,7 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.List;
 
@@ -32,14 +32,14 @@ public class ServerEventSender {
         try {
             if (!source.hasPermission(2)) {
                 source.sendFailure(Component.literal("你没有权限发送事件."));
-                Mirage_gfbs.LOGGER.warn("Player {} attempted to send an event but does not have permission.", source.getTextName());
+                MirageGFBS.LOGGER.warn("Player {} attempted to send an event but does not have permission.", source.getTextName());
                 return;
             }
 
             List<ServerPlayer> targets = resolveSelector(source, selector);
             if (targets.isEmpty()) {
                 source.sendFailure(Component.literal("未找到目标玩家."));
-                Mirage_gfbs.LOGGER.warn("No target player found using selector {}.", selector);
+                MirageGFBS.LOGGER.warn("No target player found using selector {}.", selector);
                 return;
             }
 
@@ -47,9 +47,9 @@ public class ServerEventSender {
                 NetworkHandler.sendToPlayer(player, eventId, data);
             }
 
-            Mirage_gfbs.LOGGER.info("Successfully sent event: {} to {} players through selector {}.", selector, targets.size(), eventId);
+            MirageGFBS.LOGGER.info("Successfully sent event: {} to {} players through selector {}.", selector, targets.size(), eventId);
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("An error occurred while sending the server event: {}.", eventId, e);
+            MirageGFBS.LOGGER.error("An error occurred while sending the server event: {}.", eventId, e);
             source.sendFailure(Component.literal("发送事件时发生错误: " + e.getMessage()));
         }
     }
@@ -85,7 +85,7 @@ public class ServerEventSender {
                 return player != null ? List.of(player) : List.of();
             }
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("An error occurred while parsing the selector: {}", selector, e);
+            MirageGFBS.LOGGER.error("An error occurred while parsing the selector: {}", selector, e);
             return List.of();
         }
     }

@@ -29,11 +29,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 
-@Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MirageGFBS.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ResLogger {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private static final String TARGET_MOD_ID = Mirage_gfbs.MODID;
+    private static final String TARGET_MOD_ID = MirageGFBS.MODID;
 
     @SubscribeEvent
     public static void onRegisterReloadListeners(RegisterClientReloadListenersEvent event) {

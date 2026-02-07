@@ -31,9 +31,10 @@ import org.mirage.gfbs.Objects.blocks.classs.FlBlock.RedAlarmLampBlock;
 import org.mirage.gfbs.Objects.blocks.classs.FlBlock.WhiteCubeLampBlock;
 import org.mirage.gfbs.Objects.blocks.classs.Gate.GateBlock;
 import org.mirage.gfbs.Objects.blocks.Control.Gate.GateTypes;
+import org.mirage.gfbs.advanced.rwl.RotatingWarningLightBlock;
 
-import static org.mirage.gfbs.Mirage_gfbs.BLOCKS;
-import static org.mirage.gfbs.Mirage_gfbs.MODID;
+import static org.mirage.gfbs.MirageGFBS.BLOCKS;
+import static org.mirage.gfbs.MirageGFBS.MODID;
 
 public class BlockRegistration {
     public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
@@ -70,6 +71,15 @@ public class BlockRegistration {
                                     .lightLevel(state -> 15)
                                     .noOcclusion()
                     ));
+
+    // 特效类
+
+    public static final RegistryObject<Block> RWL =
+            BLOCKS.register("rwl",
+                    () -> new RotatingWarningLightBlock(
+                            BlockBehaviour.Properties.of()
+                    )
+            );
 
     // 辅助
 

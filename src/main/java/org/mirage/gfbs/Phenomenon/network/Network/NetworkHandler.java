@@ -25,7 +25,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.Optional;
 
@@ -36,7 +36,7 @@ public class NetworkHandler {
 
     public static void register() {
         CHANNEL = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(Mirage_gfbs.MODID, "network_system_miragev"),
+                new ResourceLocation(MirageGFBS.MODID, "network_system_miragev"),
                 () -> PROTOCOL_VERSION,
                 PROTOCOL_VERSION::equals,
                 PROTOCOL_VERSION::equals
@@ -48,7 +48,7 @@ public class NetworkHandler {
                 EventPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT));
 
-        Mirage_gfbs.LOGGER.info("Successfully registered network channel");
+        MirageGFBS.LOGGER.info("Successfully registered network channel");
     }
 
     public static void sendToPlayer(ServerPlayer player, String eventId, CompoundTag data) {
@@ -59,33 +59,33 @@ public class NetworkHandler {
         try {
             CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new EventPacket(eventId, data));
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("Error occurred while sending event to player: {}", eventId, e);
+            MirageGFBS.LOGGER.error("Error occurred while sending event to player: {}", eventId, e);
         }
     }
 
     public static void sendToAll(String eventId, CompoundTag data) {
         if (CHANNEL == null) {
-            Mirage_gfbs.LOGGER.error("Network channel not initialized. Cannot send event: {}", eventId);
+            MirageGFBS.LOGGER.error("Network channel not initialized. Cannot send event: {}", eventId);
             return;
         }
 
         try {
             CHANNEL.send(PacketDistributor.ALL.noArg(), new EventPacket(eventId, data));
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
+            MirageGFBS.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
         }
     }
 
     public static void sendToAll(String eventId) {
         if (CHANNEL == null) {
-            Mirage_gfbs.LOGGER.error("Network channel not initialized. Cannot send event: {}", eventId);
+            MirageGFBS.LOGGER.error("Network channel not initialized. Cannot send event: {}", eventId);
             return;
         }
 
         try {
             CHANNEL.send(PacketDistributor.ALL.noArg(), new EventPacket(eventId, new CompoundTag()));
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
+            MirageGFBS.LOGGER.error("Error occurred while sending event to all players: {}", eventId, e);
         }
     }
 }
