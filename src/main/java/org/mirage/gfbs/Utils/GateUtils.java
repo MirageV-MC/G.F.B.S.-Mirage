@@ -2,7 +2,7 @@ package org.mirage.gfbs.Utils;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Objects.blocks.Control.Gate.GateServerManager;
 import org.mirage.gfbs.Objects.blocks.Control.Gate.GateType;
 import org.mirage.gfbs.Objects.blocks.classs.Gate.GateBlock;
@@ -38,13 +38,13 @@ public final class GateUtils {
 
         var gates = GateServerManager.getGatesInLevel(level, type);
         if (gates == null || gates.isEmpty()) {
-            Mirage_gfbs.LOGGER.warn("GATE IS NOT FOUND.");
+            MirageGFBS.LOGGER.warn("GATE IS NOT FOUND.");
             return Optional.empty();
         }
 
         var pos = gates.get(0);
         if (pos == null) {
-            Mirage_gfbs.LOGGER.warn("GATE IS NOT FOUND....");
+            MirageGFBS.LOGGER.warn("GATE IS NOT FOUND....");
             return Optional.empty();
         }
 

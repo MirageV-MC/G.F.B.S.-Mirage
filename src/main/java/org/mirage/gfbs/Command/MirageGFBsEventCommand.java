@@ -23,7 +23,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +46,7 @@ public class MirageGFBsEventCommand {
                 try {
                     handler.accept(context);
                 } catch (Exception e) {
-                    Mirage_gfbs.LOGGER.error("执行事件处理器时发生异常，事件ID: " + eventId, e);
+                    MirageGFBS.LOGGER.error("执行事件处理器时发生异常，事件ID: " + eventId, e);
                     context.sendFailure("执行事件时发生异常: " + e.getMessage());
                 }
             });
@@ -77,7 +77,7 @@ public class MirageGFBsEventCommand {
             try {
                 source.sendSuccess(() -> Component.literal(message), false);
             } catch (Exception e) {
-                Mirage_gfbs.LOGGER.error("发送成功消息时发生异常", e);
+                MirageGFBS.LOGGER.error("发送成功消息时发生异常", e);
             }
         }
 
@@ -85,7 +85,7 @@ public class MirageGFBsEventCommand {
             try {
                 source.sendFailure(Component.literal(message));
             } catch (Exception e) {
-                Mirage_gfbs.LOGGER.error("发送失败消息时发生异常", e);
+                MirageGFBS.LOGGER.error("发送失败消息时发生异常", e);
             }
         }
     }
@@ -110,11 +110,11 @@ public class MirageGFBsEventCommand {
                                                         return 0;
                                                     }
                                                 } catch (Exception e) {
-                                                    Mirage_gfbs.LOGGER.error("命令执行时发生异常", e);
+                                                    MirageGFBS.LOGGER.error("命令执行时发生异常", e);
                                                     try {
                                                         context.getSource().sendFailure(Component.literal("命令执行失败: " + e.getMessage()));
                                                     } catch (Exception ex) {
-                                                        Mirage_gfbs.LOGGER.error("发送命令执行失败消息时发生异常", ex);
+                                                        MirageGFBS.LOGGER.error("发送命令执行失败消息时发生异常", ex);
                                                     }
                                                     return 0;
                                                 }
@@ -140,11 +140,11 @@ public class MirageGFBsEventCommand {
                                             }
                                             return 1;
                                         } catch (Exception e) {
-                                            Mirage_gfbs.LOGGER.error("获取事件列表时发生异常", e);
+                                            MirageGFBS.LOGGER.error("获取事件列表时发生异常", e);
                                             try {
                                                 context.getSource().sendFailure(Component.literal("获取事件列表失败: " + e.getMessage()));
                                             } catch (Exception ex) {
-                                                Mirage_gfbs.LOGGER.error("发送失败消息时发生异常", ex);
+                                                MirageGFBS.LOGGER.error("发送失败消息时发生异常", ex);
                                             }
                                             return 0;
                                         }
@@ -152,7 +152,7 @@ public class MirageGFBsEventCommand {
                             )
             );
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("注册命令时发生异常", e);
+            MirageGFBS.LOGGER.error("注册命令时发生异常", e);
             throw e;
         }
     }

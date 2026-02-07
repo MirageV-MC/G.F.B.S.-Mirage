@@ -1,0 +1,21 @@
+{
+  "loader": "forge:obj",
+  "model": "mirage_gfbs:models/obj/speaker.obj",
+  "flip-v": true,
+  "detectCullableFaces": false,
+  "ambientToDiffuseLighting": true,
+  "shadeQuads": true,
+  "gui_light": "front",
+
+  "textures": {
+    "particle": "mirage_gfbs:block/speaker/speaker1_diff",
+    "speaker1_diff": "mirage_gfbs:block/speaker/speaker1_diff"
+  },
+
+  "custom": {
+    "flip-v": true,
+    "shader": false,
+    "matOverride": false,
+    "ignore_missing_textures": true
+  }
+}

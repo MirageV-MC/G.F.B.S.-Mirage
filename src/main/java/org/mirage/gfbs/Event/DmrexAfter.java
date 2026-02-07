@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import static org.mirage.gfbs.CommandExecutor.executeCommandAsync;
-import static org.mirage.gfbs.Mirage_gfbs.server;
+import static org.mirage.gfbs.MirageGFBS.server;
 
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod

@@ -39,7 +39,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkEvent;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Phenomenon.network.packets.GlobalSoundPlayer;
 import org.mirage.gfbs.PrivilegeManager;
 
@@ -302,7 +302,7 @@ public class GlobalSoundPlayCommand {
         try {
             GlobalSoundPlayer.playToAllClients(player, soundId, soundSource, volume);
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("播放全局声音失败", e);
+            MirageGFBS.LOGGER.error("播放全局声音失败", e);
         }
     }
 
@@ -318,7 +318,7 @@ public class GlobalSoundPlayCommand {
                     new SoundCommandPacket(soundId, soundSource, volume)
             );
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("请求全局声音失败", e);
+            MirageGFBS.LOGGER.error("请求全局声音失败", e);
         }
     }
 }

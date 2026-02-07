@@ -30,14 +30,14 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.Random;
 
 /**
  * F.A.A.S.临时关机代码破解器
  */
-@Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = MirageGFBS.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class HexCrackerUI {
 
     private static final HexCrackerUI INSTANCE = new HexCrackerUI();
@@ -63,7 +63,7 @@ public class HexCrackerUI {
     }
 
 
-    @Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+    @Mod.EventBusSubscriber(modid = MirageGFBS.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onRegisterOverlays(RegisterGuiOverlaysEvent event) {

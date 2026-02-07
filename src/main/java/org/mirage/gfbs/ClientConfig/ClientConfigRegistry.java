@@ -20,7 +20,7 @@ package org.mirage.gfbs.ClientConfig;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -50,7 +50,7 @@ public final class ClientConfigRegistry {
     private static final Map<String, List<ClientConfigChangeListener<?>>> LISTENERS = new ConcurrentHashMap<>();
     private static final List<Consumer<AnyChange>> ANY_LISTENERS = Collections.synchronizedList(new ArrayList<>());
 
-    private static final Path FILE = Mirage_gfbs.CONFIG_DIR.resolve("gfbs-client-config.json");
+    private static final Path FILE = MirageGFBS.CONFIG_DIR.resolve("gfbs-client-config.json");
 
     private static boolean loadedOnce = false;
 

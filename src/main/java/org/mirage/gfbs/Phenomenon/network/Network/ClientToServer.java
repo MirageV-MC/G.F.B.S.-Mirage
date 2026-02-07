@@ -27,7 +27,7 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 
 public final class ClientToServer {
 
-    public static final String MOD_ID = Mirage_gfbs.MODID;
+    public static final String MOD_ID = MirageGFBS.MODID;
 
     private static final String PROTOCOL_VERSION = "1";
 
@@ -166,7 +166,7 @@ public final class ClientToServer {
 
                 action.accept(player, msg.data());
             } catch (Exception e) {
-                Mirage_gfbs.LOGGER.error("{}{}", e + "\n", Arrays.toString(e.getStackTrace()));
+                MirageGFBS.LOGGER.error("{}{}", e + "\n", Arrays.toString(e.getStackTrace()));
             }
         });
         ctx.setPacketHandled(true);

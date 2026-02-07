@@ -25,7 +25,7 @@ import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Tools.HexCrackerUI;
 
 import java.util.function.Supplier;
@@ -35,7 +35,7 @@ public class HexCrackerNetwork {
     private static final String PROTOCOL_VERSION = "1";
 
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(Mirage_gfbs.MODID, "mirage_hexcracker"),
+            new ResourceLocation(MirageGFBS.MODID, "mirage_hexcracker"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals

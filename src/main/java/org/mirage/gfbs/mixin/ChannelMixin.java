@@ -21,9 +21,12 @@ package org.mirage.gfbs.mixin;
 import com.mojang.blaze3d.audio.Channel;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.EXTEfx;
+import org.mirage.gfbs.Client.audio.BroadSystemAudioMarker;
+import org.mirage.gfbs.Client.audio.MirageEqualizer;
 import org.mirage.gfbs.Client.audio.MirageReverb;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.ClientConfig.instance.GFBSClientAudioConfig;
+import org.mirage.gfbs.accessor.ChannelMixinAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,12 +34,25 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Channel.class)
-public abstract class ChannelMixin {
+public abstract class ChannelMixin implements ChannelMixinAccessor {
 
     @Shadow private int source;
 
+    private boolean mirage$gfbs_isBroadSystemSound = false;
+    private boolean mirage$gfbs_effectsApplied = false;
+
     @Inject(method = "play", at = @At("HEAD"))
-    private void mirage$gfbs_applyReverb(CallbackInfo ci) {
+    private void mirage$gfbs_applyAudioEffects(CallbackInfo ci) {
+        if (BroadSystemAudioMarker.isBroadSystemSound()) {
+            this.mirage$gfbs_isBroadSystemSound = true;
+            BroadSystemAudioMarker.clear();
+        }
+
+        applyReverbEffect();
+        applyEqualizerEffect();
+    }
+
+    private void applyReverbEffect() {
         if (!GFBSClientConfigAPI.get(GFBSClientAudioConfig.ENABLE_REVERB)) {
             return;
         }
@@ -58,5 +74,41 @@ public abstract class ChannelMixin {
 
         AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL11.AL_TRUE);
         AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL11.AL_TRUE);
+    }
+
+    private void applyEqualizerEffect() {
+        if (!mirage$gfbs_isBroadSystemSound) {
+            return;
+        }
+
+        MirageEqualizer.ensureInit();
+
+        int eqAuxSlot = MirageEqualizer.getAuxSlot();
+        if (eqAuxSlot == 0) {
+            System.out.println("[MirageGFBS] Equalizer aux slot is 0, effect not applied");
+            return;
+        }
+
+        AL11.alSource3i(
+                this.source,
+                EXTEfx.AL_AUXILIARY_SEND_FILTER,
+                eqAuxSlot,
+                1,
+                EXTEfx.AL_FILTER_NULL
+        );
+
+        int error = AL11.alGetError();
+        if (error != AL11.AL_NO_ERROR) {
+            System.err.println("[MirageGFBS] Failed to apply equalizer effect: " + error);
+        } else {
+            System.out.println("[MirageGFBS] Equalizer effect applied to broadcast sound (source=" + this.source + ", auxSlot=" + eqAuxSlot + ")");
+        }
+
+        mirage$gfbs_effectsApplied = true;
+    }
+
+    @Override
+    public void mirage$gfbs_markAsBroadSystemSound() {
+        this.mirage$gfbs_isBroadSystemSound = true;
     }
 }

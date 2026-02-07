@@ -28,7 +28,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.gfbs.PrivilegeManager;
 
@@ -85,14 +85,14 @@ public class CameraShakeCommand {
             }
 
             if (targets.size() == 1) {
-                Mirage_gfbs.LOGGER.debug("已向 " + targets.iterator().next().getDisplayName().getString() + " 发送相机震动指令");
+                MirageGFBS.LOGGER.debug("已向 " + targets.iterator().next().getDisplayName().getString() + " 发送相机震动指令");
             } else {
-                Mirage_gfbs.LOGGER.debug("已向 " + targets.size() + " 名玩家发送相机震动指令");
+                MirageGFBS.LOGGER.debug("已向 " + targets.size() + " 名玩家发送相机震动指令");
             }
 
             return Command.SINGLE_SUCCESS;
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.debug("执行命令时发生错误: " + e.getMessage());
+            MirageGFBS.LOGGER.debug("执行命令时发生错误: " + e.getMessage());
             return 0;
         }
     }
@@ -123,7 +123,7 @@ public class CameraShakeCommand {
             CameraShakeModule.sendShakeCommand(player, speed, maxAmplitude, duration, riseTime, fallTime);
             return true;
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("触发相机震动失败", e);
+            MirageGFBS.LOGGER.error("触发相机震动失败", e);
             return false;
         }
     }
@@ -132,7 +132,7 @@ public class CameraShakeCommand {
         try {
             CameraShakeModule.sendShakeStopCommand(player);
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("停止相机震动失败", e);
+            MirageGFBS.LOGGER.error("停止相机震动失败", e);
         }
     }
 }

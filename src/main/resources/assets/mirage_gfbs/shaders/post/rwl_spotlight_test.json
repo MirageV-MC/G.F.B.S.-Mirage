@@ -1,0 +1,46 @@
+{
+  "targets": [
+    "swap"
+  ],
+  "passes": [
+    {
+      "name": "mirage_gfbs:rwl_spotlight_test",
+      "intarget": "minecraft:main",
+      "outtarget": "swap",
+      "uniforms": [
+        {
+          "name": "Enable",
+          "values": [
+            0.0
+          ]
+        },
+        {
+          "name": "Color",
+          "values": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "ScreenSize",
+          "values": [
+            1920.0,
+            1080.0
+          ]
+        },
+        {
+          "name": "Intensity",
+          "values": [
+            0.5
+          ]
+        }
+      ]
+    },
+    {
+      "name": "minecraft:blit",
+      "intarget": "swap",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

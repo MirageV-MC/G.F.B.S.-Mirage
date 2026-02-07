@@ -27,7 +27,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 
 import java.util.Optional;
 
-import static org.mirage.gfbs.Mirage_gfbs.MODID;
+import static org.mirage.gfbs.MirageGFBS.MODID;
 
 public class ModNetwork {
 

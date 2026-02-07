@@ -23,14 +23,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 public final class PacketHandler {
 
     private static final String PROTOCOL_VERSION = "1";
 
     private static final SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(Mirage_gfbs.MODID, "notifications"))
+            .named(new ResourceLocation(MirageGFBS.MODID, "notifications"))
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
@@ -51,8 +51,8 @@ public final class PacketHandler {
                 .consumerMainThread(NotificationPacket::handle)
                 .add();
 
-        Mirage_gfbs.LOGGER.info("Registered notification network channel: {}",
-                new ResourceLocation(Mirage_gfbs.MODID, "notifications"));
+        MirageGFBS.LOGGER.info("Registered notification network channel: {}",
+                new ResourceLocation(MirageGFBS.MODID, "notifications"));
     }
 
     public static void sendToPlayer(NotificationPacket packet, ServerPlayer player) {

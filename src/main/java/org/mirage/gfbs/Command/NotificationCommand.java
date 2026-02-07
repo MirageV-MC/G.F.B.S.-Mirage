@@ -25,7 +25,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Phenomenon.network.Notification.NotificationPacket;
 import org.mirage.gfbs.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.gfbs.PrivilegeManager;
@@ -77,7 +77,7 @@ public class NotificationCommand {
                     player
             );
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("发送通知失败", e);
+            MirageGFBS.LOGGER.error("发送通知失败", e);
         }
     }
 

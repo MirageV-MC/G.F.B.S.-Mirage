@@ -25,6 +25,7 @@ import net.minecraftforge.registries.RegistryObject;
 import org.mirage.gfbs.Objects.blockEntity.Gate.GateBlockEntity;
 import org.mirage.gfbs.Objects.blockEntity.QSTrademarkPictureBlockEntity;
 import org.mirage.gfbs.Objects.blocks.BlockRegistration;
+import org.mirage.gfbs.advanced.rwl.RotatingWarningLightBlockEntity;
 
 public class ModBlockEntities {
 
@@ -48,4 +49,8 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<QSTrademarkPictureBlockEntity>> QS_TRADEMARK_PICTURE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("qs_trademark_picture",
                     () -> BlockEntityType.Builder.of(QSTrademarkPictureBlockEntity::new, BlockRegistration.QS_TRADEMARK_PICTURE_BLOCK.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<RotatingWarningLightBlockEntity>> RWL_ENTITY =
+            BLOCK_ENTITIES.register("rwl",
+                    () -> BlockEntityType.Builder.of(RotatingWarningLightBlockEntity::new, BlockRegistration.RWL.get()).build(null));
 }

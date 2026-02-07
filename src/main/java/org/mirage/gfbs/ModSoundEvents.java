@@ -39,7 +39,7 @@ import java.util.Map;
 
 public class ModSoundEvents {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
-            DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Mirage_gfbs.MODID);
+            DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MirageGFBS.MODID);
 
     private static final Map<String, RegistryObject<SoundEvent>> SOUND_EVENT_MAP = new HashMap<>();
 
@@ -48,11 +48,11 @@ public class ModSoundEvents {
     }
 
     private static void loadAndRegisterFromSoundsJson() {
-        String path = "/assets/" + Mirage_gfbs.MODID + "/sounds.json";
+        String path = "/assets/" + MirageGFBS.MODID + "/sounds.json";
 
         try (InputStream is = ModSoundEvents.class.getResourceAsStream(path)) {
             if (is == null) {
-                Mirage_gfbs.LOGGER.warn("Cannot find " + path + ", will not register automatically.");
+                MirageGFBS.LOGGER.warn("Cannot find " + path + ", will not register automatically.");
                 return;
             }
 
@@ -68,10 +68,10 @@ public class ModSoundEvents {
                     registerSound(key);
                 }
 
-                Mirage_gfbs.LOGGER.info("Automatically registered " + SOUND_EVENT_MAP.size() + " SoundEvents from sounds.json.");
+                MirageGFBS.LOGGER.info("Automatically registered " + SOUND_EVENT_MAP.size() + " SoundEvents from sounds.json.");
             }
         } catch (Exception e) {
-            Mirage_gfbs.LOGGER.error("Failed to automatically register SoundEvent from sounds.json:");
+            MirageGFBS.LOGGER.error("Failed to automatically register SoundEvent from sounds.json:");
             e.printStackTrace();
         }
     }
@@ -79,7 +79,7 @@ public class ModSoundEvents {
     private static void registerSound(String name) {
         RegistryObject<SoundEvent> reg = SOUND_EVENTS.register(
                 name,
-                () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(Mirage_gfbs.MODID, name))
+                () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(MirageGFBS.MODID, name))
         );
         SOUND_EVENT_MAP.put(name, reg);
     }

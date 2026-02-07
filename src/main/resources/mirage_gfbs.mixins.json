@@ -10,7 +10,10 @@
   "client": [
     "ChannelMixin",
     "MixinCameraPublicAccess",
-    "MixinCameraShake"
+    "MixinCameraShake",
+    "PostChainAccessor",
+    "PostPassAccessor",
+    "SoundEngineMixin"
   ],
   "injectors": {
     "defaultRequire": 1

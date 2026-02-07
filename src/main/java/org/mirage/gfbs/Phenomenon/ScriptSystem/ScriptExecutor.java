@@ -21,7 +21,7 @@ package org.mirage.gfbs.Phenomenon.ScriptSystem;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -107,7 +107,7 @@ public class ScriptExecutor {
 
         localVariables.putAll(initialVars);
 
-        Path scriptPath = Mirage_gfbs.SCRIPTS_DIR.resolve(scriptId + ".txt");
+        Path scriptPath = MirageGFBS.SCRIPTS_DIR.resolve(scriptId + ".txt");
 
         if (!Files.exists(scriptPath)) {
             source.sendFailure(Component.literal("脚本不存在: " + scriptId));

@@ -21,7 +21,7 @@ package org.mirage.gfbs.Tools.CountdownPopup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 
 public final class ModNetworking {
     private ModNetworking() {}
@@ -31,7 +31,7 @@ public final class ModNetworking {
 
     public static void init() {
         CHANNEL = NetworkRegistry.newSimpleChannel(
-                new ResourceLocation(Mirage_gfbs.MODID, "gfbs_cp_net"),
+                new ResourceLocation(MirageGFBS.MODID, "gfbs_cp_net"),
                 () -> PROTOCOL,
                 PROTOCOL::equals,
                 PROTOCOL::equals

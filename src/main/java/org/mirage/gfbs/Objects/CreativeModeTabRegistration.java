@@ -27,13 +27,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.mirage.gfbs.Mirage_gfbs;
+import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.Objects.items.ItemRegistration;
+import org.mirage.gfbs.advanced.broadsystem.BroadSystemRegistry;
 import org.mirage.gfbs.ccio.CCIoRegistry;
 
-@Mod.EventBusSubscriber(modid = Mirage_gfbs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = MirageGFBS.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CreativeModeTabRegistration {
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Mirage_gfbs.MODID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MirageGFBS.MODID);
     
     public static final RegistryObject<CreativeModeTab> GFBS_TAB = CREATIVE_MODE_TABS.register("mirage_gfbs_tab", () -> CreativeModeTab.builder()
             .title(Component.literal("G.F.B.S."))
@@ -53,8 +54,12 @@ public class CreativeModeTabRegistration {
             event.accept(ItemRegistration.GATE_ITEM.get());
             event.accept(ItemRegistration.CHECK_POINT_GATE_ITEM.get());
 
+            event.accept(ItemRegistration.RWL_ITEM.get());
+
             event.accept(ItemRegistration.QS_WALL_ITE.get());
             event.accept(ItemRegistration.QS_TRADEMARK_PICTURE_ITEM.get());
+
+            event.accept(BroadSystemRegistry.SPEAKER_BLOCK_ITEM.get());
 
             event.accept(CCIoRegistry.CC_IO_BRIDGE_ITEM.get());
         }

@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -74,10 +73,12 @@ import org.mirage.gfbs.Phenomenon.network.Network.ClientToServer;
 import org.mirage.gfbs.Phenomenon.network.Notification.PacketHandler;
 import org.mirage.gfbs.Phenomenon.network.ScriptSystem.NetworkHandler;
 import org.mirage.gfbs.Phenomenon.network.packets.GlobalSoundPlayer;
-import org.mirage.gfbs.Tools.Task;
 import org.mirage.gfbs.Utils.GateUtils;
 import org.mirage.gfbs.Utils.SyncField.SyncManager;
 import org.mirage.gfbs.Utils.WorldWriteQueue;
+import org.mirage.gfbs.advanced.broadsystem.BroadSystemNetwork;
+import org.mirage.gfbs.advanced.broadsystem.BroadSystemRegistry;
+import org.mirage.gfbs.advanced.rwl.client.RotatingWarningLightBER;
 import org.mirage.gfbs.api.GateClientAPI;
 
 import org.mirage.gfbs.ccio.CCIoInit;
@@ -89,8 +90,8 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.nio.file.Path;
 
-@Mod(Mirage_gfbs.MODID)
-public class Mirage_gfbs {
+@Mod(MirageGFBS.MODID)
+public class MirageGFBS {
 
     public static final String MODID = "mirage_gfbs";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -106,7 +107,7 @@ public class Mirage_gfbs {
     public static final DeferredRegister<SoundEvent> SOUND = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public Mirage_gfbs() {
+    public MirageGFBS() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         LOGGER.info("MOD "+MODID+" INIT...");
@@ -144,12 +145,13 @@ public class Mirage_gfbs {
         CREATIVE_MODE_TABS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CreativeModeTabRegistration.CREATIVE_MODE_TABS.register(modEventBus);
+        BroadSystemRegistry.BLOCK_ENTITIES.register(modEventBus);
 
         SOUND.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.register(this);
+        BroadSystemRegistry.init();
 
-        modEventBus.addListener(this::addCreative);
+        MinecraftForge.EVENT_BUS.register(this);
 
         GlobalSoundPlayer.registerNetworkMessages();
         GlobalSoundPlayCommand.registerNetworkMessages();
@@ -205,50 +207,38 @@ public class Mirage_gfbs {
 
         event.enqueueWork(org.mirage.gfbs.Tools.CountdownPopup.ModNetworking::init);
 
+        event.enqueueWork(() -> {
+            LOGGER.info("Registering BroadSystem network channel...");
+            BroadSystemNetwork.register();
+        });
+
         ClientToServer.registerChannel();
 
         new ShakeQsClient();
     }
 
     private void onRegisterAllCommandExecs(){
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("main90_alpha", (context)->{
-                Main90Alpha.execute(context);
-            });
+        MirageGFBsEventCommand.registerHandler("main90_alpha", (context)->{
+            Main90Alpha.execute(context);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
-                Dmr_Meltdown.execute(context, true, true);
-            });
+        MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
+            Dmr_Meltdown.execute(context, true, true);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
-                Dmr_Meltdown.execute(context, false, true);
-            });
+        MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
+            Dmr_Meltdown.execute(context, false, true);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown_none_music", (context)->{
-                Dmr_Meltdown.execute(context, false, false);
-            });
+        MirageGFBsEventCommand.registerHandler("dmr_meltdown_none_music", (context)->{
+            Dmr_Meltdown.execute(context, false, false);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
-                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
-            });
+        MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
+            Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
-                Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
-            });
+        MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
+            Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
         });
-        Task.spawn(()->{
-            MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
-                DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel());
-            }));
-        });
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
+            DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel());
+        }));
     }
 
     @SubscribeEvent
@@ -345,6 +335,10 @@ public class Mirage_gfbs {
         MirageGFBsEnvExplosionCommand.register(event.getDispatcher());
 
         CountdownCommand.register(event.getDispatcher());
+
+        MirageGFBsRWLCommand.register(event.getDispatcher());
+
+        MirageGFBsBroadSystemCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;
@@ -360,11 +354,18 @@ public class Mirage_gfbs {
 
             customFogModule = new CustomFogModule();
 
+            // RENDER REGISTER #114
+
             BlockEntityRenderers.register(ModBlockEntities.QS_TRADEMARK_PICTURE_BLOCK_ENTITY.get(), PictureBlockRenderer::new);
 
             // GATE
             BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
             BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), GateBlockRenderer::new);
+
+            // RWL
+            BlockEntityRenderers.register(ModBlockEntities.RWL_ENTITY.get(), RotatingWarningLightBER::new);
+
+            // END #114
 
             GateClientAPI.register();
 
