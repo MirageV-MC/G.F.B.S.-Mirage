@@ -9,13 +9,13 @@
       "outtarget": "swap",
       "uniforms": [
         {
-          "name": "Enable",
+          "name": "Spot1_Enable",
           "values": [
             0.0
           ]
         },
         {
-          "name": "Color",
+          "name": "Spot1_Color",
           "values": [
             1.0,
             0.0,
@@ -23,16 +23,97 @@
           ]
         },
         {
-          "name": "ScreenSize",
+          "name": "Spot1_Pos",
           "values": [
-            1920.0,
-            1080.0
+            0.0,
+            0.0,
+            0.0
           ]
         },
         {
-          "name": "Intensity",
+          "name": "Spot1_Dir",
           "values": [
-            0.5
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "Spot1_AngleCos",
+          "values": [
+            0.95
+          ]
+        },
+        {
+          "name": "Spot1_MaxDist",
+          "values": [
+            16.0
+          ]
+        },
+        {
+          "name": "Spot1_Intensity",
+          "values": [
+            1.0
+          ]
+        },
+        {
+          "name": "Spot1_Softness",
+          "values": [
+            0.0
+          ]
+        },
+        {
+          "name": "Spot2_Enable",
+          "values": [
+            0.0
+          ]
+        },
+        {
+          "name": "Spot2_Color",
+          "values": [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Spot2_Pos",
+          "values": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        {
+          "name": "Spot2_Dir",
+          "values": [
+            0.0,
+            0.0,
+            1.0
+          ]
+        },
+        {
+          "name": "Spot2_AngleCos",
+          "values": [
+            0.95
+          ]
+        },
+        {
+          "name": "Spot2_MaxDist",
+          "values": [
+            16.0
+          ]
+        },
+        {
+          "name": "Spot2_Intensity",
+          "values": [
+            1.0
+          ]
+        },
+        {
+          "name": "Spot2_Softness",
+          "values": [
+            0.0
           ]
         }
       ]

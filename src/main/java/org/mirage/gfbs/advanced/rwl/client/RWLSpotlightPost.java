@@ -10,6 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.mirage.gfbs.MirageGFBS;
 import org.mirage.gfbs.advanced.rwl.RotatingWarningLightBlockEntity;
 import org.mirage.gfbs.mixin.PostChainAccessor;
@@ -20,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/**
- * 屏幕空间彩色聚光（后处理）：
- */
 public final class RWLSpotlightPost {
 
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -38,11 +37,10 @@ public final class RWLSpotlightPost {
     private int lastH = -1;
     private boolean failed = false;
 
-    // 可调参数（你想做成配置也行）
     private static final float MAX_DIST = 16.0f;
-    private static final float HALF_ANGLE_DEG = 18.0f;
-    private static final float INTENSITY_BASE = 0.85f;
-    private static final float SOFTNESS = 0.12f; // 边缘羽化，0=硬边
+    private static final float HALF_ANGLE_DEG = 50.0f;
+    private static final float INTENSITY_BASE = 1.0f;
+    private static final float SOFTNESS = 0.0f;
 
     private RWLSpotlightPost() {}
 
@@ -73,11 +71,11 @@ public final class RWLSpotlightPost {
             }
         }
 
-        Spotlight s = pickNearestSpotlight(mc, partialTick);
-        if (s == null) {
-            LOGGER.debug("RWLSpotlightPost: no active spotlight found");
+        List<Spotlight> spotlights = pickActiveSpotlights(mc, partialTick);
+        if (spotlights.isEmpty()) {
+            LOGGER.debug("RWLSpotlightPost: no active spotlights found");
         } else {
-            LOGGER.debug("RWLSpotlightPost: active spotlight at pos={}, dir={}", s.pos, s.dir);
+            LOGGER.debug("RWLSpotlightPost: found {} active spotlights", spotlights.size());
         }
 
         EffectInstance effect = getFirstPassEffect(chain);
@@ -86,19 +84,45 @@ public final class RWLSpotlightPost {
             return;
         }
 
-        // 计算 invViewProj（世界坐标 -> NDC 的逆）
+        setUniform(effect, "Spot1_Enable", 0.0f);
+        setUniform(effect, "Spot2_Enable", 0.0f);
+
         Matrix4f proj = new Matrix4f(RenderSystem.getProjectionMatrix());
         Matrix4f mv = new Matrix4f(RenderSystem.getModelViewMatrix());
         Matrix4f invViewProj = proj.mul(mv).invert();
 
         Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
 
-        // 写入 uniforms
-        if (s != null) {
-            setUniform(effect, "Enable", 1.0f);
-            setUniform(effect, "Color", s.r, s.g, s.b);
+        setUniform(effect, "ModelViewMat", mv);
+
+        int spotlightCount = Math.min(spotlights.size(), 2);
+
+        if (spotlightCount >= 1) {
+            Spotlight s1 = spotlights.get(0);
+            setUniform(effect, "Spot1_Enable", 1.0f);
+            setUniform(effect, "Spot1_Color", s1.r, s1.g, s1.b);
+            setUniform(effect, "Spot1_Pos", (float)(s1.pos.x - camPos.x), (float)(s1.pos.y - camPos.y), (float)(s1.pos.z - camPos.z));
+            setUniform(effect, "Spot1_Dir", (float) s1.dir.x, (float) s1.dir.y, (float) s1.dir.z);
+            setUniform(effect, "Spot1_AngleCos", s1.angleCos);
+            setUniform(effect, "Spot1_MaxDist", s1.maxDist);
+            setUniform(effect, "Spot1_Intensity", s1.intensity);
+            setUniform(effect, "Spot1_Softness", s1.softness);
         } else {
-            setUniform(effect, "Enable", 0.0f);
+            setUniform(effect, "Spot1_Enable", 0.0f);
+        }
+
+        if (spotlightCount >= 2) {
+            Spotlight s2 = spotlights.get(1);
+            setUniform(effect, "Spot2_Enable", 1.0f);
+            setUniform(effect, "Spot2_Color", s2.r, s2.g, s2.b);
+            setUniform(effect, "Spot2_Pos", (float)(s2.pos.x - camPos.x), (float)(s2.pos.y - camPos.y), (float)(s2.pos.z - camPos.z));
+            setUniform(effect, "Spot2_Dir", (float) s2.dir.x, (float) s2.dir.y, (float) s2.dir.z);
+            setUniform(effect, "Spot2_AngleCos", s2.angleCos);
+            setUniform(effect, "Spot2_MaxDist", s2.maxDist);
+            setUniform(effect, "Spot2_Intensity", s2.intensity);
+            setUniform(effect, "Spot2_Softness", s2.softness);
+        } else {
+            setUniform(effect, "Spot2_Enable", 0.0f);
         }
 
         try {
@@ -170,7 +194,7 @@ public final class RWLSpotlightPost {
         }
     }
 
-    private static Spotlight pickNearestSpotlight(Minecraft mc, float partialTick) {
+    private List<Spotlight> pickActiveSpotlights(Minecraft mc, float partialTick) {
         Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
 
         List<RotatingWarningLightBlockEntity> list = new ArrayList<>();
@@ -197,7 +221,7 @@ public final class RWLSpotlightPost {
 
         if (list.isEmpty()) {
             LOGGER.debug("RWLSpotlightPost: no active BEs found in range");
-            return null;
+            return new ArrayList<>();
         }
 
         list.sort(Comparator.comparingDouble(be -> {
@@ -211,23 +235,37 @@ public final class RWLSpotlightPost {
         RotatingWarningLightBlockEntity be = list.get(0);
         LOGGER.debug("RWLSpotlightPost: selected nearest BE at {}", be.getBlockPos());
 
-        float angleDeg = calcAngleDegClient(be, partialTick);
-        RotatingWarningLightBlockEntity.SpotRay ray = RotatingWarningLightBlockEntity.computeSpotRay(be.getBlockPos(), be.getBlockState(), angleDeg, MAX_DIST);
+        List<Spotlight> spotlights = new ArrayList<>();
 
-        Spotlight s = new Spotlight();
-        s.pos = ray.start;
-        s.dir = ray.dir;
+        float angleDeg1 = calcAngleDegClient(be, partialTick);
+        RotatingWarningLightBlockEntity.SpotRay ray1 = RotatingWarningLightBlockEntity.computeSpotRay(be.getBlockPos(), be.getBlockState(), angleDeg1, MAX_DIST);
+        Spotlight s1 = new Spotlight();
+        s1.pos = ray1.start;
+        s1.dir = ray1.dir;
+        s1.r = be.getColorR() / 255.0f;
+        s1.g = be.getColorG() / 255.0f;
+        s1.b = be.getColorB() / 255.0f;
+        s1.maxDist = MAX_DIST;
+        s1.angleCos = (float) Math.cos(Math.toRadians(HALF_ANGLE_DEG));
+        s1.intensity = INTENSITY_BASE;
+        s1.softness = SOFTNESS;
+        spotlights.add(s1);
 
-        s.r = be.getColorR() / 255.0f;
-        s.g = be.getColorG() / 255.0f;
-        s.b = be.getColorB() / 255.0f;
+        float angleDeg2 = (angleDeg1 + 180.0f) % 360.0f;
+        RotatingWarningLightBlockEntity.SpotRay ray2 = RotatingWarningLightBlockEntity.computeSpotRay(be.getBlockPos(), be.getBlockState(), angleDeg2, MAX_DIST);
+        Spotlight s2 = new Spotlight();
+        s2.pos = ray2.start;
+        s2.dir = ray2.dir;
+        s2.r = be.getColorR() / 255.0f;
+        s2.g = be.getColorG() / 255.0f;
+        s2.b = be.getColorB() / 255.0f;
+        s2.maxDist = MAX_DIST;
+        s2.angleCos = (float) Math.cos(Math.toRadians(HALF_ANGLE_DEG));
+        s2.intensity = INTENSITY_BASE;
+        s2.softness = SOFTNESS;
+        spotlights.add(s2);
 
-        s.maxDist = MAX_DIST;
-        s.angleCos = (float) Math.cos(Math.toRadians(HALF_ANGLE_DEG));
-        s.intensity = INTENSITY_BASE;
-        s.softness = SOFTNESS;
-
-        return s;
+        return spotlights;
     }
 
     private static float calcAngleDegClient(RotatingWarningLightBlockEntity be, float partialTicks) {
@@ -236,10 +274,10 @@ public final class RWLSpotlightPost {
         float gameTime = (gt - be.getStartGameTime()) + partialTicks;
         float elapsedMs = gameTime * 50.0f;
         float t = (elapsedMs % msPerRev) / (float) msPerRev;
-        return (be.getStartAngleDeg() + t * 360.0f) % 360.0f;
+        return (be.getStartAngleDeg() + be.getRandomOffset() + t * 360.0f) % 360.0f;
     }
 
-    private static final class Spotlight {
+    static final class Spotlight {
         Vec3 pos;
         Vec3 dir;
         float r, g, b;

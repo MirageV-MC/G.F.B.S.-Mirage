@@ -247,7 +247,6 @@ public final class FluorescentTubeClientAPI {
             this.remainingTicks = durationTicks;
             this.totalDurationTicks = durationTicks;
             this.initialFrequencyHz = averageFrequencyHz;
-            // 简单线性衰减：从 initialFrequencyHz 衰减到 0
             this.decayRate = averageFrequencyHz / Math.max(durationTicks, 1);
             this.finalState = finalState;
         }
@@ -316,7 +315,7 @@ public final class FluorescentTubeClientAPI {
             }
 
             double averageTogglePerTick = Math.max(currentFreqHz / 20.0, 0.0001D);
-            double u = random.nextDouble(); // 不使用 MC RandomSource
+            double u = random.nextDouble();
             int interval = (int) Math.round(-Math.log(1.0 - u) / averageTogglePerTick);
             return Math.max(1, interval);
         }
@@ -331,7 +330,7 @@ public final class FluorescentTubeClientAPI {
             return new TubeBlinkState(initialLit, firstInterval);
         }
 
-        private static final int MAX_SOUNDS_PER_TICK = 3;
+        private static final int MAX_SOUNDS_PER_TICK = 6;
         private static final double SOUND_MERGE_DISTANCE = 8.0;
         private static int soundsPlayedThisTick = 0;
 
