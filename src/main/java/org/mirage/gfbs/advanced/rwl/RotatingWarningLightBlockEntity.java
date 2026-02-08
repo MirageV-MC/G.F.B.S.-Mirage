@@ -39,6 +39,8 @@ public class RotatingWarningLightBlockEntity extends BlockEntity {
     private long startGameTime = 0L;
     /** 断电时锁定的角度（用于恢复/断电保持） */
     private float startAngleDeg = 0.0f;
+    /** 随机偏移（避免所有灯同步旋转） */
+    private float randomOffset;
 
     // ===== 聚光灯引擎参数（全部会同步到客户端）=====
     private float spotMaxDist = 16.0f;           // 影响半径
@@ -66,6 +68,7 @@ public class RotatingWarningLightBlockEntity extends BlockEntity {
 
     public RotatingWarningLightBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        this.randomOffset = (float) (Math.random() * 180.0f);
     }
 
     @Override
@@ -216,6 +219,7 @@ public class RotatingWarningLightBlockEntity extends BlockEntity {
 
     public long getStartGameTime() { return startGameTime; }
     public float getStartAngleDeg() { return startAngleDeg; }
+    public float getRandomOffset() { return randomOffset; }
 
     public float getSpotMaxDist() { return spotMaxDist; }
     public float getSpotHalfAngleDeg() { return spotHalfAngleDeg; }
@@ -356,6 +360,7 @@ public class RotatingWarningLightBlockEntity extends BlockEntity {
         rwl.putBoolean(NBT_POWERED, powered);
         rwl.putLong(NBT_START_GT, startGameTime);
         rwl.putFloat(NBT_START_ANGLE, startAngleDeg);
+        rwl.putFloat("randomOffset", randomOffset);
 
         rwl.putFloat(NBT_SPOT_MAX_DIST, spotMaxDist);
         rwl.putFloat(NBT_SPOT_HALF_ANGLE, spotHalfAngleDeg);
@@ -387,6 +392,7 @@ public class RotatingWarningLightBlockEntity extends BlockEntity {
         this.powered = rwl.getBoolean(NBT_POWERED);
         this.startGameTime = rwl.getLong(NBT_START_GT);
         this.startAngleDeg = rwl.getFloat(NBT_START_ANGLE);
+        this.randomOffset = rwl.contains("randomOffset") ? rwl.getFloat("randomOffset") : (float) (Math.random() * 180.0f);
 
         if (rwl.contains(NBT_SPOT_MAX_DIST)) this.spotMaxDist = clampF(rwl.getFloat(NBT_SPOT_MAX_DIST), 0.1f, 128.0f);
         if (rwl.contains(NBT_SPOT_HALF_ANGLE)) this.spotHalfAngleDeg = clampF(rwl.getFloat(NBT_SPOT_HALF_ANGLE), 0.1f, 89.0f);

@@ -34,7 +34,7 @@ import java.util.Collection;
 
 public class NotificationCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("Notification")
+        dispatcher.register(Commands.literal("MirageGFBsNotification")
                 .requires(source -> source.hasPermission(2) || PrivilegeManager.hasPrivilege(source))
                 .then(Commands.argument("targets", EntityArgument.players())
                         .then(Commands.argument("tick", IntegerArgumentType.integer(1))

@@ -371,7 +371,7 @@ public class Dmr_Meltdown {
                     "控制系统出现错误, 反应堆控制系统对暗物质反应堆无响应, 处于主控制节点失效状态.", 200);
 
             Task.delay(()->{
-                broadcast("playsound mirage_gfbs:human.dmr.p2 voice @a ~ ~ ~ 1 1 1");
+                broadcast("mirage_gfbs:human.dmr.p2");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Facilities.Supervisor.",
                         "所有反应堆操作小组人员注意, 这是我们阻止DMR彻底破坏的最后机会了, 爬到上层结构, 在1到3秒的时间内依次将所有燃料电池弹出, 以引发燃烧性熄火故障并关闭暗物质反应堆, 你还有1分钟的时间, 祝你好运.", 600);
 
