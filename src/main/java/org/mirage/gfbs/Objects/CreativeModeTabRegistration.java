@@ -54,7 +54,7 @@ public class CreativeModeTabRegistration {
             event.accept(ItemRegistration.GATE_ITEM.get());
             event.accept(ItemRegistration.CHECK_POINT_GATE_ITEM.get());
 
-            event.accept(ItemRegistration.RWL_ITEM.get());
+            //event.accept(ItemRegistration.RWL_ITEM.get());
 
             event.accept(ItemRegistration.QS_WALL_ITE.get());
             event.accept(ItemRegistration.QS_TRADEMARK_PICTURE_ITEM.get());

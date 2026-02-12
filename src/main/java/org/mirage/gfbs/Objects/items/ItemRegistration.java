@@ -61,10 +61,10 @@ public class ItemRegistration {
                     () -> new BlockItem(BlockRegistration.CHECK_POINT_GATE.get(), new Item.Properties()));
 
     // 特效类
-
-    public static final RegistryObject<Item> RWL_ITEM =
-            ITEMS.register("rwl",
-                    () -> new BlockItem(BlockRegistration.RWL.get(), new Item.Properties()));
+//
+//    public static final RegistryObject<Item> RWL_ITEM =
+//            ITEMS.register("rwl",
+//                    () -> new BlockItem(BlockRegistration.RWL.get(), new Item.Properties()));
 
     // 建筑方块
 
