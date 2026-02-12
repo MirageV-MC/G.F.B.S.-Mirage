@@ -78,7 +78,6 @@ import org.mirage.gfbs.Utils.SyncField.SyncManager;
 import org.mirage.gfbs.Utils.WorldWriteQueue;
 import org.mirage.gfbs.advanced.broadsystem.BroadSystemNetwork;
 import org.mirage.gfbs.advanced.broadsystem.BroadSystemRegistry;
-import org.mirage.gfbs.advanced.rwl.client.RotatingWarningLightBER;
 import org.mirage.gfbs.api.GateClientAPI;
 
 import org.mirage.gfbs.ccio.CCIoInit;
@@ -336,7 +335,8 @@ public class MirageGFBS {
 
         CountdownCommand.register(event.getDispatcher());
 
-        MirageGFBsRWLCommand.register(event.getDispatcher());
+        // oh no...
+        //MirageGFBsRWLCommand.register(event.getDispatcher());
 
         MirageGFBsBroadSystemCommand.register(event.getDispatcher());
     }
@@ -361,9 +361,6 @@ public class MirageGFBS {
             // GATE
             BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
             BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), GateBlockRenderer::new);
-
-            // RWL
-            BlockEntityRenderers.register(ModBlockEntities.RWL_ENTITY.get(), RotatingWarningLightBER::new);
 
             // END #114
 
