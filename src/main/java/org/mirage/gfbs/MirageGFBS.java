@@ -181,6 +181,8 @@ public class MirageGFBS {
 
         event.enqueueWork(NetworkHandler::register);
 
+        event.enqueueWork(org.mirage.gfbs.advanced.team.network.TeamNetwork::register);
+
         Registrar.onSetup(event);
 
         CameraShakeModule.registerNetwork(event);
@@ -339,6 +341,8 @@ public class MirageGFBS {
         //MirageGFBsRWLCommand.register(event.getDispatcher());
 
         MirageGFBsBroadSystemCommand.register(event.getDispatcher());
+
+        MirageGFBsTeamCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;

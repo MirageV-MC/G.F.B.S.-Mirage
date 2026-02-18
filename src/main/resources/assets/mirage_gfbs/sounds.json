@@ -1704,6 +1704,13 @@
     ],
     "stream": true
   },
+  "music.mud": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/mud"
+    ],
+    "stream": true
+  },
   "sfx.popup": {
     "category": "music",
     "sounds": [
