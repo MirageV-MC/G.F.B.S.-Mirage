@@ -27,6 +27,21 @@ public final class GateTypes {
             "textures/block/check_point_gate_core.png"
     ));
 
+    public static final GateType TARTARUS_GATE = register(new GateType(
+            "tartarus_gate",
+            "textures/block/tartarus_gate.png",
+            "geo/tartarus_gate.geo.json",
+            "animations/tartarus_gate.animation.json",
+            "open",
+            "close",
+            "open_idle",
+            "idle",
+            "mobile.big_door_open",
+            "surroundings.bigdoor_close",
+            12.0F,
+            12.0F
+    ));
+
     private GateTypes() {}
 
     public static GateType register(GateType type) {

@@ -30,6 +30,7 @@ import org.mirage.gfbs.Objects.blocks.classs.FlBlock.FluorescentTubeBlock;
 import org.mirage.gfbs.Objects.blocks.classs.FlBlock.RedAlarmLampBlock;
 import org.mirage.gfbs.Objects.blocks.classs.FlBlock.WhiteCubeLampBlock;
 import org.mirage.gfbs.Objects.blocks.classs.Gate.GateBlock;
+import org.mirage.gfbs.Objects.blocks.classs.Gate.TartarusGateBlock;
 import org.mirage.gfbs.Objects.blocks.Control.Gate.GateTypes;
 
 import static org.mirage.gfbs.MirageGFBS.BLOCKS;
@@ -89,6 +90,13 @@ public class BlockRegistration {
                     )
             );
 
+    public static final RegistryObject<Block> TARTARUS_GATE_COLLISION =
+            BLOCKS.register("tartarus_gate_collision", ()->
+                    new TartarusGateCollisionBlock(Block.Properties.of().strength(50.0F)
+                            .isViewBlocking((state, level, pos) -> false)
+                    )
+            );
+
     // 门
 
     public static final RegistryObject<Block> GATE =
@@ -98,6 +106,10 @@ public class BlockRegistration {
     public static final RegistryObject<Block> CHECK_POINT_GATE =
             BLOCKS.register("check_point_gate", () ->
                     new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.CHECK_POINT));
+
+    public static final RegistryObject<Block> TARTARUS_GATE =
+            BLOCKS.register("tartarus_gate", () ->
+                    new TartarusGateBlock(Block.Properties.of().strength(5.0F), GateTypes.TARTARUS_GATE));
 
     // 建筑方块
 

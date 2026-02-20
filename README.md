@@ -16,6 +16,7 @@
   - Avarl : CC:Tweaked桥接
 
 - 本MOD依赖的MOD:
+  - GFBS : Auralis
   - GeckoLib
   - CC:Tweaked
 

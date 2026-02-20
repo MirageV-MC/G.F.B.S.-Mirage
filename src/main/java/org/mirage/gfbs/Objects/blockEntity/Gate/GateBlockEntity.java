@@ -110,6 +110,7 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     private <E extends GeoBlockEntity> PlayState animationPredicate(AnimationState<E> state) {
         AnimationController<?> controller = state.getController();
+        GateType type = getGateType();
 
         if (logicalOpen != lastLogicalOpen) {
             lastLogicalOpen = logicalOpen;
@@ -117,19 +118,24 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
             if (logicalOpen) {
                 controller.setAnimation(
                         RawAnimation.begin()
-                                .then("animation.gate.open", Animation.LoopType.PLAY_ONCE)
-                                .thenLoop("animation.gate.open_idle")
+                                .then(type.animOpen(), Animation.LoopType.PLAY_ONCE)
+                                .thenLoop(type.animOpenIdle())
                 );
             } else {
                 controller.setAnimation(
                         RawAnimation.begin()
-                                .then("animation.gate.close", Animation.LoopType.PLAY_ONCE)
-                                .thenLoop("animation.gate.idle")
+                                .then(type.animClose(), Animation.LoopType.PLAY_ONCE)
+                                .thenLoop(type.animIdle())
                 );
             }
 
-            if (level.isClientSide){
-                level.playLocalSound(worldPosition, ModSoundEvents.getSoundOrNull("surroundings.big_gate_reverb"), SoundSource.BLOCKS, 1.0F, 1.0F, false);
+            if (level.isClientSide) {
+                String key = logicalOpen ? type.openSoundKey() : type.closeSoundKey();
+                float volume = logicalOpen ? type.openSoundVolume() : type.closeSoundVolume();
+                var sound = ModSoundEvents.getSoundOrNull(key);
+                if (sound != null) {
+                    level.playLocalSound(worldPosition, sound, SoundSource.BLOCKS, volume, 1.0F, false);
+                }
             }
 
             return PlayState.CONTINUE;
@@ -137,9 +143,9 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
 
         if (controller.getCurrentAnimation() == null) {
             if (logicalOpen) {
-                controller.setAnimation(RawAnimation.begin().thenLoop("animation.gate.open_idle"));
+                controller.setAnimation(RawAnimation.begin().thenLoop(type.animOpenIdle()));
             } else {
-                controller.setAnimation(RawAnimation.begin().thenLoop("animation.gate.idle"));
+                controller.setAnimation(RawAnimation.begin().thenLoop(type.animIdle()));
             }
         }
 

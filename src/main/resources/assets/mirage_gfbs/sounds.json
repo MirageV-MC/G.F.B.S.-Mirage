@@ -1711,6 +1711,13 @@
     ],
     "stream": true
   },
+  "music.escape": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/escape"
+    ],
+    "stream": true
+  },
   "sfx.popup": {
     "category": "music",
     "sounds": [
