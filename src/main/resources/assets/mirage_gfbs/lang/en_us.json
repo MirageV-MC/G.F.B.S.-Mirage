@@ -9,6 +9,7 @@
   "block.mirage_gfbs.white_cube_lamp": "白灯",
   "block.mirage_gfbs.qs_wall": "QS墙面材质石",
   "block.mirage_gfbs.speaker": "扬声器",
+  "block.mirage_gfbs.tartarus_gate": "塔塔鲁斯大型烙件闸门",
 
   "block.mirage_gfbs.cc_io_bridge": "GFBS CC I/O 桥",
   "item.mirage_gfbs.cc_io_bridge.tooltip": "把此方块放置到高级电脑旁时,将会自动启用GFBS桥。"

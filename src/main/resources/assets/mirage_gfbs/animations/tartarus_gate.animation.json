@@ -1,0 +1,372 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"open": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 24.75,
+			"bones": {
+				"锁定机构[门板]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"连杆[可动1]": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"8.0": {
+							"vector": [0, 0, 0]
+						},
+						"12.0": {
+							"vector": [0, 15, 0],
+							"easing": "easeInOutSine"
+						},
+						"22.0": {
+							"vector": [0, 70, 0]
+						}
+					},
+					"position": {
+						"12.0": {
+							"vector": [0, 0, 0]
+						},
+						"22.5417": {
+							"vector": [0, 1, -42]
+						}
+					}
+				},
+				"连杆[可动2]": {
+					"rotation": {
+						"12.0": {
+							"vector": [0, 0, 0]
+						},
+						"22.5417": {
+							"vector": [-17.5, 0, 0]
+						}
+					}
+				},
+				"可动部分": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, -1]
+						},
+						"2.0": {
+							"vector": [46, 0, -42],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"可动部分2": {
+					"position": {
+						"4.0": {
+							"vector": [0, 0, 0]
+						},
+						"6.0": {
+							"vector": [15, 0, -14],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"可动部分3": {
+					"position": {
+						"2.0": {
+							"vector": [0, 0, 0]
+						},
+						"4.0": {
+							"vector": [29, 0, -23],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"可动部分4": {
+					"position": {
+						"6.0": {
+							"vector": [0, 0, 0]
+						},
+						"8.0": {
+							"vector": [33, 0, -27],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"门板": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"10.25": {
+							"vector": [0, 0, 0]
+						},
+						"23.25": {
+							"vector": [-92.5, 0, 0],
+							"easing": "easeInSine"
+						},
+						"24.3333": {
+							"vector": [-90, 0, 0],
+							"easing": "easeOutSine"
+						}
+					},
+					"position": {
+						"8.0": {
+							"vector": [0, 0, 0]
+						},
+						"10.25": {
+							"vector": [0, -48, 0],
+							"easing": "easeInOutSine"
+						},
+						"24.3333": {
+							"vector": [0, -105, -135],
+							"easing": "easeInOutSine"
+						}
+					}
+				}
+			}
+		},
+		"close": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 24,
+			"bones": {
+				"锁定机构[门板]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"连杆[可动1]": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 70, 0]
+						},
+						"11.5": {
+							"vector": [0, 27.5, 0]
+						},
+						"12.75": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, -45]
+						},
+						"11.5": {
+							"vector": [0, 0, 4.29]
+						},
+						"12.125": {
+							"vector": [0, 0, 2]
+						}
+					}
+				},
+				"连杆[可动2]": {
+					"rotation": {
+						"0.0": {
+							"vector": [-17.5, 0, 0]
+						},
+						"12.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"group91": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"12.0": {
+							"vector": [0, 0, 0]
+						},
+						"16.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					}
+				},
+				"可动部分": {
+					"position": {
+						"0.0": {
+							"vector": [60, 0, -51]
+						},
+						"15.25": {
+							"vector": [60, 0, -51]
+						},
+						"16.0417": {
+							"vector": [-3, 0, 1],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"可动部分2": {
+					"position": {
+						"0.0": {
+							"vector": [41, 0, -35]
+						},
+						"13.9583": {
+							"vector": [41, 0, -35]
+						},
+						"14.75": {
+							"vector": [-7, 0, 6],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"可动部分3": {
+					"position": {
+						"0.0": {
+							"vector": [50, 0, -42]
+						},
+						"15.25": {
+							"vector": [50, 0, -42]
+						},
+						"16.0417": {
+							"vector": [-7, 0, 4],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"可动部分4": {
+					"position": {
+						"0.0": {
+							"vector": [55, 0, -48]
+						},
+						"13.9583": {
+							"vector": [55, 0, -51]
+						},
+						"14.75": {
+							"vector": [-7, 0, 4],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"门板": {
+					"rotation": {
+						"0.0": {
+							"vector": [-90, 0, 0]
+						},
+						"11.5": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutSine"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, -107, -132]
+						},
+						"11.5": {
+							"vector": [0, -52.54, 1.69],
+							"easing": "easeInSine"
+						},
+						"12.75": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
+		},
+		"open_idle": {
+			"animation_length": 1,
+			"loop": true,
+			"bones": {
+				"锁定机构[门板]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"连杆[可动1]": {
+					"rotation": {
+						"vector": [0, 70, 0]
+					},
+					"position": {
+						"vector": [0, 1, -42]
+					}
+				},
+				"连杆[可动2]": {
+					"rotation": {
+						"vector": [-17.5, 0, 0]
+					}
+				},
+				"可动部分": {
+					"position": {
+						"vector": [46, 0, -42]
+					}
+				},
+				"可动部分2": {
+					"position": {
+						"vector": [15, 0, -14]
+					}
+				},
+				"可动部分3": {
+					"position": {
+						"vector": [29, 0, -23]
+					}
+				},
+				"可动部分4": {
+					"position": {
+						"vector": [33, 0, -27]
+					}
+				},
+				"门板": {
+					"rotation": {
+						"vector": [-90, 0, 0]
+					},
+					"position": {
+						"vector": [0, -105, -135]
+					}
+				}
+			}
+		},
+		"idle": {
+			"animation_length": 1,
+			"loop": true,
+			"bones": {
+				"锁定机构[门板]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"连杆[可动1]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 2]
+					}
+				},
+				"连杆[可动2]": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"可动部分": {
+					"position": {
+						"vector": [-3, 0, 1]
+					}
+				},
+				"可动部分2": {
+					"position": {
+						"vector": [-7, 0, 6]
+					}
+				},
+				"可动部分3": {
+					"position": {
+						"vector": [-7, 0, 4]
+					}
+				},
+				"可动部分4": {
+					"position": {
+						"vector": [-7, 0, 4]
+					}
+				},
+				"门板": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}

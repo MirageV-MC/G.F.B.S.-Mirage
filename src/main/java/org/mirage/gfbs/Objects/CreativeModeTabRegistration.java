@@ -53,6 +53,7 @@ public class CreativeModeTabRegistration {
 
             event.accept(ItemRegistration.GATE_ITEM.get());
             event.accept(ItemRegistration.CHECK_POINT_GATE_ITEM.get());
+            event.accept(ItemRegistration.TARTARUS_GATE_ITEM.get());
 
             //event.accept(ItemRegistration.RWL_ITEM.get());
 

@@ -53,7 +53,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
-import org.mirage.gfbs.Event.Dmr_Meltdown;
+import org.mirage.gfbs.Event.DmrMeltdown;
 import org.mirage.gfbs.Event.DmrexAfter;
 import org.mirage.gfbs.Event.Main90Alpha;
 import org.mirage.gfbs.Objects.CreativeModeTabRegistration;
@@ -223,19 +223,19 @@ public class MirageGFBS {
             Main90Alpha.execute(context);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
-            Dmr_Meltdown.execute(context, true, true);
+            DmrMeltdown.execute(context, true, true);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
-            Dmr_Meltdown.execute(context, false, true);
+            DmrMeltdown.execute(context, false, true);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_none_music", (context)->{
-            Dmr_Meltdown.execute(context, false, false);
+            DmrMeltdown.execute(context, false, false);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
-            Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
+            DmrMeltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
-            Dmr_Meltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
+            DmrMeltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
         });
         MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
             DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel());

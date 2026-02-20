@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.mirage.gfbs.CommandExecutor.executeCommandAsync;
 import static org.mirage.gfbs.MirageGFBS.server;
 
-public class Dmr_Meltdown {
+public class DmrMeltdown {
     private static ServerLevel _serverLevel;
 
     private static boolean meltdownFlashLoopActive = false;

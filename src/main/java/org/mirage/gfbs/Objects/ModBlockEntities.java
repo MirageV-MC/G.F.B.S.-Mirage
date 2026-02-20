@@ -35,7 +35,8 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("gate",
                     () -> BlockEntityType.Builder.of(
                             GateBlockEntity::new,
-                            BlockRegistration.GATE.get()
+                            BlockRegistration.GATE.get(),
+                            BlockRegistration.TARTARUS_GATE.get()
                     ).build(null));
 
     public static final RegistryObject<BlockEntityType<GateBlockEntity>> CHECK_POINT_GATE =

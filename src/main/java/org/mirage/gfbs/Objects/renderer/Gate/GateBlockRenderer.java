@@ -39,6 +39,16 @@ public class GateBlockRenderer extends GeoBlockRenderer<GateBlockEntity> {
     }
 
     @Override
+    public boolean shouldRenderOffScreen(@NotNull GateBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public int getViewDistance() {
+        return 256;
+    }
+
+    @Override
     public void actuallyRender(@NotNull PoseStack poseStack,
                                @NotNull GateBlockEntity blockEntity,
                                @NotNull BakedGeoModel model,

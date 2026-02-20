@@ -27,7 +27,7 @@ public class GateBlockModel extends GeoModel<GateBlockEntity> {
 
     @Override
     public @NotNull ResourceLocation getModelResource(GateBlockEntity animatable) {
-        return new ResourceLocation(MirageGFBS.MODID, "geo/gate.geo.json");
+        return new ResourceLocation(MirageGFBS.MODID, animatable.getGateType().modelPath());
     }
 
     @Override
@@ -37,6 +37,6 @@ public class GateBlockModel extends GeoModel<GateBlockEntity> {
 
     @Override
     public @NotNull ResourceLocation getAnimationResource(GateBlockEntity animatable) {
-        return new ResourceLocation(MirageGFBS.MODID, "animations/gate.animation.json");
+        return new ResourceLocation(MirageGFBS.MODID, animatable.getGateType().animationPath());
     }
 }
