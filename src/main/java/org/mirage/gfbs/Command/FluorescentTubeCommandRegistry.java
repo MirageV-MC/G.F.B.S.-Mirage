@@ -21,6 +21,7 @@ package org.mirage.gfbs.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -128,6 +129,38 @@ public final class FluorescentTubeCommandRegistry {
                                         })
                                 )
                         )
+
+                        // ========= /fl_tube instability <mode> <target> =========
+                        .then(Commands.literal("instability")
+                                .then(Commands.argument("mode", StringArgumentType.word())
+                                        .suggests((ctx, builder) -> {
+                                            builder.suggest("none");
+                                            builder.suggest("low");
+                                            builder.suggest("high");
+                                            return builder.buildFuture();
+                                        })
+                                        .then(Commands.argument("target", EntityArgument.players())
+                                                .executes(ctx -> {
+                                                    CommandSourceStack source = ctx.getSource();
+                                                    String modeStr = StringArgumentType.getString(ctx, "mode");
+                                                    Collection<ServerPlayer> targets =
+                                                            EntityArgument.getPlayers(ctx, "target");
+
+                                                    CompoundTag data = new CompoundTag();
+                                                    data.putString("mode", modeStr.toUpperCase());
+
+                                                    for (ServerPlayer player : targets) {
+                                                        NetworkHandler.sendToPlayer(
+                                                                player,
+                                                                "fluorescent_tube_set_instability",
+                                                                data
+                                                        );
+                                                    }
+                                                    return targets.size();
+                                                })
+                                        )
+                                )
+                        )
         );
     }
 
@@ -217,5 +250,31 @@ public final class FluorescentTubeCommandRegistry {
 
     public static void turnOffAllTubes(ServerLevel level) {
         turnOffAllTubes(level, level.players());
+    }
+
+    public static void setInstabilityMode(ServerLevel level,
+                                          Collection<ServerPlayer> targets,
+                                          InstabilityMode mode) {
+        CompoundTag data = new CompoundTag();
+        data.putString("mode", mode.name().toUpperCase());
+
+        for (ServerPlayer player : targets) {
+            NetworkHandler.sendToPlayer(
+                    player,
+                    "fluorescent_tube_set_instability",
+                    data
+            );
+        }
+    }
+
+    public static void setInstabilityMode(ServerLevel level,
+                                          InstabilityMode mode) {
+        setInstabilityMode(level, level.players(), mode);
+    }
+
+    public static enum InstabilityMode {
+        NONE,
+        LOW,
+        HIGH
     }
 }

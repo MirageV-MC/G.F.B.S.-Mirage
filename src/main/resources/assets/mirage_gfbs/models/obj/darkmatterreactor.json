@@ -8,7 +8,7 @@
   "gui_light": "front",
 
   "textures": {
-    "particle": "mirage_gfbs:block/darkmatterreactor/part1_diff"
+    "particle": "mirage_gfbs:block/darkmatterreactor/part1_diff.png"
   },
 
   "custom": {

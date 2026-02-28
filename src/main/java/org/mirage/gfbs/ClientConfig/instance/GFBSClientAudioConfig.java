@@ -28,4 +28,24 @@ public final class GFBSClientAudioConfig {
                     5.0
             );
 
+    public static final ClientConfigKey<Boolean> ENABLE_DISTORTION =
+            GFBSClientConfigAPI.bool(
+                    "audio.distortion.enabled",
+                    "音频",
+                    "启用喇叭失真效果",
+                    "默认开启。开启后 Broad System 喇叭会播放带有软失真和旧感的音效，模拟老旧村喇叭的质感。",
+                    true
+            );
+
+    public static final ClientConfigKey<Double> DISTORTION_STRENGTH =
+            GFBSClientConfigAPI.dbl(
+                    "audio.distortion.strength",
+                    "音频",
+                    "失真强度",
+                    "控制失真效果的强度。数值越大失真越明显，0 会关闭失真但保留均衡器效果。",
+                    0.5,
+                    0.0,
+                    1.0
+            );
+
 }

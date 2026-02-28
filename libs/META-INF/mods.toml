@@ -1,0 +1,21 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+[[mods]]
+modId = "gfbs_auralis"
+version = "1.0.4"
+displayName = "GFBS : Auralis"
+authors = "MirageV-MC"
+description = '''instance-based spatial audio engine for Minecraft.'''
+[[dependencies."gfbs_auralis"]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies."gfbs_auralis"]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"

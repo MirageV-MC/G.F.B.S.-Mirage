@@ -22,6 +22,7 @@ import com.mojang.blaze3d.audio.Channel;
 import org.lwjgl.openal.AL11;
 import org.lwjgl.openal.EXTEfx;
 import org.mirage.gfbs.Client.audio.BroadSystemAudioMarker;
+import org.mirage.gfbs.Client.audio.MirageDistortion;
 import org.mirage.gfbs.Client.audio.MirageEqualizer;
 import org.mirage.gfbs.Client.audio.MirageReverb;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
@@ -49,6 +50,7 @@ public abstract class ChannelMixin implements ChannelMixinAccessor {
         }
 
         applyReverbEffect();
+        applyDistortionEffect();
         applyEqualizerEffect();
     }
 
@@ -74,6 +76,39 @@ public abstract class ChannelMixin implements ChannelMixinAccessor {
 
         AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, AL11.AL_TRUE);
         AL11.alSourcei(this.source, EXTEfx.AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, AL11.AL_TRUE);
+    }
+
+    private void applyDistortionEffect() {
+        if (!mirage$gfbs_isBroadSystemSound) {
+            return;
+        }
+
+        if (!GFBSClientConfigAPI.get(GFBSClientAudioConfig.ENABLE_DISTORTION)) {
+            return;
+        }
+
+        MirageDistortion.ensureInit();
+
+        int distortionAuxSlot = MirageDistortion.getAuxSlot();
+        if (distortionAuxSlot == 0) {
+            System.out.println("[MirageGFBS] Distortion not supported or not initialized, skipping");
+            return;
+        }
+
+        AL11.alSource3i(
+                this.source,
+                EXTEfx.AL_AUXILIARY_SEND_FILTER,
+                distortionAuxSlot,
+                0,
+                EXTEfx.AL_FILTER_NULL
+        );
+
+        int error = AL11.alGetError();
+        if (error != AL11.AL_NO_ERROR) {
+            System.err.println("[MirageGFBS] Failed to apply distortion effect: " + error);
+        } else {
+            System.out.println("[MirageGFBS] Real distortion effect applied to broadcast sound (source=" + this.source + ", auxSlot=" + distortionAuxSlot + ")");
+        }
     }
 
     private void applyEqualizerEffect() {

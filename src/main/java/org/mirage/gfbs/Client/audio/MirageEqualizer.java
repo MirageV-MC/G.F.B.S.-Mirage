@@ -24,10 +24,10 @@ public final class MirageEqualizer {
     private static int EQUALIZER_EFFECT = 0;
     private static boolean INITIALIZED = false;
 
-    private static float LOW_GAIN = 0.0f;
-    private static float MID1_GAIN = 0.0f;
-    private static float MID2_GAIN = 0.0f;
-    private static float HIGH_GAIN = 0.0f;
+    private static float LOW_GAIN = 2.0f;
+    private static float MID1_GAIN = 3.0f;
+    private static float MID2_GAIN = 1.5f;
+    private static float HIGH_GAIN = -6.0f;
 
     private MirageEqualizer() {}
 
@@ -76,12 +76,12 @@ public final class MirageEqualizer {
         EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID2_GAIN, MID2_GAIN);
         EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_HIGH_GAIN, HIGH_GAIN);
 
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_LOW_CUTOFF, 200.0f);
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID1_CENTER, 1000.0f);
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID1_WIDTH, 1.0f);
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID2_CENTER, 3000.0f);
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID2_WIDTH, 1.0f);
-        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_HIGH_CUTOFF, 6000.0f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_LOW_CUTOFF, 150.0f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID1_CENTER, 800.0f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID1_WIDTH, 1.2f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID2_CENTER, 2500.0f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_MID2_WIDTH, 0.8f);
+        EXTEfx.alEffectf(EQUALIZER_EFFECT, EXTEfx.AL_EQUALIZER_HIGH_CUTOFF, 4000.0f);
     }
 
     public static void setLowGain(float gain) {

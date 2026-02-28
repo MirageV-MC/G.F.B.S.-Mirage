@@ -791,6 +791,84 @@
       "mirage_gfbs:faas/f2/w_f_i_c_p_e_o_f_i"
     ]
   },
+  "faas.f3.faas3_01": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_01"
+    ]
+  },
+  "faas.f3.faas3_02": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_02"
+    ]
+  },
+  "faas.f3.faas3_03": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_03"
+    ]
+  },
+  "faas.f3.faas3_04": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_04"
+    ]
+  },
+  "faas.f3.faas3_05": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_05"
+    ]
+  },
+  "faas.f3.faas3_06": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_06"
+    ]
+  },
+  "faas.f3.faas3_07": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_07"
+    ]
+  },
+  "faas.f3.faas3_08": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_07"
+    ]
+  },
+  "faas.f3.faas3_09": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_09"
+    ]
+  },
+  "faas.f3.faas3_10": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_10"
+    ]
+  },
+  "faas.f3.faas3_11": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_11"
+    ]
+  },
+  "faas.f3.faas3_12": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_12"
+    ]
+  },
+  "faas.f3.faas3_13": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:faas/f3/faas3_13"
+    ]
+  },
   "faas.f_b_c_r_t": {
     "category": "music",
     "sounds": [
@@ -1558,6 +1636,13 @@
     ],
     "stream": true
   },
+  "music.leisure_2_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/leisure_2_m"
+    ],
+    "stream": true
+  },
   "music.new_p1_m": {
     "category": "music",
     "sounds": [
@@ -1590,6 +1675,27 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:music/pi_ok_m"
+    ],
+    "stream": true
+  },
+  "music.qbc_1": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/qbc_1"
+    ],
+    "stream": true
+  },
+  "music.qbc_2": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/qbc_2"
+    ],
+    "stream": true
+  },
+  "music.qbc_3": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/qbc_3"
     ],
     "stream": true
   },
@@ -1812,7 +1918,16 @@
     "category": "block",
     "sounds": [
       "mirage_gfbs:surroundings/ding01",
-      "mirage_gfbs:surroundings/ding02"
+      "mirage_gfbs:surroundings/ding02",
+      "mirage_gfbs:surroundings/ding03",
+      "mirage_gfbs:surroundings/ding05",
+      "mirage_gfbs:surroundings/ding06",
+      "mirage_gfbs:surroundings/ding07",
+      "mirage_gfbs:surroundings/ding08",
+      "mirage_gfbs:surroundings/ding09",
+      "mirage_gfbs:surroundings/ding10",
+      "mirage_gfbs:surroundings/ding11",
+      "mirage_gfbs:surroundings/ding12"
     ]
   },
   "surroundings.dmr_bh": {
@@ -1855,6 +1970,12 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:surroundings/dmr_up_nb_q_b"
+    ]
+  },
+  "surroundings.dmr_up_nb_b4": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/dmr_up_nb_b4"
     ]
   },
   "surroundings.dmr_up_nb_q_b_nb": {
