@@ -29,8 +29,10 @@ public class TartarusGateBlock extends GateBlock {
     private static final int COLLISION_RADIUS = 37;
     private static final int COLLISION_HEIGHT = 8;
     private static final long CLOSE_COLLISION_DELAY_MS = 12_300L;
+    private static final long OPEN_COLLISION_DELAY_MS = 9_000L;
     private static final int[] DISK_OFFSETS;
     private static final ConcurrentHashMap<String, Future<?>> PENDING_CLOSE_COLLISION = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, Future<?>> PENDING_OPEN_COLLISION = new ConcurrentHashMap<>();
 
     static {
         int r = COLLISION_RADIUS;
@@ -81,6 +83,7 @@ public class TartarusGateBlock extends GateBlock {
         if (!state.is(newState.getBlock())) {
             if (!level.isClientSide) {
                 cancelPendingCloseCollision(level, pos);
+                cancelPendingOpenCollision(level, pos);
                 removeDiskCollision(level, pos);
             }
         }
@@ -95,9 +98,10 @@ public class TartarusGateBlock extends GateBlock {
         if (!(state.getBlock() instanceof TartarusGateBlock)) return;
 
         cancelPendingCloseCollision(level, gatePos);
+        cancelPendingOpenCollision(level, gatePos);
 
         if (open) {
-            removeDiskCollision(level, gatePos);
+            scheduleOpenCollision(level, gatePos);
         } else {
             if (state.hasProperty(OPEN) && !state.getValue(OPEN)) {
                 placeDiskCollision(level, gatePos);
@@ -190,6 +194,13 @@ public class TartarusGateBlock extends GateBlock {
         }
     }
 
+    private static void cancelPendingOpenCollision(Level level, BlockPos gatePos) {
+        Future<?> f = PENDING_OPEN_COLLISION.remove(pendingKey(level, gatePos));
+        if (f != null) {
+            f.cancel(false);
+        }
+    }
+
     private static void scheduleCloseCollision(Level level, BlockPos gatePos) {
         String key = pendingKey(level, gatePos);
         BlockPos frozenPos = gatePos.immutable();
@@ -202,6 +213,23 @@ public class TartarusGateBlock extends GateBlock {
         }, CLOSE_COLLISION_DELAY_MS, TimeUnit.MILLISECONDS);
 
         Future<?> prev = PENDING_CLOSE_COLLISION.put(key, f);
+        if (prev != null) {
+            prev.cancel(false);
+        }
+    }
+
+    private static void scheduleOpenCollision(Level level, BlockPos gatePos) {
+        String key = pendingKey(level, gatePos);
+        BlockPos frozenPos = gatePos.immutable();
+
+        Future<?> f = Task.delay(() -> {
+            if (!(level.getBlockState(frozenPos).getBlock() instanceof TartarusGateBlock)) return;
+            BlockState current = level.getBlockState(frozenPos);
+            if (!current.hasProperty(OPEN) || !current.getValue(OPEN)) return;
+            removeDiskCollision(level, frozenPos);
+        }, OPEN_COLLISION_DELAY_MS, TimeUnit.MILLISECONDS);
+
+        Future<?> prev = PENDING_OPEN_COLLISION.put(key, f);
         if (prev != null) {
             prev.cancel(false);
         }

@@ -37,8 +37,9 @@ import static org.mirage.gfbs.MirageGFBS.BLOCKS;
 import static org.mirage.gfbs.MirageGFBS.MODID;
 
 public class BlockRegistration {
+    // 杂类
     public static final RegistryObject<Block> DARK_MATTER_REACTOR_BLOCK = BLOCKS.register("darkmatterreactor",
-            () -> new Block(BlockBehaviour.Properties.of().strength(3.0F)));
+            () -> new Block(BlockBehaviour.Properties.of().strength(3.0F).noOcclusion()));
 
     // 灯
 

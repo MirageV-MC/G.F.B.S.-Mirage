@@ -19,7 +19,9 @@
 package org.mirage.gfbs.Event;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.phys.Vec3;
 import org.mirage.gfbs.Command.*;
+import org.mirage.gfbs.ModSoundEvents;
 import org.mirage.gfbs.Phenomenon.network.HexCrackerNetwork;
 import org.mirage.gfbs.Tools.CountdownPopup.CountdownEndHooks;
 import org.mirage.gfbs.Tools.Task;
@@ -27,6 +29,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import org.mirage.gfbs.api.BroadSystemAPI;
 import org.mirage.gfbs.api.CountdownAPI;
+import org.mirage.gfbs.auralis.api.AuralisApi;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.mirage.gfbs.auralis.api.AuralisServerApi;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
@@ -66,13 +73,28 @@ public class DmrMeltdown {
         meltdownFlashLoopActive = false;
 
         startFlashLoop(_serverLevel);
+        FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.LOW);
 
         Task.sleep(2037);
 
         Task.delay(()->{
             if (haveMusic) {
                 if (isNewMusic){
-                    executeCommandAsync("playsound mirage_gfbs:music.new_p1_m voice @a ~ ~ ~ 1 1 1");
+                    Task.sleep(300);
+                    AuralisServerApi.playSound(
+                            "sound_id",
+                            ResourceLocation.parse("mirage_gfbs:music.new_p1_m"),
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            true,
+                            new Vec3(0, 0, 0),
+                            false,
+                            50,
+                            10.0f,
+                            10.0f,
+                            allPlayers
+                    );
                 }else {
                     executeCommandAsync("playsound mirage_gfbs:music.p1_m voice @a ~ ~ ~ 1 1 1");
                 }
@@ -238,6 +260,8 @@ public class DmrMeltdown {
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "警告, 设施完整性受损, 请立即进入避难所或撤离设施.", 200);
 
+                    FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.HIGH);
+
                     Task.sleep(9270);
 
                     broadcast("mirage_gfbs:faas.f2.a_f_s_p_p_e_i");
@@ -300,6 +324,8 @@ public class DmrMeltdown {
                                 "设施自动化管理系统错误.", 200);
 
                         Task.sleep(4428);
+                    
+                        FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.LOW);
 
                         executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
 
@@ -340,7 +366,21 @@ public class DmrMeltdown {
 
         if (haveMusic){
             if (isNewMusic){
-                executeCommandAsync("playsound mirage_gfbs:music.new_p2_m voice @a ~ ~ ~ 1 1 1");
+                Task.sleep(300);
+                AuralisServerApi.playSound(
+                        "sound_id",
+                        ResourceLocation.parse("mirage_gfbs:music.new_p2_m"),
+                        1.0f,
+                        1.0f,
+                        1.0f,
+                        true,
+                        new Vec3(0, 0, 0),
+                        false,
+                        50,
+                        10.0f,
+                        10.0f,
+                        allPlayers
+                );
             }else {
                 executeCommandAsync("playsound mirage_gfbs:music.p2_m voice @a ~ ~ ~ 1 1 1");
             }
@@ -429,6 +469,8 @@ public class DmrMeltdown {
                 CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 290, 11290);
             }
 
+            FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.HIGH);
+
             Task.sleep(17060);
             executeCommandAsync("playsound mirage_gfbs:boom.boom_b voice @a ~ ~ ~ 1 1 1");
             for (ServerPlayer player : allPlayers) {
@@ -493,6 +535,8 @@ public class DmrMeltdown {
                 CameraShakeCommand.triggerCameraShake(player, 30, 0.3f, 43600, 290, 10290);
             }
             executeCommandAsync("playsound mirage_gfbs:boom.dmr_b voice @a ~ ~ ~ 2 1 1");
+
+            FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
 
             meltdownFlashLoopActive = false;
 
