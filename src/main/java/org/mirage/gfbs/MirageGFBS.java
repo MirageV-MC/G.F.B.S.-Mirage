@@ -228,16 +228,16 @@ public class MirageGFBS {
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
             DmrMeltdown.execute(context, false, true);
         });
-        MirageGFBsEventCommand.registerHandler("dmr_meltdown_none_music", (context)->{
+        MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_none_music", (context)->{
             DmrMeltdown.execute(context, false, false);
         });
-        MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_old", (context)->{
+        MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_p2_old", (context)->{
             DmrMeltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), false, true);
         });
-        MirageGFBsEventCommand.registerHandler("dmr_meltdown_p2_new", (context)->{
+        MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_p2_new", (context)->{
             DmrMeltdown.p2(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel(), true, true);
         });
-        MirageGFBsEventCommand.registerHandler("dmrex_after", (context -> {
+        MirageGFBsEventCommand.registerHandler("debug_dmrex_after", (context -> {
             DmrexAfter.exec(context.getSource().getServer().getPlayerList().getPlayers(), context.getSource().getLevel());
         }));
     }

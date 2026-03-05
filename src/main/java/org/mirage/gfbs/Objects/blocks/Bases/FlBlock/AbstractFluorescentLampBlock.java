@@ -52,7 +52,9 @@ public abstract class AbstractFluorescentLampBlock extends Block {
     public static BlockBehaviour.Properties defaultProperties() {
         return BlockBehaviour.Properties.of()
                 .strength(0.3F)
-                .sound(SoundType.GLASS);
+                .sound(SoundType.GLASS)
+                .noOcclusion()
+                .isViewBlocking((state, world, pos) -> false);
     }
 
     protected AbstractFluorescentLampBlock(BlockBehaviour.Properties properties) {
@@ -62,6 +64,16 @@ public abstract class AbstractFluorescentLampBlock extends Block {
                         .setValue(FACING, Direction.NORTH)
                         .setValue(LIT, Boolean.FALSE)
         );
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    public boolean useShapeForLightOcclusion(BlockState state) {
+        return false;
     }
 
     @Override
@@ -78,6 +90,9 @@ public abstract class AbstractFluorescentLampBlock extends Block {
         super.onPlace(state, level, pos, oldState, isMoving);
         if (!level.isClientSide) {
             boolean powered = level.hasNeighborSignal(pos);
+            if (level instanceof ServerLevel serverLevel && FluorescentTubeSavedData.get(serverLevel).getGlobalState()) {
+                powered = true;
+            }
             if (state.getValue(LIT) != powered) {
                 BlockState newState = state.setValue(LIT, powered);
                 level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);
@@ -91,6 +106,9 @@ public abstract class AbstractFluorescentLampBlock extends Block {
                                 @NotNull Block block, @NotNull BlockPos fromPos, boolean isMoving) {
         if (!level.isClientSide) {
             boolean powered = level.hasNeighborSignal(pos);
+            if (level instanceof ServerLevel serverLevel && FluorescentTubeSavedData.get(serverLevel).getGlobalState()) {
+                powered = true;
+            }
             boolean lit = state.getValue(LIT);
 
             if (lit != powered) {
@@ -125,6 +143,9 @@ public abstract class AbstractFluorescentLampBlock extends Block {
             FluorescentTubeSavedData.get(serverLevel).add(pos);
 
             boolean powered = level.hasNeighborSignal(pos);
+            if (FluorescentTubeSavedData.get(serverLevel).getGlobalState()) {
+                powered = true;
+            }
             if (state.getValue(LIT) != powered) {
                 BlockState newState = state.setValue(LIT, powered);
                 level.setBlock(pos, newState, Block.UPDATE_CLIENTS | Block.UPDATE_NEIGHBORS);

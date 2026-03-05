@@ -55,7 +55,7 @@ public final class FluorescentTubeClientAPI {
      * 客户端全局灯状态：用于区块重新加载/客户端重进时快速恢复视觉状态。
      * true=亮，false=灭
      */
-    public static volatile boolean globalState = false;
+    public static volatile boolean globalState = true;
 
     /**
      * 不稳定模式枚举
@@ -87,7 +87,13 @@ public final class FluorescentTubeClientAPI {
             synchronized (REGISTERED_TUBES) {
                 TUBE_INSTABILITY_STATES.clear();
             }
+            // 不再由客户端主动恢复状态，而是依赖服务端发送的 BlockUpdate
+            // restoreAllTubes();
         }
+    }
+
+    private static void restoreAllTubes() {
+        // 废弃：客户端无法准确判断红石信号，状态恢复完全依赖服务端 refreshAllTubes
     }
 
     /**
@@ -146,13 +152,38 @@ public final class FluorescentTubeClientAPI {
     }
 
     @SubscribeEvent
+    public static void onClientLogout(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
+        resetClientState();
+    }
+
+    @SubscribeEvent
+    public static void onClientLogin(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingIn event) {
+        resetClientState();
+    }
+
+    private static void resetClientState() {
+        globalState = true;
+        currentInstabilityMode = InstabilityMode.NONE;
+        synchronized (REGISTERED_TUBES) {
+            REGISTERED_TUBES.clear();
+            TUBE_INSTABILITY_STATES.clear();
+        }
+        synchronized (BLINK_TASKS) {
+            BLINK_TASKS.clear();
+        }
+    }
+
+    @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
         ClientLevel level = mc.level;
-        if (level == null) {
+        if (level == null || mc.player == null) {
+            if (globalState != true || currentInstabilityMode != InstabilityMode.NONE) {
+                resetClientState();
+            }
             return;
         }
 
@@ -213,6 +244,38 @@ public final class FluorescentTubeClientAPI {
             String modeStr = data.getString("mode");
             InstabilityMode mode = InstabilityMode.valueOf(modeStr);
             setInstabilityMode(mode);
+        });
+
+        // 同步配置
+        ClientEventHandler.registerEvent("fluorescent_tube_sync_config", data -> {
+            if (data.contains("mode")) {
+                String modeStr = data.getString("mode");
+                try {
+                    InstabilityMode mode = InstabilityMode.valueOf(modeStr);
+                    // 仅设置模式，不触发闪烁
+                    currentInstabilityMode = mode;
+                    if (mode == InstabilityMode.NONE) {
+                        synchronized (REGISTERED_TUBES) {
+                            TUBE_INSTABILITY_STATES.clear();
+                        }
+                    }
+                } catch (Exception ignored) {}
+            }
+            if (data.contains("globalState")) {
+                boolean newGlobalState = data.getBoolean("globalState");
+                if (globalState != newGlobalState) {
+                    globalState = newGlobalState;
+                    // 同步时不播放动画，仅清空当前任务，等待服务端 BlockUpdate
+                    synchronized (BLINK_TASKS) {
+                        BLINK_TASKS.clear();
+                    }
+                    if (!globalState) {
+                        synchronized (REGISTERED_TUBES) {
+                            TUBE_INSTABILITY_STATES.clear();
+                        }
+                    }
+                }
+            }
         });
     }
 

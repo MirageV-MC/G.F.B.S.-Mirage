@@ -39,6 +39,9 @@ import org.mirage.gfbs.Objects.blocks.Control.FluorescentTubeSavedData;
 import org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import org.mirage.gfbs.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 
 @Mod.EventBusSubscriber(modid = MirageGFBS.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class FluorescentTubeCommandRegistry {
@@ -94,6 +97,10 @@ public final class FluorescentTubeCommandRegistry {
                                             Collection<ServerPlayer> targets =
                                                     EntityArgument.getPlayers(ctx, "target");
 
+                                            ServerLevel level = source.getLevel();
+                                            FluorescentTubeSavedData.get(level).setGlobalState(true);
+                                            updateLoadedTubesState(level, true);
+
                                             CompoundTag data = new CompoundTag();
                                             attachAllTubes(source, data);
                                             for (ServerPlayer player : targets) {
@@ -115,6 +122,10 @@ public final class FluorescentTubeCommandRegistry {
                                             CommandSourceStack source = ctx.getSource();
                                             Collection<ServerPlayer> targets =
                                                     EntityArgument.getPlayers(ctx, "target");
+
+                                            ServerLevel level = source.getLevel();
+                                            FluorescentTubeSavedData.get(level).setGlobalState(false);
+                                            updateLoadedTubesState(level, false);
 
                                             CompoundTag data = new CompoundTag();
                                             attachAllTubes(source, data);
@@ -145,6 +156,9 @@ public final class FluorescentTubeCommandRegistry {
                                                     String modeStr = StringArgumentType.getString(ctx, "mode");
                                                     Collection<ServerPlayer> targets =
                                                             EntityArgument.getPlayers(ctx, "target");
+
+                                                    ServerLevel level = source.getLevel();
+                                                    FluorescentTubeSavedData.get(level).setInstabilityMode(modeStr.toUpperCase());
 
                                                     CompoundTag data = new CompoundTag();
                                                     data.putString("mode", modeStr.toUpperCase());
@@ -216,9 +230,51 @@ public final class FluorescentTubeCommandRegistry {
         flashAllTubes(level, level.players(), durationTicks, averageFrequency);
     }
 
+    private static void refreshAllTubes(ServerLevel level) {
+        FluorescentTubeSavedData saved = FluorescentTubeSavedData.get(level);
+        for (BlockPos pos : saved.getAll()) {
+            if (level.hasChunkAt(pos)) {
+                net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+                level.sendBlockUpdated(pos, state, state, 3);
+            }
+        }
+        for (BlockPos pos : FluorescentTubeRegistry.getAll(level)) {
+            if (level.hasChunkAt(pos)) {
+                net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+                level.sendBlockUpdated(pos, state, state, 3);
+            }
+        }
+    }
+
+    private static void updateLoadedTubesState(ServerLevel level, boolean lit) {
+        FluorescentTubeSavedData saved = FluorescentTubeSavedData.get(level);
+        Set<BlockPos> allTubes = new HashSet<>(saved.getAll());
+        allTubes.addAll(FluorescentTubeRegistry.getAll(level));
+
+        for (BlockPos pos : allTubes) {
+            if (level.hasChunkAt(pos)) {
+                net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+                if (state.hasProperty(AbstractFluorescentLampBlock.LIT)) {
+                    boolean shouldBeLit = lit;
+                    if (!lit) {
+                        shouldBeLit = level.hasNeighborSignal(pos);
+                    }
+                    if (state.getValue(AbstractFluorescentLampBlock.LIT) != shouldBeLit) {
+                        level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, shouldBeLit), 3);
+                    }
+                }
+            }
+        }
+    }
+
     public static void turnOnAllTubes(ServerLevel level,
                                       Collection<ServerPlayer> targets) {
+        FluorescentTubeSavedData.get(level).setGlobalState(true);
+        updateLoadedTubesState(level, true);
+        FluorescentTubeSavedData.get(level).setInstabilityMode("NONE");
+
         CompoundTag data = new CompoundTag();
+        data.putString("mode", "NONE");
         attachAllTubes(level, data);
 
         for (ServerPlayer player : targets) {
@@ -227,7 +283,13 @@ public final class FluorescentTubeCommandRegistry {
                     "fluorescent_tube_turn_on_all",
                     data
             );
+            NetworkHandler.sendToPlayer(
+                    player,
+                    "fluorescent_tube_set_instability",
+                    data
+            );
         }
+        refreshAllTubes(level);
     }
 
     public static void turnOnAllTubes(ServerLevel level) {
@@ -236,6 +298,9 @@ public final class FluorescentTubeCommandRegistry {
 
     public static void turnOffAllTubes(ServerLevel level,
                                        Collection<ServerPlayer> targets) {
+        FluorescentTubeSavedData.get(level).setGlobalState(false);
+        updateLoadedTubesState(level, false);
+
         CompoundTag data = new CompoundTag();
         attachAllTubes(level, data);
 
@@ -246,6 +311,7 @@ public final class FluorescentTubeCommandRegistry {
                     data
             );
         }
+        refreshAllTubes(level);
     }
 
     public static void turnOffAllTubes(ServerLevel level) {
@@ -255,6 +321,8 @@ public final class FluorescentTubeCommandRegistry {
     public static void setInstabilityMode(ServerLevel level,
                                           Collection<ServerPlayer> targets,
                                           InstabilityMode mode) {
+        FluorescentTubeSavedData.get(level).setInstabilityMode(mode.name().toUpperCase());
+
         CompoundTag data = new CompoundTag();
         data.putString("mode", mode.name().toUpperCase());
 
@@ -264,6 +332,9 @@ public final class FluorescentTubeCommandRegistry {
                     "fluorescent_tube_set_instability",
                     data
             );
+        }
+        if (mode == InstabilityMode.NONE) {
+            refreshAllTubes(level);
         }
     }
 

@@ -63,6 +63,7 @@ public class DmrMeltdown {
         Collection<ServerPlayer> allPlayers = source.getServer().getPlayerList().getPlayers();
 
         FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
+        FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
 
         executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_q_b_nb voice @a ~ ~ ~ 1 1 1");
 
@@ -197,7 +198,7 @@ public class DmrMeltdown {
                         "危险, DMR融毁在倒计时-10分钟, 关机窗口结束时间为倒计时-5分钟.", 200);
 
                 for (ServerPlayer player : allPlayers){
-                    CountdownAPI.popup(player, "DMR 关机窗口过期在 T- ", 2, 0, 0);
+                    CountdownAPI.popup(player, "DMR 关机窗口过期在 T- ", 2, 7, 0);
                 }
             }, 175008, TimeUnit.MILLISECONDS);
 
@@ -502,6 +503,10 @@ public class DmrMeltdown {
 
             Task.delay(()->{
                 explosion(1, true);
+
+                broadcast("mirage_gfbs:faas_s.f_s_476694");
+                NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                        "设施自动化管理系统错误.", 200);
             }, 7705, TimeUnit.MILLISECONDS);
 
             Task.sleep(30000);
@@ -536,8 +541,6 @@ public class DmrMeltdown {
             }
             executeCommandAsync("playsound mirage_gfbs:boom.dmr_b voice @a ~ ~ ~ 2 1 1");
 
-            FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
-
             meltdownFlashLoopActive = false;
 
             FluorescentTubeCommandRegistry.turnOffAllTubes(_serverLevel);
@@ -548,6 +551,8 @@ public class DmrMeltdown {
 
             Task.delay(()->{
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_bh voice @a ~ ~ ~ 1 1 1");
+
+                broadcast("mirage_gfbs:hybrid.faas_np");
             }, 1899, TimeUnit.MILLISECONDS);
 
             Task.spawn(()->{

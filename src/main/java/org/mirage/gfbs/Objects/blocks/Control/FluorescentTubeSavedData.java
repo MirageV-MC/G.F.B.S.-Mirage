@@ -35,6 +35,8 @@ public class FluorescentTubeSavedData extends SavedData {
     private static final String DATA_NAME = "mirage_fluorescent_tubes";
 
     private final Set<BlockPos> tubes = new HashSet<>();
+    private String instabilityMode = "NONE";
+    private boolean globalState = true;
 
     public FluorescentTubeSavedData() {
     }
@@ -51,6 +53,15 @@ public class FluorescentTubeSavedData extends SavedData {
                 data.tubes.add(new BlockPos(x, y, z));
             }
         }
+        if (tag.contains("InstabilityMode")) {
+            data.instabilityMode = tag.getString("InstabilityMode");
+        }
+        if (tag.contains("GlobalState")) {
+            data.globalState = tag.getBoolean("GlobalState");
+        } else {
+            // 如果没有 GlobalState 字段（旧存档），默认设为 true，防止意外关灯
+            data.globalState = true;
+        }
         return data;
     }
 
@@ -65,6 +76,8 @@ public class FluorescentTubeSavedData extends SavedData {
             list.add(t);
         }
         tag.put("tubes", list);
+        tag.putString("InstabilityMode", instabilityMode);
+        tag.putBoolean("GlobalState", globalState);
         return tag;
     }
 
@@ -75,6 +88,24 @@ public class FluorescentTubeSavedData extends SavedData {
                 FluorescentTubeSavedData::new,
                 DATA_NAME
         );
+    }
+
+    public void setInstabilityMode(String mode) {
+        this.instabilityMode = mode;
+        setDirty();
+    }
+
+    public String getInstabilityMode() {
+        return instabilityMode;
+    }
+
+    public void setGlobalState(boolean state) {
+        this.globalState = state;
+        setDirty();
+    }
+
+    public boolean getGlobalState() {
+        return globalState;
     }
 
     public void add(BlockPos pos) {
