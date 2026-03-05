@@ -4,6 +4,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import org.mirage.gfbs.Client.ExposureController;
 import org.mirage.gfbs.Command.CameraShakeCommand;
+import org.mirage.gfbs.Command.FluorescentTubeCommandRegistry;
 import org.mirage.gfbs.Command.MirageGFBsGateApiCommand;
 import org.mirage.gfbs.Phenomenon.network.Network.ClientEventHandler;
 import org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler;
@@ -55,6 +56,8 @@ public class DmrexAfter {
             server.execute(()->{
                 MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate");
             });
+            FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
+            FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
         }, 4584, TimeUnit.MILLISECONDS);
 
         Task.sleep(970);

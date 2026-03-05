@@ -1481,6 +1481,12 @@
       "mirage_gfbs:hybrid/meltdown_a_b"
     ]
   },
+  "hybrid.faas_np": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:hybrid/faas_np"
+    ]
+  },
   "mobile.airlock_door_co": {
     "category": "music",
     "sounds": [
