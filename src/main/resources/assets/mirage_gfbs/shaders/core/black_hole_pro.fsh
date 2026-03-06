@@ -208,7 +208,10 @@ RenderResult renderBlackhole(vec3 localRo, vec3 localRd, vec2 screenUV, float eh
         vec3 rNorm = normalize(rayPos);
         float rLen = length(rayPos);
         float steerMag = (STEP_SIZE * POWER) / (rLen * rLen);
-        float range = despawning ? 0.0 : remapClamp(rLen, -100.0, 0.5, 0.0, 4.0);
+        float range = remapClamp(rLen, -100.0, 0.5, 0.0, 4.0);
+        if (despawning) {
+             range *= ehScale;
+        }
         vec3 steer = rNorm * (steerMag * range);
         vec3 steeredDir = normalize(rayDir - steer);
 
@@ -219,7 +222,7 @@ RenderResult renderBlackhole(vec3 localRo, vec3 localRd, vec2 screenUV, float eh
         float xyLen = lengthSqrt(rayPos * vec3(1, 1, 0));
         float rLenNow = length(rayPos);
 
-        float insideCore = despawning ? 0.0 : step(rLenNow, coreSize);
+        float insideCore = step(rLenNow, coreSize);
 
         if(insideCore < 0.5 && xyLen < diskInner)
         {
