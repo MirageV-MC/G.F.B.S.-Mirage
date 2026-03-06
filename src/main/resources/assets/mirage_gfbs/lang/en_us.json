@@ -10,6 +10,8 @@
   "block.mirage_gfbs.qs_wall": "QS墙面材质石",
   "block.mirage_gfbs.speaker": "扬声器",
   "block.mirage_gfbs.tartarus_gate": "塔塔鲁斯大型烙件闸门",
+  "block.mirage_gfbs.black_hole": "黑洞",
+  "item.mirage_gfbs.black_hole.tooltip": "炫酷的DMR暗物质低密度黑洞，以及能把你吸进奇点的引力。",
 
   "block.mirage_gfbs.cc_io_bridge": "GFBS CC I/O 桥",
   "item.mirage_gfbs.cc_io_bridge.tooltip": "把此方块放置到高级电脑旁时,将会自动启用GFBS桥。"

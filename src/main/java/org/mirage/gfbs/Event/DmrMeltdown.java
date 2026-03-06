@@ -21,7 +21,8 @@ package org.mirage.gfbs.Event;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import org.mirage.gfbs.Command.*;
-import org.mirage.gfbs.ModSoundEvents;
+import org.mirage.gfbs.Event.ccio.dmr.DmrMeltdownEvents;
+import org.mirage.gfbs.Event.ccio.dmr.DmrShutdownApis;
 import org.mirage.gfbs.Phenomenon.network.HexCrackerNetwork;
 import org.mirage.gfbs.Tools.CountdownPopup.CountdownEndHooks;
 import org.mirage.gfbs.Tools.Task;
@@ -29,27 +30,40 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.commands.CommandSourceStack;
 import org.mirage.gfbs.api.BroadSystemAPI;
 import org.mirage.gfbs.api.CountdownAPI;
-import org.mirage.gfbs.auralis.api.AuralisApi;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.gfbs.auralis.api.AuralisServerApi;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 import static org.mirage.gfbs.CommandExecutor.executeCommandAsync;
 import static org.mirage.gfbs.MirageGFBS.server;
 
 public class DmrMeltdown {
+    public static String MUSIC_ID = "meltdown_music";
+
     private static ServerLevel _serverLevel;
 
     private static boolean meltdownFlashLoopActive = false;
 
+    private static final List<Future<?>> p1DelayedTasks = new ArrayList<>();
+    private static final List<Thread> p1SpawnedThreads = new ArrayList<>();
+    private static volatile boolean p1Cancelled = false;
+
     public static void execute(MirageGFBsEventCommand.CommandContext context, boolean isNewMusic, boolean haveMusic) {
         _serverLevel = context.getSource().getLevel();
+        
+        p1DelayedTasks.clear();
+        p1SpawnedThreads.clear();
+        p1Cancelled = false;
+        
+        DmrMeltdownEvents.registerAll();
+        DmrMeltdownEvents.trigger(DmrMeltdownEvents.MELTDOWN_START);
         Task.spawn(()->{
             execute_s(context, isNewMusic, haveMusic);
         });
@@ -70,20 +84,25 @@ public class DmrMeltdown {
         Task.sleep(40403);
 
         implosion(allPlayers, true);
+        DmrMeltdownEvents.trigger(DmrMeltdownEvents.IMPLOSION);
 
         meltdownFlashLoopActive = false;
 
         startFlashLoop(_serverLevel);
+        DmrMeltdownEvents.trigger(DmrMeltdownEvents.FLASH_LOOP_START);
         FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.LOW);
+
+        DmrShutdownApis.isNewMusic = isNewMusic;
+        DmrShutdownApis.haveMusic = haveMusic;
 
         Task.sleep(2037);
 
-        Task.delay(()->{
+        trackDelay(()->{
             if (haveMusic) {
                 if (isNewMusic){
                     Task.sleep(300);
                     AuralisServerApi.playSound(
-                            "sound_id",
+                            MUSIC_ID,
                             ResourceLocation.parse("mirage_gfbs:music.new_p1_m"),
                             1.0f,
                             1.0f,
@@ -97,16 +116,30 @@ public class DmrMeltdown {
                             allPlayers
                     );
                 }else {
-                    executeCommandAsync("playsound mirage_gfbs:music.p1_m voice @a ~ ~ ~ 1 1 1");
+                    Task.sleep(300);
+                    AuralisServerApi.playSound(
+                            MUSIC_ID,
+                            ResourceLocation.parse("mirage_gfbs:music.p1_m"),
+                            1.0f,
+                            1.0f,
+                            1.0f,
+                            true,
+                            new Vec3(0, 0, 0),
+                            false,
+                            50,
+                            10.0f,
+                            10.0f,
+                            allPlayers
+                    );
                 }
             }
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:faas.r_c_s_a_t_r");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "反应堆核心结构完整性监测系统出现故障, 正在尝试重启.", 200);
 
-                Task.delay(()->{
+                trackDelay(()->{
                     executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
                 },6183, TimeUnit.MILLISECONDS);
 
@@ -115,16 +148,16 @@ public class DmrMeltdown {
                         "严重错误: 重启失败,系统完整性状态未知.", 200);
             }, 15000, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:faas_s.f_s_228127");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "暗物质反应堆压力监测系统故障, 压力未知.", 200);
 
                 Task.sleep(12000);
 
-                Task.spawn(()->{
+                trackSpawn(()->{
                     isRedcode = false;
-                    while (!isRedcode){
+                    while (!isRedcode && !p1Cancelled){
                         executeCommandAsync("playsound mirage_gfbs:alarm.portal_a voice @a ~ ~ ~ 99999 1 1");
                         Task.sleep(2803);
                     }
@@ -134,13 +167,13 @@ public class DmrMeltdown {
                 broadcast("mirage_gfbs:faas.w_a_f_s_d");
             }, 42403, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:human.emergency.c_r_p_e");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Facility.Supervisor.",
                         "所有设施人员注意，设施自动管理系统已发布红色警报。封锁代码已被指定代码\"Bravo-Niner\"覆盖,请立即前往塔塔鲁斯进行撤离. 这不是演习,我重复,这不是演习.", 400);
             }, 67403, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:faas_s.f_s_663257");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "暗物质反应堆不稳定, 总电源即将中断.", 200);
@@ -150,9 +183,11 @@ public class DmrMeltdown {
                     CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 124800, 990, 11290);
                 }
 
-                Task.sleep(16000); //old:18000
+                Task.sleep(16000);
 
                 isRedcode = true;
+
+                DmrMeltdownEvents.trigger(DmrMeltdownEvents.REDCODE_ANNOUNCED);
 
                 broadcast("mirage_gfbs:faas.dmr_i_c_f");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -167,21 +202,22 @@ public class DmrMeltdown {
                 }
             }, 112403, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:human.dmr.s_t_b_e_r_a");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Facility.Supervisor.",
                         "所有反应堆控制室工作人员注意, 你们接到指示, 在撤离设施之前必须尝试关闭反应堆, 如果选择逃离, 你们将被立即处决. 这是你们唯一警告.", 300);
             }, 144541, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 implosion(allPlayers, true);
+                DmrMeltdownEvents.trigger(DmrMeltdownEvents.IMPLOSION_2);
 
                 Task.sleep(2500);
 
                 executeCommandAsync("playsound mirage_gfbs:alarm.dmr_r_i_a voice @a ~ ~ ~ 1 1 1");
-            }, 137816, TimeUnit.MILLISECONDS); //old:137516
+            }, 137816, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "正在计算融毁时间...", 200);
                 broadcast("mirage_gfbs:faas_s.f_s_286753");
@@ -192,7 +228,7 @@ public class DmrMeltdown {
                 }
             }, 165412, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:faas.dmr_w_s_i_t_m");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "危险, DMR融毁在倒计时-10分钟, 关机窗口结束时间为倒计时-5分钟.", 200);
@@ -202,28 +238,32 @@ public class DmrMeltdown {
                 }
             }, 175008, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:faas.dmr_s_e_s_i_d");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "紧急关机窗口已开启, 温度必须低于3000k.", 300);
+
+                String shutdownCode = DmrShutdownCodeManager.generateCode();
+                DmrMeltdownEvents.trigger(DmrMeltdownEvents.SHUTDOWN_WINDOW_OPEN, shutdownCode);
 
                 Task.spawn(()->{
                     for (ServerPlayer player : allPlayers){
                         CountdownAPI.startCountdown(player);
                     }
+                    DmrMeltdownEvents.trigger(DmrMeltdownEvents.COUNTDOWN_START);
                 });
 
-                Task.delay(()->{
+                trackDelay(()->{
                     broadcast("mirage_gfbs:faas_s.f_s_502887");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "注意, 反应堆操作小组已发出求救信号.", 300);
 
-                    Task.delay(()->{
+                    trackDelay(()->{
                         explosion(3, true);
                     }, 6473, TimeUnit.MILLISECONDS);
                 }, 14614, TimeUnit.MILLISECONDS);
 
-                Task.delay(()->{
+                trackDelay(()->{
                     FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 40, 3.0D);
 
                     broadcast("mirage_gfbs:faas_s.f_s_955935");
@@ -232,7 +272,7 @@ public class DmrMeltdown {
                 }, 24178, TimeUnit.MILLISECONDS);
             }, 190810, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 broadcast("mirage_gfbs:human.work.f_s_d_r_a_c");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "Helen.Kate.",
                         "操作员们, F.A.A.S.工程师们正在尝试修复服务器残骸, 以破解关机代码. 留意你们这边的情况.", 300);
@@ -240,12 +280,14 @@ public class DmrMeltdown {
                 Task.sleep(10000);
 
                 HexCrackerNetwork.triggerOnAll(server);
+                HexCrackerServer.start(server);
+                DmrMeltdownEvents.trigger(DmrMeltdownEvents.HEX_CRACKER_TRIGGERED);
 
                 Task.sleep(7500);
 
                 explosion(1, true);
 
-                Task.delay(()->{
+                trackDelay(()->{
                     executeCommandAsync("playsound mirage_gfbs:alarm.a2.warning_a voice @a ~ ~ ~ 1 1 1");
 
                     Task.sleep(7054);
@@ -269,9 +311,9 @@ public class DmrMeltdown {
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                             "所有设施科学人员, 请立即疏散.", 200);
 
-                    Task.spawn(()->{
+                    trackSpawn(()->{
                         isP1Evec = false;
-                        while (!isP1Evec){
+                        while (!isP1Evec && !p1Cancelled){
                             executeCommandAsync("playsound mirage_gfbs:alarm.portal_a voice @a ~ ~ ~ 99999 1 1");
                             Task.sleep(2803);
                         }
@@ -288,17 +330,17 @@ public class DmrMeltdown {
 
             }, 226134, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
                 explosion(1, true);
                 broadcast("mirage_gfbs:faas_s.f_s_476694");
                 NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                         "设施自动化管理系统错误.", 200);
             }, 276000, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
             }, 323144, TimeUnit.MILLISECONDS);
 
-            Task.delay(()->{
+            trackDelay(()->{
             }, 317144, TimeUnit.MILLISECONDS);
 
             Task.spawn(()->{
@@ -311,12 +353,18 @@ public class DmrMeltdown {
 
                         CountdownEndHooks.unregisterAll();
 
+                        DmrMeltdownEvents.trigger(DmrMeltdownEvents.COUNTDOWN_END);
+
                         broadcast("mirage_gfbs:faas_s.f_s_749446");
                         isP1Evec = true;
+
+                        HexCrackerServer.stop();
+                        DmrShutdownCodeManager.clearCode();
 
                         Task.sleep(6100);
 
                         implosion(allPlayers, false);
+                        DmrMeltdownEvents.trigger(DmrMeltdownEvents.IMPLOSION_3);
 
                         CountdownEndHooks.resetAll();
 
@@ -361,6 +409,8 @@ public class DmrMeltdown {
     public static void p2(Collection<ServerPlayer> allPlayers, ServerLevel level, boolean isNewMusic, boolean haveMusic) {
         _serverLevel = level;
 
+        DmrMeltdownEvents.trigger(DmrMeltdownEvents.P2_START);
+
         broadcast("mirage_gfbs:faas.f_b_c_r_t");
         NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                 "全体设施人员注意, 已发布黑色紧急指令, 请立即撤离至塔塔鲁斯上层区域.", 200);
@@ -369,7 +419,7 @@ public class DmrMeltdown {
             if (isNewMusic){
                 Task.sleep(300);
                 AuralisServerApi.playSound(
-                        "sound_id",
+                        MUSIC_ID,
                         ResourceLocation.parse("mirage_gfbs:music.new_p2_m"),
                         1.0f,
                         1.0f,
@@ -383,7 +433,21 @@ public class DmrMeltdown {
                         allPlayers
                 );
             }else {
-                executeCommandAsync("playsound mirage_gfbs:music.p2_m voice @a ~ ~ ~ 1 1 1");
+                Task.sleep(300);
+                AuralisServerApi.playSound(
+                        MUSIC_ID,
+                        ResourceLocation.parse("mirage_gfbs:music.p2_m"),
+                        1.0f,
+                        1.0f,
+                        1.0f,
+                        true,
+                        new Vec3(0, 0, 0),
+                        false,
+                        50,
+                        10.0f,
+                        10.0f,
+                        allPlayers
+                );
             }
         }
 
@@ -407,6 +471,7 @@ public class DmrMeltdown {
         }, 7577, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
+            explosion(3, true);
             broadcast("mirage_gfbs:faas.f_m_c_s_o");
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                     "控制系统出现错误, 反应堆控制系统对暗物质反应堆无响应, 处于主控制节点失效状态.", 200);
@@ -418,6 +483,7 @@ public class DmrMeltdown {
 
                 Task.delay(()->{
                     server.execute(()->MirageGFBsGateApiCommand.exec(_serverLevel, true, "gate"));
+                    DmrMeltdownEvents.trigger(DmrMeltdownEvents.SHELTER_GATE_OPENED);
 
                     broadcast("mirage_gfbs:faas_s.f_s_535533");
                     NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
@@ -501,6 +567,8 @@ public class DmrMeltdown {
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                     "注意, 封锁措施现已启动, 防爆门将在一分钟后关闭.", 200);
 
+            DmrMeltdownEvents.trigger(DmrMeltdownEvents.LOCKDOWN_INITIATED);
+
             Task.delay(()->{
                 explosion(1, true);
 
@@ -549,6 +617,8 @@ public class DmrMeltdown {
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                     "强引力源出现在核心腔室.", 200);
 
+            DmrMeltdownEvents.trigger(DmrMeltdownEvents.GRAVITY_SOURCE_DETECTED);
+
             Task.delay(()->{
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_bh voice @a ~ ~ ~ 1 1 1");
 
@@ -557,6 +627,7 @@ public class DmrMeltdown {
 
             Task.spawn(()->{
                 Task.sleep(42047);
+                DmrMeltdownEvents.trigger(DmrMeltdownEvents.MELTDOWN_END);
                 DmrexAfter.exec(allPlayers, _serverLevel);
             });
 
@@ -642,6 +713,65 @@ public class DmrMeltdown {
             }
         }, "dmr-meltdown-flash-loop");
 
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    public static void cancelP1() {
+        p1Cancelled = true;
+        
+        for (Future<?> future : p1DelayedTasks) {
+            if (future != null && !future.isDone()) {
+                future.cancel(true);
+            }
+        }
+        p1DelayedTasks.clear();
+        
+        for (Thread thread : p1SpawnedThreads) {
+            if (thread != null && thread.isAlive()) {
+                thread.interrupt();
+            }
+        }
+        p1SpawnedThreads.clear();
+        
+        meltdownFlashLoopActive = false;
+        
+        isRedcode = true;
+        isP1Evec = true;
+        
+        CountdownEndHooks.unregisterAll();
+        CountdownEndHooks.resetAll();
+        
+        if (_serverLevel != null && _serverLevel.getServer() != null) {
+            for (ServerPlayer player : _serverLevel.getServer().getPlayerList().getPlayers()) {
+                CountdownAPI.stop(player);
+            }
+        }
+        
+        HexCrackerServer.stop();
+        HexCrackerNetwork.stopOnAll(_serverLevel != null ? _serverLevel.getServer() : null);
+        DmrShutdownCodeManager.clearCode();
+    }
+    
+    public static boolean isP1Cancelled() {
+        return p1Cancelled;
+    }
+    
+    private static Future<?> trackDelay(Runnable task, long delay, TimeUnit unit) {
+        Future<?> future = Task.delay(task, delay, unit);
+        p1DelayedTasks.add(future);
+        return future;
+    }
+    
+    private static void trackSpawn(Runnable task) {
+        Thread thread = new Thread(() -> {
+            p1SpawnedThreads.add(Thread.currentThread());
+            try {
+                task.run();
+            } finally {
+                p1SpawnedThreads.remove(Thread.currentThread());
+            }
+        });
         thread.setDaemon(true);
         thread.start();
     }

@@ -53,18 +53,19 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
+import org.mirage.gfbs.Phenomenon.event.BlackHoleCommand;
 import org.mirage.gfbs.Event.DmrMeltdown;
 import org.mirage.gfbs.Event.DmrexAfter;
 import org.mirage.gfbs.Event.Main90Alpha;
-import org.mirage.gfbs.Objects.CreativeModeTabRegistration;
-import org.mirage.gfbs.Objects.ModBlockEntities;
-import org.mirage.gfbs.Objects.ModEntities;
-import org.mirage.gfbs.Objects.Structure.Registrar;
-import org.mirage.gfbs.Objects.blocks.BlockRegistration;
-import org.mirage.gfbs.Objects.blocks.Control.Gate.GateTypes;
-import org.mirage.gfbs.Objects.items.ItemRegistration;
-import org.mirage.gfbs.Objects.renderer.Gate.GateBlockRenderer;
-import org.mirage.gfbs.Objects.renderer.PictureBlockRenderer;
+import org.mirage.gfbs.objects.CreativeModeTabRegistration;
+import org.mirage.gfbs.objects.ModBlockEntities;
+import org.mirage.gfbs.objects.ModEntities;
+import org.mirage.gfbs.objects.Structure.Registrar;
+import org.mirage.gfbs.objects.blocks.BlockRegistration;
+import org.mirage.gfbs.objects.blocks.Control.Gate.GateTypes;
+import org.mirage.gfbs.objects.items.ItemRegistration;
+import org.mirage.gfbs.objects.renderer.Gate.GateBlockRenderer;
+import org.mirage.gfbs.objects.renderer.PictureBlockRenderer;
 import org.mirage.gfbs.Phenomenon.CameraShake.CameraShakeModule;
 import org.mirage.gfbs.Phenomenon.FogApi.CustomFogModule;
 import org.mirage.gfbs.Phenomenon.network.HexCrackerNetwork;
@@ -337,6 +338,9 @@ public class MirageGFBS {
 
         CountdownCommand.register(event.getDispatcher());
 
+        BlackHoleCommand.register(event.getDispatcher());
+        org.mirage.gfbs.Command.BlackHoleCommandRegistry.register(event.getDispatcher());
+
         // oh no...
         //MirageGFBsRWLCommand.register(event.getDispatcher());
 
@@ -393,6 +397,7 @@ public class MirageGFBS {
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             WorldWriteQueue.flush();
+            org.mirage.gfbs.Phenomenon.BlackHole.BlackHoleManager.tick();
         }
     }
 

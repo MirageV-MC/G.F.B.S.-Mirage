@@ -28,6 +28,7 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
+import org.mirage.gfbs.Phenomenon.BlackHole.BlackHole;
 import org.mirage.gfbs.Phenomenon.BlackHole.BlackHoleManager;
 import org.mirage.gfbs.Phenomenon.network.BlackHole.NetworkHandler;
 import org.mirage.gfbs.Phenomenon.network.packets.BlackHole.BlackHoleCreatePacket;
@@ -66,42 +67,45 @@ public class BlackHoleCommand {
     }
 
     private static int createBlackHole(CommandContext<CommandSourceStack> context, String name, Vec3 position, double radius, double lensing) {
-        boolean success = BlackHoleManager.createBlackHole(name, radius, lensing, position);
-
-        if (success) {
-            BlackHoleCreatePacket packet = new BlackHoleCreatePacket(name, position, radius, lensing);
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
-
-            context.getSource().sendSuccess(() ->
-                            Component.translatable("command.blackhole.create.success", name, position.x, position.y, position.z),
-                    true
-            );
-            return 1;
-        } else {
+        BlackHole existing = BlackHoleManager.getBlackHole(name);
+        if (existing != null) {
             context.getSource().sendFailure(
                     Component.translatable("command.blackhole.create.failure", name)
             );
             return 0;
         }
+
+        BlackHoleManager.createBlackHole(name, radius, lensing, position);
+        BlackHoleCreatePacket packet = new BlackHoleCreatePacket(name, position, radius, lensing);
+        NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+
+        context.getSource().sendSuccess(() ->
+                        Component.translatable("command.blackhole.create.success", name, position.x, position.y, position.z),
+                true
+        );
+        return 1;
     }
 
     private static int deleteBlackHole(CommandContext<CommandSourceStack> context, String name) {
-        boolean success = BlackHoleManager.removeBlackHole(name);
+        BlackHoleManager.setLevel(context.getSource().getLevel());
+        BlackHole blackHole = BlackHoleManager.getBlackHole(name);
 
-        if (success) {
-            BlackHoleRemovePacket packet = new BlackHoleRemovePacket(name);
-            NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
-
-            context.getSource().sendSuccess(() ->
-                            Component.translatable("command.blackhole.delete.success", name),
-                    true
-            );
-            return 1;
-        } else {
+        if (blackHole == null) {
             context.getSource().sendFailure(
                     Component.translatable("command.blackhole.delete.failure", name)
             );
             return 0;
         }
+
+        BlackHoleRemovePacket packet = new BlackHoleRemovePacket(name);
+        NetworkHandler.INSTANCE.send(PacketDistributor.ALL.noArg(), packet);
+
+        BlackHoleManager.removeBlackHole(name);
+
+        context.getSource().sendSuccess(() ->
+                        Component.translatable("command.blackhole.delete.success", name),
+                true
+        );
+        return 1;
     }
 }

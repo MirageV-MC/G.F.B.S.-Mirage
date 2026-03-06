@@ -6,6 +6,7 @@ import org.mirage.gfbs.Client.ExposureController;
 import org.mirage.gfbs.Command.CameraShakeCommand;
 import org.mirage.gfbs.Command.FluorescentTubeCommandRegistry;
 import org.mirage.gfbs.Command.MirageGFBsGateApiCommand;
+import org.mirage.gfbs.Event.ccio.dmr.DmrMeltdownEvents;
 import org.mirage.gfbs.Phenomenon.network.Network.ClientEventHandler;
 import org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler;
 import org.mirage.gfbs.Tools.Task;
@@ -38,10 +39,12 @@ import static org.mirage.gfbs.MirageGFBS.server;
 public class DmrexAfter {
     public static void exec(Collection<ServerPlayer> allPlayers, ServerLevel _serverLevel) {
         executeCommandAsync("playsound mirage_gfbs:boom.boom2_b voice @a ~ ~ ~ 1 1 1");
+        DmrMeltdownEvents.trigger(DmrMeltdownEvents.EXPLOSION_START);
 
         Task.delay(()->{
             executeCommandAsync("playsound mirage_gfbs:boom.boom2_s voice @a ~ ~ ~ 1 1 1");
             NetworkHandler.sendToAll("mirage_dmr_boom_h_event_client_a2");
+            DmrMeltdownEvents.trigger(DmrMeltdownEvents.EXPLOSION_MAIN);
             for (ServerPlayer player : allPlayers) {
                 CameraShakeCommand.triggerCameraShake(player, 35, 2.7f, 5600, 2, 1029);
             }
@@ -58,6 +61,7 @@ public class DmrexAfter {
             });
             FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
             FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
+            DmrMeltdownEvents.trigger(DmrMeltdownEvents.FACILITY_RESTORE);
         }, 4584, TimeUnit.MILLISECONDS);
 
         Task.sleep(970);
