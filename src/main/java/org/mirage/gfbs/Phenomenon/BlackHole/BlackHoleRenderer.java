@@ -47,20 +47,8 @@ public class BlackHoleRenderer {
 
     @SubscribeEvent
     public static void onWorldRenderLast(RenderLevelStageEvent event) {
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
-
-        List<BlackHole> blackHoles = BlackHoleManager.getBlackHoles();
-        if (blackHoles.isEmpty()) return;
-
-        // 渲染事件视界
-        for (BlackHole blackHole : blackHoles) {
-            renderEventHorizon(event, blackHole);
-        }
-
-        // 在所有内容渲染完成后应用空间扭曲效果
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
-            //applyLensingEffect(event, blackHoles);
-        }
+        // 此渲染器已禁用，避免出现多余的透明黑球
+        // 黑洞现在由 BlackHoleProRenderer 负责渲染
     }
 
     private static void renderEventHorizon(RenderLevelStageEvent event, BlackHole blackHole) {

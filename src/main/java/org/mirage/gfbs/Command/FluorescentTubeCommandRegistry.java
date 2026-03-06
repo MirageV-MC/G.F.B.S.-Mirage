@@ -34,14 +34,14 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.mirage.gfbs.MirageGFBS;
-import org.mirage.gfbs.Objects.blocks.Control.FluorescentTubeRegistry;
-import org.mirage.gfbs.Objects.blocks.Control.FluorescentTubeSavedData;
+import org.mirage.gfbs.objects.blocks.Control.FluorescentTubeRegistry;
+import org.mirage.gfbs.objects.blocks.Control.FluorescentTubeSavedData;
 import org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.mirage.gfbs.Objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
+import org.mirage.gfbs.objects.blocks.Bases.FlBlock.AbstractFluorescentLampBlock;
 
 @Mod.EventBusSubscriber(modid = MirageGFBS.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public final class FluorescentTubeCommandRegistry {

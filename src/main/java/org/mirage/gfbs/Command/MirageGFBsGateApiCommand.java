@@ -6,7 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.server.level.ServerLevel;
 import org.mirage.gfbs.api.GateClientAPI;
-import org.mirage.gfbs.Objects.blocks.Control.Gate.GateTypes;
+import org.mirage.gfbs.objects.blocks.Control.Gate.GateTypes;
 
 
 /**

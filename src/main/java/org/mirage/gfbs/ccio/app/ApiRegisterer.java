@@ -1,7 +1,7 @@
 package org.mirage.gfbs.ccio.app;
 
 import net.minecraft.server.MinecraftServer;
-import org.mirage.gfbs.Objects.blocks.Control.Gate.GateTypes;
+import org.mirage.gfbs.objects.blocks.Control.Gate.GateTypes;
 import org.mirage.gfbs.api.GateClientAPI;
 import org.mirage.gfbs.ccio.api.CCIoApiRegistry;
 

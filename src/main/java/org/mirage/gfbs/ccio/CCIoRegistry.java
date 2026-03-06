@@ -30,7 +30,7 @@ import org.mirage.gfbs.ccio.item.CCIoBridgeBlockItem;
 
 import static org.mirage.gfbs.MirageGFBS.BLOCKS;
 import static org.mirage.gfbs.MirageGFBS.ITEMS;
-import static org.mirage.gfbs.Objects.ModBlockEntities.BLOCK_ENTITIES;
+import static org.mirage.gfbs.objects.ModBlockEntities.BLOCK_ENTITIES;
 
 public final class CCIoRegistry {
     public static final String MOD_ID = "mirage_gfbs";

@@ -3,9 +3,9 @@ package org.mirage.gfbs.Utils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import org.mirage.gfbs.MirageGFBS;
-import org.mirage.gfbs.Objects.blocks.Control.Gate.GateServerManager;
-import org.mirage.gfbs.Objects.blocks.Control.Gate.GateType;
-import org.mirage.gfbs.Objects.blocks.classs.Gate.GateBlock;
+import org.mirage.gfbs.objects.blocks.Control.Gate.GateServerManager;
+import org.mirage.gfbs.objects.blocks.Control.Gate.GateType;
+import org.mirage.gfbs.objects.blocks.classs.Gate.GateBlock;
 
 import java.util.Optional;
 

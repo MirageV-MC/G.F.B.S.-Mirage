@@ -53,6 +53,10 @@ public class HexCrackerUI {
         INSTANCE.stopInternal();
     }
 
+    public static void updateCrackedDigits(int[] crackedDigits) {
+        INSTANCE.updateCrackedDigitsInternal(crackedDigits);
+    }
+
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -103,7 +107,18 @@ public class HexCrackerUI {
     private String versionString = "v1.0.0";
 
     private String currentTopNumber = "------";
-    private final String[] history = new String[6];
+    private final HistoryEntry[] history = new HistoryEntry[6];
+    private int[] crackedDigits = new int[]{-1, -1, -1, -1, -1, -1};
+
+    private static class HistoryEntry {
+        final String number;
+        final int[] crackedAtTime;
+
+        HistoryEntry(String number, int[] crackedAtTime) {
+            this.number = number;
+            this.crackedAtTime = crackedAtTime != null ? crackedAtTime.clone() : new int[]{-1, -1, -1, -1, -1, -1};
+        }
+    }
 
     private HexCrackerUI() {
         resetHistory();
@@ -111,7 +126,13 @@ public class HexCrackerUI {
 
     private void resetHistory() {
         for (int i = 0; i < history.length; i++) {
-            history[i] = "------";
+            history[i] = new HistoryEntry("------", null);
+        }
+    }
+
+    private void updateCrackedDigitsInternal(int[] digits) {
+        if (digits != null && digits.length == 6) {
+            this.crackedDigits = digits.clone();
         }
     }
 
@@ -132,6 +153,7 @@ public class HexCrackerUI {
         versionString = "v1.0.0";
 
         currentTopNumber = "------";
+        crackedDigits = new int[]{-1, -1, -1, -1, -1, -1};
         resetHistory();
 
         startProductionThread();
@@ -220,15 +242,20 @@ public class HexCrackerUI {
     }
 
     private void generateNextNumber() {
-        int value = random.nextInt(0x1000000);
-        String hex = String.format("%06X", value);
-
-        currentTopNumber = hex;
+        StringBuilder num = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            if (crackedDigits[i] >= 0) {
+                num.append(crackedDigits[i]);
+            } else {
+                num.append(random.nextInt(10));
+            }
+        }
+        currentTopNumber = num.toString();
 
         for (int i = history.length - 1; i > 0; i--) {
             history[i] = history[i - 1];
         }
-        history[0] = hex;
+        history[0] = new HistoryEntry(currentTopNumber, crackedDigits);
     }
 
 
@@ -306,7 +333,7 @@ public class HexCrackerUI {
         graphics.fill(panelX, baseY, panelX + panelWidth, baseY + panelHeight, bgColor);
 
         // 标题栏
-        String title = "F.A.A.S.代码破解窗口";
+        String title = "F.A.A.S.临时停机终端";
         graphics.pose().pushPose();
         float titleScale = scale * 1.5f;
         graphics.pose().scale(titleScale, titleScale, 1);
@@ -352,11 +379,16 @@ public class HexCrackerUI {
         float text_scale0 = scale * 1.5f;
         graphics.pose().scale(text_scale0, text_scale0, 1);
 
-        int textWidth = font.width(currentTopNumber);
-        int drawX = (int)((topX + (topW - textWidth * text_scale0) / 2) / text_scale0);
+        int charWidth = font.width("0");
+        int totalWidth = charWidth * 6;
+        int startX = (int)((topX + (topW - totalWidth * text_scale0) / 2) / text_scale0);
         int drawY = (int)((topY + (topH - font.lineHeight * text_scale0) / 2) / text_scale0);
 
-        graphics.drawString(font, currentTopNumber, drawX, drawY, 0xFFFCE9FF, false);
+        for (int i = 0; i < 6; i++) {
+            char c = currentTopNumber.charAt(i);
+            int color = (crackedDigits[i] >= 0) ? 0xFF66BB66 : 0xFFFCE9FF;
+            graphics.drawString(font, String.valueOf(c), startX + i * charWidth, drawY, color, false);
+        }
         graphics.pose().popPose();
 
 
@@ -370,19 +402,24 @@ public class HexCrackerUI {
 
             graphics.fill(rowX, rowY, rowX + rowW, rowY + rowH, 0xFF181818);
 
-            String value = history[i];
-            int tWidth = font.width(value);
+            HistoryEntry entry = history[i];
+            String value = entry.number;
+            int[] entryCracked = entry.crackedAtTime;
 
             graphics.pose().pushPose();
             float text_scale = scale * 1.5f;
             graphics.pose().scale(text_scale, text_scale, 1);
 
-            int tx = (int)((rowX + (rowW - tWidth * text_scale) / 2) / text_scale);
-            int ty = (int)((rowY + (rowH - font.lineHeight * text_scale) / 2) / text_scale);
+            int histCharWidth = font.width("0");
+            int histTotalWidth = histCharWidth * 6;
+            int hx = (int)((rowX + (rowW - histTotalWidth * text_scale) / 2) / text_scale);
+            int hy = (int)((rowY + (rowH - font.lineHeight * text_scale) / 2) / text_scale);
 
-            int color = 0xFFBBBBBB;
-
-            graphics.drawString(font, value, tx, ty, color, false);
+            for (int j = 0; j < 6 && j < value.length(); j++) {
+                char c = value.charAt(j);
+                int color = (entryCracked[j] >= 0) ? 0xFF66BB66 : 0xFFBBBBBB;
+                graphics.drawString(font, String.valueOf(c), hx + j * histCharWidth, hy, color, false);
+            }
             graphics.pose().popPose();
         }
 

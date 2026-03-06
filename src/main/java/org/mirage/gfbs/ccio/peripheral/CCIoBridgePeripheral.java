@@ -35,6 +35,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.mirage.gfbs.ccio.api.CCIoApiRegistry;
 import org.mirage.gfbs.ccio.blockentity.CCIoBridgeBlockEntity;
+import org.mirage.gfbs.ccio.event.CCIoEventManager;
 
 import java.util.Objects;
 import java.util.concurrent.*;
@@ -100,6 +101,7 @@ public final class CCIoBridgePeripheral implements IPeripheral {
     @Override
     public void detach(IComputerAccess computer) {
         computers.remove(computer);
+        CCIoEventManager.getInstance().unsubscribeAll(computer);
     }
 
     @LuaFunction
@@ -113,7 +115,13 @@ public final class CCIoBridgePeripheral implements IPeripheral {
         requireValid();
         if (name == null || name.isBlank()) throw new LuaException("API name is empty");
         ServerLevel level = requireServerLevel();
-        return CCIoApiRegistry.invoke(level, be.getBlockPos(), computer, name, args == null ? new Object[0] : args.getAll());
+        Object[] apiArgs;
+        if (args == null || args.count() <= 1) {
+            apiArgs = new Object[0];
+        } else {
+            apiArgs = args.drop(1).getAll();
+        }
+        return CCIoApiRegistry.invoke(level, be.getBlockPos(), computer, name, apiArgs);
     }
 
     @LuaFunction(mainThread = true)

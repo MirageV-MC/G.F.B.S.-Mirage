@@ -59,6 +59,14 @@ public class HexCrackerNetwork {
                 StopHexCrackerMessage::decode,
                 StopHexCrackerMessage::handle
         );
+
+        CHANNEL.registerMessage(
+                packetId++,
+                CrackedDigitsUpdateMessage.class,
+                CrackedDigitsUpdateMessage::encode,
+                CrackedDigitsUpdateMessage::decode,
+                CrackedDigitsUpdateMessage::handle
+        );
     }
 
     public static void triggerOnAll(MinecraftServer server) {
@@ -69,6 +77,11 @@ public class HexCrackerNetwork {
     public static void stopOnAll(MinecraftServer server) {
         if (server != null)
             CHANNEL.send(PacketDistributor.ALL.noArg(), new StopHexCrackerMessage());
+    }
+
+    public static void sendCrackedDigitsUpdate(MinecraftServer server, int[] crackedDigits) {
+        if (server == null) return;
+        CHANNEL.send(PacketDistributor.ALL.noArg(), new CrackedDigitsUpdateMessage(crackedDigits));
     }
 
     public static class HexCrackerStartMessage {
@@ -114,6 +127,39 @@ public class HexCrackerNetwork {
 
             if (ctx.getDirection().getReceptionSide().isClient()) {
                 ctx.enqueueWork(() -> HexCrackerUI.stop());
+            }
+
+            ctx.setPacketHandled(true);
+        }
+    }
+
+    public static class CrackedDigitsUpdateMessage {
+        private final int[] crackedDigits;
+
+        public CrackedDigitsUpdateMessage(int[] crackedDigits) {
+            this.crackedDigits = crackedDigits != null ? crackedDigits.clone() : new int[]{-1, -1, -1, -1, -1, -1};
+        }
+
+        public static void encode(CrackedDigitsUpdateMessage msg, FriendlyByteBuf buf) {
+            for (int i = 0; i < 6; i++) {
+                buf.writeInt(msg.crackedDigits[i]);
+            }
+        }
+
+        public static CrackedDigitsUpdateMessage decode(FriendlyByteBuf buf) {
+            int[] digits = new int[6];
+            for (int i = 0; i < 6; i++) {
+                digits[i] = buf.readInt();
+            }
+            return new CrackedDigitsUpdateMessage(digits);
+        }
+
+        public static void handle(CrackedDigitsUpdateMessage msg,
+                                  Supplier<NetworkEvent.Context> ctxSupplier) {
+            NetworkEvent.Context ctx = ctxSupplier.get();
+
+            if (ctx.getDirection().getReceptionSide().isClient()) {
+                ctx.enqueueWork(() -> HexCrackerUI.updateCrackedDigits(msg.crackedDigits));
             }
 
             ctx.setPacketHandled(true);

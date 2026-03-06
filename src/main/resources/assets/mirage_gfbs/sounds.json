@@ -1684,6 +1684,13 @@
     ],
     "stream": true
   },
+  "music.pi_ok2_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/pi_ok2_m"
+    ],
+    "stream": true
+  },
   "music.qbc_1": {
     "category": "music",
     "sounds": [
@@ -1827,6 +1834,13 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:music/escape"
+    ],
+    "stream": true
+  },
+  "music.shutdowning": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/shutdowning"
     ],
     "stream": true
   },

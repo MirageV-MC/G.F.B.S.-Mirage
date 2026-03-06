@@ -22,6 +22,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import org.mirage.gfbs.Event.ccio.dmr.DmrShutdownApis;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,5 +46,6 @@ public final class CCIoApiRegistry {
 
     public static void registerDefaults() {
             org.mirage.gfbs.ccio.app.famsApi.FamsApis.register();
+            DmrShutdownApis.register();
     }
 }

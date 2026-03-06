@@ -40,5 +40,6 @@ public final class CCIoInit {
     private static void registerApi() {
         org.mirage.gfbs.ccio.app.ollama.OllamaApis.register();
         org.mirage.gfbs.ccio.app.famsApi.FamsApis.register();
+        org.mirage.gfbs.ccio.event.CCIoEventApis.register();
     }
 }
