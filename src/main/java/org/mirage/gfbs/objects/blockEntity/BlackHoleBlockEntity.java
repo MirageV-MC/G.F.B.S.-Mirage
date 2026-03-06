@@ -2,6 +2,9 @@ package org.mirage.gfbs.objects.blockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,6 +50,53 @@ public class BlackHoleBlockEntity extends BlockEntity {
         
         this.initialized = true;
         setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public void onDataPacket(net.minecraft.network.Connection net, ClientboundBlockEntityDataPacket pkt) {
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) {
+            load(tag);
+            if (this.level != null && this.level.isClientSide) {
+                initializeBlackHoleClient();
+            }
+        }
+    }
+
+    private void initializeBlackHoleClient() {
+        if (this.blackHoleName == null) {
+            return;
+        }
+
+        Vec3 position = new Vec3(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5);
+
+        if (BlackHoleManager.getBlackHole(blackHoleName) == null) {
+            BlackHoleManager.createBlackHole(blackHoleName, this.size, 1.0, position);
+        } else {
+            BlackHoleManager.moveBlackHole(blackHoleName, position);
+            BlackHoleManager.updateBlackHoleSize(blackHoleName, this.size);
+        }
+
+        BlackHole blackHole = BlackHoleManager.getBlackHole(blackHoleName);
+        if (blackHole != null) {
+            blackHole.setBlockBased(true);
+            blackHole.setAccretionDiskOpacity(this.accretionDiskOpacity);
+        }
     }
 
     @Override
@@ -117,7 +167,7 @@ public class BlackHoleBlockEntity extends BlockEntity {
 
     @Override
     public void setRemoved() {
-        if (this.blackHoleName != null && level != null && !level.isClientSide) {
+        if (this.blackHoleName != null && level != null) {
             BlackHoleManager.removeBlackHole(this.blackHoleName);
         }
         super.setRemoved();
