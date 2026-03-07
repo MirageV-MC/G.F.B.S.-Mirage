@@ -252,17 +252,21 @@ public final class FluorescentTubeCommandRegistry {
         allTubes.addAll(FluorescentTubeRegistry.getAll(level));
 
         for (BlockPos pos : allTubes) {
-            if (level.hasChunkAt(pos)) {
-                net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
-                if (state.hasProperty(AbstractFluorescentLampBlock.LIT)) {
-                    boolean shouldBeLit = lit;
-                    if (!lit) {
-                        shouldBeLit = level.hasNeighborSignal(pos);
-                    }
-                    if (state.getValue(AbstractFluorescentLampBlock.LIT) != shouldBeLit) {
-                        level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, shouldBeLit), 3);
+            try {
+                if (level.hasChunkAt(pos)) {
+                    net.minecraft.world.level.block.state.BlockState state = level.getBlockState(pos);
+                    if (state.hasProperty(AbstractFluorescentLampBlock.LIT)) {
+                        boolean shouldBeLit = lit;
+                        if (!lit) {
+                            shouldBeLit = level.hasNeighborSignal(pos);
+                        }
+                        if (state.getValue(AbstractFluorescentLampBlock.LIT) != shouldBeLit) {
+                            level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, shouldBeLit), 2);
+                        }
                     }
                 }
+            } catch (Exception e) {
+                MirageGFBS.LOGGER.warn("Failed to update fluorescent tube state at {}: {}", pos, e.getMessage());
             }
         }
     }
