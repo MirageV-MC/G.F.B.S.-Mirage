@@ -93,7 +93,7 @@ public class Task {
                     int n = Math.max(2, Runtime.getRuntime().availableProcessors() / 2);
                     workers = Executors.newFixedThreadPool(
                             n,
-                            new NamedThreadFactory("Mirage-TaskWorker-")
+                            new NamedThreadFactory("GFBS-TaskWorker-")
                     );
                 }
             }
