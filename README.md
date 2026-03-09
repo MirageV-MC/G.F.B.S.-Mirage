@@ -10,9 +10,8 @@
 - 模组开发成员
   - Convex89524 : 主要代码、制作
   - Nuclear_rea : 主要规划
-  - Maverick0527th : 内部顾问
-  - Foxugar : 美术
   - Tiankeng12279 : 建模
+  - code_40 : 建模
   - Avarl : CC:Tweaked桥接
 
 - 本MOD依赖的MOD:
