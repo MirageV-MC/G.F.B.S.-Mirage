@@ -1,8 +1,7 @@
-package org.mirage.gfbs.Event;
+package org.mirage.gfbs.Event.ccio.dmr;
 
 import net.minecraft.server.MinecraftServer;
 import org.mirage.gfbs.Phenomenon.network.HexCrackerNetwork;
-import org.mirage.gfbs.Tools.Task;
 
 import java.util.Random;
 

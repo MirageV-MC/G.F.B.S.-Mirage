@@ -19,9 +19,18 @@ package org.mirage.gfbs.mixin;
  */
 
 import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.ChannelAccess;
+import com.mojang.blaze3d.audio.Channel;
+import org.mirage.gfbs.accessor.ChannelMixinAccessor;
+import org.mirage.gfbs.advanced.broadsystem.BroadSystemSoundInstance;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.function.Consumer;
 
 @Mixin(SoundEngine.class)
 public class SoundEngineMixin {
@@ -41,5 +50,15 @@ public class SoundEngineMixin {
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 247), require = 0)
     private int mirage$gfbs_modifyMaxSources247(int original) {
         return MAX_SOURCES_LIMIT;
+    }
+
+    @Redirect(method = "play", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/ChannelAccess$ChannelHandle;execute(Ljava/util/function/Consumer;)V"))
+    private void mirage$gfbs_redirectExecute(ChannelAccess.ChannelHandle instance, Consumer<Channel> action, SoundInstance sound) {
+        if (sound instanceof BroadSystemSoundInstance) {
+            instance.execute(channel -> {
+                ((ChannelMixinAccessor) channel).mirage$gfbs_markAsBroadSystemSound();
+            });
+        }
+        instance.execute(action);
     }
 }

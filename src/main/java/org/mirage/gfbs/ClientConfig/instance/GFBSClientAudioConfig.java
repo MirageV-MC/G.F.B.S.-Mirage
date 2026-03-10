@@ -48,4 +48,112 @@ public final class GFBSClientAudioConfig {
                     1.0
             );
 
+    public static final ClientConfigKey<Boolean> ENABLE_BROAD_SYSTEM_REVERB =
+            GFBSClientConfigAPI.bool(
+                    "audio.broadsystem.reverb.enabled",
+                    "音频",
+                    "启用喇叭混响效果",
+                    "默认关闭。开启后 Broad System 喇叭会播放带有混响效果的音效，模拟真实环境的回声。",
+                    false
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_ROOM_SIZE =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.room_size",
+                    "音频",
+                    "喇叭混响-房间大小(%)",
+                    "控制混响的空间感大小。0=小房间，100=大教堂。",
+                    100.0,
+                    0.0,
+                    100.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_PRE_DELAY =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.pre_delay",
+                    "音频",
+                    "喇叭混响-预延迟(ms)",
+                    "早期反射与直达声之间的时间间隔。增加可增强空间感。",
+                    0.0,
+                    0.0,
+                    300.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_REVERB_FEEL =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.reverb_feel",
+                    "音频",
+                    "喇叭混响-混响感(%)",
+                    "控制混响的扩散程度。数值越大混响越丰富。",
+                    20.0,
+                    0.0,
+                    100.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_DAMPING =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.damping",
+                    "音频",
+                    "喇叭混响-消声(%)",
+                    "控制高频衰减程度。数值越大混响越暗淡。",
+                    4.0,
+                    0.0,
+                    100.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_LOW_TONE =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.low_tone",
+                    "音频",
+                    "喇叭混响-低音调(%)",
+                    "控制低频混响增益。数值越大低频越强。",
+                    19.0,
+                    0.0,
+                    100.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_HIGH_TONE =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.high_tone",
+                    "音频",
+                    "喇叭混响-高音调(%)",
+                    "控制高频混响增益。数值越大高频越亮。",
+                    100.0,
+                    0.0,
+                    100.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_WET_GAIN =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.wet_gain",
+                    "音频",
+                    "喇叭混响-湿增益(dB)",
+                    "混响信号的增益。正值增强混响，负值减弱。",
+                    3.0,
+                    -60.0,
+                    20.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_DRY_GAIN =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.dry_gain",
+                    "音频",
+                    "喇叭混响-干增益(dB)",
+                    "原始信号的增益。正值增强原声，负值减弱。",
+                    -2.0,
+                    -60.0,
+                    20.0
+            );
+
+    public static final ClientConfigKey<Double> BROAD_SYSTEM_REVERB_STEREO_WIDTH =
+            GFBSClientConfigAPI.dbl(
+                    "audio.broadsystem.reverb.stereo_width",
+                    "音频",
+                    "喇叭混响-立体声宽度(%)",
+                    "控制混响的立体声宽度。0=单声道，100=全立体声。",
+                    14.0,
+                    0.0,
+                    100.0
+            );
+
 }

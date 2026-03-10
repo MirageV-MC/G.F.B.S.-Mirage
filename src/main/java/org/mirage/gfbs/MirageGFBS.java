@@ -53,6 +53,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
+import org.mirage.gfbs.Event.EccEvent;
 import org.mirage.gfbs.Phenomenon.event.BlackHoleCommand;
 import org.mirage.gfbs.Event.DmrMeltdown;
 import org.mirage.gfbs.Event.DmrexAfter;
@@ -220,15 +221,21 @@ public class MirageGFBS {
     }
 
     private void onRegisterAllCommandExecs(){
-        MirageGFBsEventCommand.registerHandler("main90_alpha", (context)->{
-            Main90Alpha.execute(context);
-        });
+        MirageGFBsEventCommand.registerHandler("main90_alpha", Main90Alpha::execute);
+
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_new", (context)->{
             DmrMeltdown.execute(context, true, true);
         });
         MirageGFBsEventCommand.registerHandler("dmr_meltdown_old", (context)->{
             DmrMeltdown.execute(context, false, true);
         });
+
+        MirageGFBsEventCommand.registerHandler("ecc", EccEvent::execute);
+        MirageGFBsEventCommand.registerHandler("ecc_p2", (context)->{
+            EccEvent.p2(context, context.getSource().getServer().getPlayerList().getPlayers());
+        });
+
+        //DEBUG
         MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_none_music", (context)->{
             DmrMeltdown.execute(context, false, false);
         });
@@ -375,6 +382,7 @@ public class MirageGFBS {
             GateClientAPI.register();
 
             DmrexAfter.clientExec();
+            EccEvent.clientExec();
         }
 
         @SubscribeEvent
