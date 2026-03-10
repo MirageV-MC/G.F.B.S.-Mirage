@@ -38,7 +38,6 @@ public final class MirageEqualizer {
         try {
             EQUALIZER_EFFECT = EXTEfx.alGenEffects();
             if (EQUALIZER_EFFECT == 0 || AL11.alGetError() != AL11.AL_NO_ERROR) {
-                System.err.println("[MirageGFBS] Failed to create equalizer effect");
                 EQUALIZER_EFFECT = 0;
                 AUX_SLOT = 0;
                 return;
@@ -50,7 +49,6 @@ public final class MirageEqualizer {
 
             AUX_SLOT = EXTEfx.alGenAuxiliaryEffectSlots();
             if (AUX_SLOT == 0 || AL11.alGetError() != AL11.AL_NO_ERROR) {
-                System.err.println("[MirageGFBS] Failed to create equalizer aux slot");
                 AUX_SLOT = 0;
                 safeDeleteEffect();
                 return;
@@ -58,12 +56,10 @@ public final class MirageEqualizer {
 
             EXTEfx.alAuxiliaryEffectSloti(AUX_SLOT, EXTEfx.AL_EFFECTSLOT_EFFECT, EQUALIZER_EFFECT);
             if (AL11.alGetError() != AL11.AL_NO_ERROR) {
-                System.err.println("[MirageGFBS] Failed to attach equalizer effect to aux slot");
                 shutdown();
                 return;
             }
-
-            System.out.println("[MirageGFBS] Equalizer initialized successfully (effect=" + EQUALIZER_EFFECT + ", auxSlot=" + AUX_SLOT + ")");
+            return;
         } catch (Throwable t) {
             System.err.println("[MirageGFBS] Exception during equalizer initialization: " + t.getMessage());
             shutdown();

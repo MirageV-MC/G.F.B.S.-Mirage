@@ -23,6 +23,8 @@ import net.minecraft.world.phys.Vec3;
 import org.mirage.gfbs.Command.*;
 import org.mirage.gfbs.Event.ccio.dmr.DmrMeltdownEvents;
 import org.mirage.gfbs.Event.ccio.dmr.DmrShutdownApis;
+import org.mirage.gfbs.Event.ccio.dmr.DmrShutdownCodeManager;
+import org.mirage.gfbs.Event.ccio.dmr.HexCrackerServer;
 import org.mirage.gfbs.Phenomenon.network.HexCrackerNetwork;
 import org.mirage.gfbs.Tools.CountdownPopup.CountdownEndHooks;
 import org.mirage.gfbs.Tools.Task;
@@ -180,7 +182,7 @@ public class DmrMeltdown {
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b2 voice @a ~ ~ ~ 1 1 1");
 
                 for (ServerPlayer player : allPlayers) {
-                    CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 124800, 990, 11290);
+                    CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 12480, 990, 11290);
                 }
 
                 Task.sleep(16000);
