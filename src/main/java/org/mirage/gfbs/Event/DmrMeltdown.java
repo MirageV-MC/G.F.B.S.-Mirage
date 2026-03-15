@@ -35,6 +35,7 @@ import org.mirage.gfbs.api.CountdownAPI;
 import net.minecraft.resources.ResourceLocation;
 import org.mirage.gfbs.auralis.api.AuralisServerApi;
 
+import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.Collection;
@@ -53,8 +54,8 @@ public class DmrMeltdown {
 
     private static boolean meltdownFlashLoopActive = false;
 
-    private static final List<Future<?>> p1DelayedTasks = new ArrayList<>();
-    private static final List<Thread> p1SpawnedThreads = new ArrayList<>();
+    private static final List<Future<?>> p1DelayedTasks = Collections.synchronizedList(new ArrayList<>());
+    private static final List<Thread> p1SpawnedThreads = Collections.synchronizedList(new ArrayList<>());
     private static volatile boolean p1Cancelled = false;
 
     public static void execute(MirageGFBsEventCommand.CommandContext context, boolean isNewMusic, boolean haveMusic) {
@@ -66,9 +67,9 @@ public class DmrMeltdown {
         
         DmrMeltdownEvents.registerAll();
         DmrMeltdownEvents.trigger(DmrMeltdownEvents.MELTDOWN_START);
-        Task.spawn(()->{
+        trackFuture(Task.spawn(()->{
             execute_s(context, isNewMusic, haveMusic);
-        });
+        }));
     }
 
     private static boolean isRedcode = false;
@@ -248,12 +249,12 @@ public class DmrMeltdown {
                 String shutdownCode = DmrShutdownCodeManager.generateCode();
                 DmrMeltdownEvents.trigger(DmrMeltdownEvents.SHUTDOWN_WINDOW_OPEN, shutdownCode);
 
-                Task.spawn(()->{
+                trackFuture(Task.spawn(()->{
                     for (ServerPlayer player : allPlayers){
                         CountdownAPI.startCountdown(player);
                     }
                     DmrMeltdownEvents.trigger(DmrMeltdownEvents.COUNTDOWN_START);
-                });
+                }));
 
                 trackDelay(()->{
                     broadcast("mirage_gfbs:faas_s.f_s_502887");
@@ -345,11 +346,11 @@ public class DmrMeltdown {
             trackDelay(()->{
             }, 317144, TimeUnit.MILLISECONDS);
 
-            Task.spawn(()->{
+            trackFuture(Task.spawn(()->{
                 AtomicBoolean isA = new AtomicBoolean(false);
 
                 CountdownEndHooks.register((player)->{
-                    Task.spawn(()->{
+                    trackFuture(Task.spawn(()->{
                         if (isA.get()) return;
                         isA.set(true);
 
@@ -398,9 +399,9 @@ public class DmrMeltdown {
                         Task.sleep(13000);
 
                         p2(allPlayers, _serverLevel, isNewMusic, haveMusic);
-                    });
+                    }));
                 });
-            });
+            }));
 
         }, 5000, TimeUnit.MILLISECONDS);
 
@@ -453,7 +454,7 @@ public class DmrMeltdown {
             }
         }
 
-        Task.spawn(()->{
+        trackFuture(Task.spawn(()->{
             executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b voice @a ~ ~ ~ 1 1 1");
 
             Task.sleep(20000);
@@ -462,7 +463,7 @@ public class DmrMeltdown {
 
             Task.sleep(50000);
             executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b3 voice @a ~ ~ ~ 1 1 1");
-        });
+        }));
 
         Task.delay(()->{
            Task.sleep(3500);
@@ -504,6 +505,10 @@ public class DmrMeltdown {
                 }, 85, TimeUnit.SECONDS);
             }, 9673 , TimeUnit.MILLISECONDS);
         }, 20523, TimeUnit.MILLISECONDS);
+
+        Task.delay(()->{
+            executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b4 voice @a ~ ~ ~ 1 1 1");
+        }, 127232, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
             broadcast("mirage_gfbs:faas.dmr_o");
@@ -617,7 +622,7 @@ public class DmrMeltdown {
 
             broadcast("mirage_gfbs:faas_s.f_s_785144");
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                    "强引力源出现在核心腔室.", 200);
+                    "强引力源出现在@^#%$", 200);
 
             DmrMeltdownEvents.trigger(DmrMeltdownEvents.GRAVITY_SOURCE_DETECTED);
 
@@ -627,11 +632,11 @@ public class DmrMeltdown {
                 broadcast("mirage_gfbs:hybrid.faas_np");
             }, 1899, TimeUnit.MILLISECONDS);
 
-            Task.spawn(()->{
+            trackFuture(Task.spawn(()->{
                 Task.sleep(42047);
                 DmrMeltdownEvents.trigger(DmrMeltdownEvents.MELTDOWN_END);
                 DmrexAfter.exec(allPlayers, _serverLevel);
-            });
+            }));
 
         }, 198788, TimeUnit.MILLISECONDS);
     }
@@ -652,18 +657,18 @@ public class DmrMeltdown {
             executeCommandAsync("playsound mirage_gfbs:boom.boom_7_what_b voice @a ~ ~ ~ 1 1 1");
         }
 
-        Task.spawn(()->{
+        trackFuture(Task.spawn(()->{
             for (ServerPlayer player : players) {
                 CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 1800, 290, 1290);
             }
 
-            Task.delay(()->{
+            trackDelay(()->{
                 for (ServerPlayer player : players) {
                     CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 4800, 490, 3290);
                 }
                 FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 75, 6D);
             },500, TimeUnit.MILLISECONDS);
-        });
+        }));
     }
 
     private static void explosion(int b, boolean autoShake) {
@@ -722,19 +727,23 @@ public class DmrMeltdown {
     public static void cancelP1() {
         p1Cancelled = true;
         
-        for (Future<?> future : p1DelayedTasks) {
-            if (future != null && !future.isDone()) {
-                future.cancel(true);
+        synchronized (p1DelayedTasks) {
+            for (Future<?> future : p1DelayedTasks) {
+                if (future != null && !future.isDone()) {
+                    future.cancel(true);
+                }
             }
+            p1DelayedTasks.clear();
         }
-        p1DelayedTasks.clear();
         
-        for (Thread thread : p1SpawnedThreads) {
-            if (thread != null && thread.isAlive()) {
-                thread.interrupt();
+        synchronized (p1SpawnedThreads) {
+            for (Thread thread : p1SpawnedThreads) {
+                if (thread != null && thread.isAlive()) {
+                    thread.interrupt();
+                }
             }
+            p1SpawnedThreads.clear();
         }
-        p1SpawnedThreads.clear();
         
         meltdownFlashLoopActive = false;
         
@@ -753,6 +762,11 @@ public class DmrMeltdown {
         HexCrackerServer.stop();
         HexCrackerNetwork.stopOnAll(_serverLevel != null ? _serverLevel.getServer() : null);
         DmrShutdownCodeManager.clearCode();
+    }
+
+    private static Future<?> trackFuture(Future<?> future) {
+        p1DelayedTasks.add(future);
+        return future;
     }
     
     public static boolean isP1Cancelled() {

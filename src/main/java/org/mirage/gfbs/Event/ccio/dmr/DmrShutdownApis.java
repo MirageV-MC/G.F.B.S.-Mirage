@@ -3,9 +3,11 @@ package org.mirage.gfbs.Event.ccio.dmr;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
+import net.minecraft.world.phys.Vec3;
 import org.mirage.gfbs.Command.FluorescentTubeCommandRegistry;
 import org.mirage.gfbs.Command.NotificationCommand;
 import org.mirage.gfbs.CommandExecutor;
@@ -23,6 +25,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+
+import static org.mirage.gfbs.Event.DmrMeltdown.MUSIC_ID;
 
 public final class DmrShutdownApis {
     private DmrShutdownApis() {}
@@ -141,7 +145,7 @@ public final class DmrShutdownApis {
             NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
                     "紧急关机请求已接受.", 200);
 
-            AuralisServerApi.stopSound(DmrMeltdown.MUSIC_ID, allPlayers);
+            AuralisServerApi.stopSound(MUSIC_ID, allPlayers);
             CommandExecutor.executeCommandAsync("playsound mirage_gfbs:music.shutdowning voice @a ~ ~ ~ 1 1 1");
 
             Task.delay(()->{
@@ -150,8 +154,6 @@ public final class DmrShutdownApis {
                     Double temperature = tempFuture.get();
                     if (temperature != null) {
                         if (temperature < 3000) {
-                            NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
-                                    "紧急停机系统运行成功, 危机得以化解, 暗物质反应堆正下降至存放舱内以便立即进行维护工作.", 200);
                             // 关机成功
                             shutdown_success(allPlayers, level, isNewMusic, haveMusic);
                         } else {
@@ -197,6 +199,31 @@ public final class DmrShutdownApis {
             FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);
             DmrMeltdownEvents.trigger(DmrMeltdownEvents.FACILITY_RESTORE);
         }, 60, TimeUnit.SECONDS);
+
+        NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                "紧急停机系统运行成功, 危机得以化解, 暗物质反应堆正下降至存放舱内以便立即进行维护工作.", 200);
+        broadcast("mirage_gfbs:faas.dmr_e_s_s");
+
+        AuralisServerApi.playSound(
+                MUSIC_ID,
+                ResourceLocation.parse("mirage_gfbs:music.pi_ok2_m"),
+                1.0f,
+                1.0f,
+                1.0f,
+                true,
+                new Vec3(0, 0, 0),
+                false,
+                50,
+                10.0f,
+                10.0f,
+                allPlayers
+        );
+
+        Task.delay(()->{
+            NotificationCommand.sendNotificationToPlayers(allPlayers, "F.A.A.S.",
+                    "紧急灭火系统已启用减压程序, 正在排放主水箱及备用水箱.", 200);
+            broadcast("mirage_gfbs:faas.efss_start");
+        }, 9400,TimeUnit.MILLISECONDS);
     }
 
     // id参数例如: mirage_gfbs:faas.dmr_o

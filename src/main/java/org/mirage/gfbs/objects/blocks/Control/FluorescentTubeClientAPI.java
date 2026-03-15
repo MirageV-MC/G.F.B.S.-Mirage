@@ -3,19 +3,19 @@ package org.mirage.gfbs.objects.blocks.Control;
 /**
  * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
  * Copyright (C) 2025-2029 Mirage-MC
-
+ *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
-
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
-
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 import net.minecraft.client.Minecraft;
@@ -52,8 +52,7 @@ public final class FluorescentTubeClientAPI {
     private static final Random UNSTABLE_RANDOM = new Random();
 
     /**
-     * 客户端全局灯状态：用于区块重新加载/客户端重进时快速恢复视觉状态。
-     * true=亮，false=灭
+     * 客户端全局灯状态
      */
     public static volatile boolean globalState = true;
 
@@ -66,9 +65,6 @@ public final class FluorescentTubeClientAPI {
         HIGH       // 高度不稳定
     }
 
-    /**
-     * 当前不稳定模式
-     */
     public static volatile InstabilityMode currentInstabilityMode = InstabilityMode.NONE;
 
     static {
@@ -85,15 +81,16 @@ public final class FluorescentTubeClientAPI {
         currentInstabilityMode = mode;
         if (mode == InstabilityMode.NONE) {
             synchronized (REGISTERED_TUBES) {
-                TUBE_INSTABILITY_STATES.clear();
+                for (TubeInstabilityState state : TUBE_INSTABILITY_STATES.values()) {
+                    if (state.currentState != TubeInstabilityState.State.IDLE) {
+                        state.isFinishingUp = true;
+                    }
+                }
+                TUBE_INSTABILITY_STATES.entrySet().removeIf(entry -> 
+                    entry.getValue().currentState == TubeInstabilityState.State.IDLE
+                );
             }
-            // 不再由客户端主动恢复状态，而是依赖服务端发送的 BlockUpdate
-            // restoreAllTubes();
         }
-    }
-
-    private static void restoreAllTubes() {
-        // 废弃：客户端无法准确判断红石信号，状态恢复完全依赖服务端 refreshAllTubes
     }
 
     /**
@@ -201,24 +198,38 @@ public final class FluorescentTubeClientAPI {
             }
         }
 
-        if (currentInstabilityMode != InstabilityMode.NONE && globalState) {
+        if ((currentInstabilityMode != InstabilityMode.NONE || !TUBE_INSTABILITY_STATES.isEmpty()) && globalState) {
             synchronized (REGISTERED_TUBES) {
-                ensureRegisteredTubes(level);
-                
-                // 遍历所有注册的灯管，每个灯管独立更新状态
-                for (BlockPos pos : REGISTERED_TUBES) {
-                    TubeInstabilityState state = TUBE_INSTABILITY_STATES.computeIfAbsent(pos, p -> new TubeInstabilityState());
-                    state.tick(level, pos);
+                if (currentInstabilityMode != InstabilityMode.NONE) {
+                    ensureRegisteredTubes(level);
                 }
                 
-                // 清理不存在的灯管状态
-                TUBE_INSTABILITY_STATES.keySet().removeIf(pos -> !REGISTERED_TUBES.contains(pos));
+                Iterator<Map.Entry<BlockPos, TubeInstabilityState>> it = TUBE_INSTABILITY_STATES.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry<BlockPos, TubeInstabilityState> entry = it.next();
+                    BlockPos pos = entry.getKey();
+                    TubeInstabilityState state = entry.getValue();
+                    
+                    state.tick(level, pos);
+                    
+                    if (state.isFinished) {
+                        it.remove();
+                    } else if (currentInstabilityMode != InstabilityMode.NONE && !REGISTERED_TUBES.contains(pos)) {
+                        it.remove();
+                    }
+                }
+                
+                if (currentInstabilityMode != InstabilityMode.NONE) {
+                    for (BlockPos pos : REGISTERED_TUBES) {
+                        TUBE_INSTABILITY_STATES.putIfAbsent(pos, new TubeInstabilityState());
+                    }
+                }
             }
         }
     }
 
     /**
-     * 注册网络事件（服务端触发 -> 客户端执行）
+     * 注册网络事件
      */
     private static void registerNetworkReceivers() {
         // 集体闪烁
@@ -247,36 +258,64 @@ public final class FluorescentTubeClientAPI {
         });
 
         // 同步配置
-        ClientEventHandler.registerEvent("fluorescent_tube_sync_config", data -> {
-            if (data.contains("mode")) {
-                String modeStr = data.getString("mode");
-                try {
-                    InstabilityMode mode = InstabilityMode.valueOf(modeStr);
-                    // 仅设置模式，不触发闪烁
-                    currentInstabilityMode = mode;
-                    if (mode == InstabilityMode.NONE) {
-                        synchronized (REGISTERED_TUBES) {
-                            TUBE_INSTABILITY_STATES.clear();
-                        }
+        ClientEventHandler.registerEvent("fluorescent_tube_sync_config", FluorescentTubeClientAPI::handleSyncConfig);
+    }
+
+    private static void handleSyncConfig(CompoundTag data) {
+        if (data.contains("mode")) {
+            String modeStr = data.getString("mode");
+            try {
+                InstabilityMode mode = InstabilityMode.valueOf(modeStr);
+                currentInstabilityMode = mode;
+                if (mode == InstabilityMode.NONE) {
+                    synchronized (REGISTERED_TUBES) {
+                        TUBE_INSTABILITY_STATES.clear();
                     }
-                } catch (Exception ignored) {}
-            }
-            if (data.contains("globalState")) {
-                boolean newGlobalState = data.getBoolean("globalState");
-                if (globalState != newGlobalState) {
-                    globalState = newGlobalState;
-                    // 同步时不播放动画，仅清空当前任务，等待服务端 BlockUpdate
-                    synchronized (BLINK_TASKS) {
-                        BLINK_TASKS.clear();
-                    }
-                    if (!globalState) {
-                        synchronized (REGISTERED_TUBES) {
-                            TUBE_INSTABILITY_STATES.clear();
-                        }
+                }
+            } catch (Exception ignored) {}
+        }
+        if (data.contains("globalState")) {
+            boolean newGlobalState = data.getBoolean("globalState");
+            if (globalState != newGlobalState) {
+                globalState = newGlobalState;
+                synchronized (BLINK_TASKS) {
+                    BLINK_TASKS.clear();
+                }
+                if (!globalState) {
+                    synchronized (REGISTERED_TUBES) {
+                        TUBE_INSTABILITY_STATES.clear();
                     }
                 }
             }
-        });
+        }
+
+        // 强制刷新视觉状态，解决重连后状态不一致（如贴图亮但光照灭）的问题
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null) {
+            refreshVisuals(mc.level);
+        }
+    }
+
+    private static void refreshVisuals(ClientLevel level) {
+        ensureRegisteredTubes(level);
+        synchronized (REGISTERED_TUBES) {
+            for (BlockPos pos : REGISTERED_TUBES) {
+                BlockState state = level.getBlockState(pos);
+                if (state.getBlock() instanceof AbstractFluorescentLampBlock) {
+                    boolean currentLit = state.getValue(AbstractFluorescentLampBlock.LIT);
+                    boolean shouldLit = globalState;
+
+                    // 如果全局关闭，检查是否有红石信号维持点亮
+                    if (!shouldLit && level.hasNeighborSignal(pos)) {
+                        shouldLit = true;
+                    }
+
+                    if (currentLit != shouldLit) {
+                        level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, shouldLit), Block.UPDATE_ALL);
+                    }
+                }
+            }
+        }
     }
 
     private static void handleFlashEvent(CompoundTag data) {
@@ -346,17 +385,7 @@ public final class FluorescentTubeClientAPI {
     }
 
     /**
-     * 不稳定闪烁 - 每个灯管完全独立的随机闪烁
-     * 参考 CoolEffectsScript.lua 中的 FlickerLight 函数
-     * 
-     * 核心特性：
-     * 1. 每个灯管完全独立运行，有自己的闪烁周期
-     * 2. 每个灯管的闪烁参数都不同（延迟、持续时间、循环次数）
-     * 3. 不是集体同步闪烁，而是各自随机闪烁
-     * 
-     * Lua 脚本参数：
-     * - BreakerMin = 25, BreakerMax = 90, BreakerDivisor = 1000 (毫秒)
-     * - 但我们需要更长的闪烁时间和间隔，让效果更明显
+     * 不稳定闪烁
      */
     private static final Map<BlockPos, TubeInstabilityState> TUBE_INSTABILITY_STATES = new HashMap<>();
 
@@ -367,28 +396,30 @@ public final class FluorescentTubeClientAPI {
         private final Random random = new Random();
         
         enum State {
-            IDLE,           // 空闲状态（等待下次闪烁）
-            FADING,         // 闪烁循环中（关→开→关→开...）
+            IDLE,           // 空闲状态
+            FADING,         // 闪烁循环中
             ON_STABLE,      // 稳定点亮
             RESTART_DELAY   // 重启延迟
         }
 
         private State currentState = State.IDLE;
-        private int idleTicksRemaining;      // 空闲等待时间
+        private int idleTicksRemaining;
         private int loopCount = 0;
-        private int targetLoops;             // 目标闪烁次数（2-5 次）
+        private int targetLoops;
         private int ticksInCurrentPhase = 0;
         private boolean isLightOn = false;
         private boolean isFinished = false;
         private boolean hasPlayedSoundForThisRound = false;
-        private int flickerSpeed;            // 闪烁速度（每切换一次持续多少 tick）
+        private int flickerSpeed;
+        
+        private boolean isFinishingUp = false;
 
         TubeInstabilityState() {
             initializeRandomParameters();
         }
 
         /**
-         * 初始化随机参数 - 每个灯管都不同
+         * 初始化随机参数
          */
         void initializeRandomParameters() {
             // 随机空闲时间：轻度 10-30 秒，高度 3-10 秒
@@ -439,6 +470,13 @@ public final class FluorescentTubeClientAPI {
         }
 
         private void handleIdleState(ClientLevel level, BlockPos pos, BlockState state) {
+            // 如果正在收尾且处于空闲状态，直接标记完成并确保灯是亮的
+            if (isFinishingUp) {
+                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, true), Block.UPDATE_ALL);
+                isFinished = true;
+                return;
+            }
+
             if (idleTicksRemaining > 0) {
                 idleTicksRemaining--;
                 return;
@@ -472,7 +510,7 @@ public final class FluorescentTubeClientAPI {
 
                 if (loopCount >= targetLoops * 2) {
                     // 闪烁结束，判断是否重启
-                    if (currentInstabilityMode == InstabilityMode.HIGH) {
+                    if (currentInstabilityMode == InstabilityMode.HIGH && !isFinishingUp) {
                         double retryChance = 0.3;
                         if (random.nextDouble() < retryChance) {
                             // 30% 概率重启
@@ -489,12 +527,25 @@ public final class FluorescentTubeClientAPI {
         }
 
         private void handleOnStableState(ClientLevel level, BlockPos pos, BlockState state) {
+            if (isFinishingUp) {
+                // 如果正在收尾，到达稳定状态后就结束，不再进入新的空闲循环
+                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, true), Block.UPDATE_ALL);
+                isFinished = true;
+                return;
+            }
             // 稳定点亮，重置为空闲状态
             initializeRandomParameters();
             currentState = State.IDLE;
         }
 
         private void handleRestartDelayState(ClientLevel level, BlockPos pos, BlockState state) {
+            // 如果正在收尾，跳过重启延迟，直接进入稳定状态并结束
+            if (isFinishingUp) {
+                level.setBlock(pos, state.setValue(AbstractFluorescentLampBlock.LIT, true), Block.UPDATE_ALL);
+                isFinished = true;
+                return;
+            }
+
             int restartDelay = 40; // 2 秒延迟
 
             if (ticksInCurrentPhase >= restartDelay) {
@@ -582,14 +633,16 @@ public final class FluorescentTubeClientAPI {
         private int normalFlickerState = 0; // 0=关，1=开
 
         BlinkTask(int durationTicks, double averageFrequencyHz, @Nullable Boolean finalState) {
-            this.remainingTicks = durationTicks;
-            this.totalDurationTicks = durationTicks;
+            // 任务总时长延长到 2 倍，以容纳最长寿的灯管
+            this.remainingTicks = durationTicks * 2;
+            this.totalDurationTicks = durationTicks; // 这里保留原始参数作为基准
             this.initialFrequencyHz = averageFrequencyHz;
             this.decayRate = averageFrequencyHz / Math.max(durationTicks, 1);
             this.finalState = finalState;
             this.currentPhase = FlickerPhase.INTENSE;
             this.intenseFlickerTicksRemaining = INTENSE_FLICKER_DURATION_TICKS;
-            this.normalFlickerCountRemaining = random.nextInt(NORMAL_FLICKER_COUNT_MAX - NORMAL_FLICKER_COUNT_MIN + 1) + NORMAL_FLICKER_COUNT_MIN;
+            // 移除未使用的计数器逻辑
+            this.normalFlickerCountRemaining = 0;
             this.normalFlickerState = 0;
         }
 
@@ -603,7 +656,7 @@ public final class FluorescentTubeClientAPI {
             boolean lastTick = remainingTicks == 1;
             remainingTicks--;
 
-            // 更新闪烁阶段
+            // 更新全局闪烁阶段（主要是处理 INTENSE -> NORMAL 的过渡）
             updateFlickerPhase();
 
             synchronized (REGISTERED_TUBES) {
@@ -614,32 +667,37 @@ public final class FluorescentTubeClientAPI {
                 for (BlockPos pos : REGISTERED_TUBES) {
                     TubeBlinkState tubeState = tubeStates.computeIfAbsent(pos, p -> createInitialState(level, p));
 
-                    // 根据当前阶段更新灯管状态
-                    if (currentPhase == FlickerPhase.INTENSE) {
-                        // 高强度快速闪烁阶段
-                        if (tubeState.ticksUntilToggle <= 0 && !lastTick) {
-                            tubeState.ticksUntilToggle = sampleIntenseIntervalTicks();
-                            tubeState.currentLit = !tubeState.currentLit;
-                        } else if (!lastTick) {
-                            tubeState.ticksUntilToggle--;
-                        }
-                    } else if (currentPhase == FlickerPhase.NORMAL) {
-                        // 普通闪烁阶段（模拟断路器尝试启辉）
-                        if (tubeState.ticksUntilToggle <= 0 && !lastTick) {
-                            tubeState.ticksUntilToggle = sampleNormalIntervalTicks();
-                            tubeState.currentLit = !tubeState.currentLit;
-                        } else if (!lastTick) {
-                            tubeState.ticksUntilToggle--;
-                        }
-                    } else if (currentPhase == FlickerPhase.FINISHED) {
-                        // 结束阶段，根据 finalState 设置
+                    // 检查该灯管是否已经耗尽了生命周期
+                    tubeState.lifeTimeRemaining--;
+                    boolean tubeFinished = tubeState.lifeTimeRemaining <= 0;
+
+                    // 如果灯管已结束，或者任务整体结束
+                    if (tubeFinished || lastTick) {
                         if (finalState != null) {
                             tubeState.currentLit = finalState;
                         }
-                    }
-
-                    if (lastTick && finalState != null) {
-                        tubeState.currentLit = finalState;
+                    } else {
+                        // 灯管还在生命周期内，执行闪烁逻辑
+                        
+                        // 根据当前阶段更新灯管状态
+                        if (currentPhase == FlickerPhase.INTENSE) {
+                            // 高强度快速闪烁阶段
+                            if (tubeState.ticksUntilToggle <= 0) {
+                                tubeState.ticksUntilToggle = sampleIntenseIntervalTicks();
+                                tubeState.currentLit = !tubeState.currentLit;
+                            } else {
+                                tubeState.ticksUntilToggle--;
+                            }
+                        } else {
+                            // 普通闪烁阶段（模拟断路器尝试启辉）
+                            // 只要没结束，就一直处于这个阶段
+                            if (tubeState.ticksUntilToggle <= 0) {
+                                tubeState.ticksUntilToggle = sampleNormalIntervalTicks();
+                                tubeState.currentLit = !tubeState.currentLit;
+                            } else {
+                                tubeState.ticksUntilToggle--;
+                            }
+                        }
                     }
 
                     BlockState state = level.getBlockState(pos);
@@ -670,15 +728,9 @@ public final class FluorescentTubeClientAPI {
                 if (intenseFlickerTicksRemaining <= 0) {
                     // 高强度闪烁结束，进入普通闪烁阶段
                     currentPhase = FlickerPhase.NORMAL;
-                    normalFlickerCountRemaining = random.nextInt(NORMAL_FLICKER_COUNT_MAX - NORMAL_FLICKER_COUNT_MIN + 1) + NORMAL_FLICKER_COUNT_MIN;
-                    normalFlickerState = 0;
-                }
-            } else if (currentPhase == FlickerPhase.NORMAL) {
-                // 普通闪烁阶段已经完成，进入结束阶段
-                if (normalFlickerCountRemaining <= 0) {
-                    currentPhase = FlickerPhase.FINISHED;
                 }
             }
+            // NORMAL 阶段持续直到各自生命周期结束，不再统一转入 FINISHED
         }
 
         /**
@@ -724,7 +776,14 @@ public final class FluorescentTubeClientAPI {
                 initialLit = blockState.getValue(AbstractFluorescentLampBlock.LIT);
             }
             int firstInterval = sampleIntervalTicks();
-            return new TubeBlinkState(initialLit, firstInterval);
+            
+            // 计算该灯管的独立生命周期：传参的 1~3 倍
+            // totalDurationTicks 是传入的原始 durationTicks
+            int minDuration = totalDurationTicks;
+            int maxDuration = totalDurationTicks * 3;
+            int lifeTime = random.nextInt(maxDuration - minDuration + 1) + minDuration;
+            
+            return new TubeBlinkState(initialLit, firstInterval, lifeTime);
         }
 
         private static final int MAX_SOUNDS_PER_TICK = 6;
@@ -815,11 +874,13 @@ public final class FluorescentTubeClientAPI {
         boolean currentLit;
         int ticksUntilToggle;
         boolean hasPlayedSound;
+        int lifeTimeRemaining;
 
-        TubeBlinkState(boolean currentLit, int ticksUntilToggle) {
+        TubeBlinkState(boolean currentLit, int ticksUntilToggle, int lifeTimeRemaining) {
             this.currentLit = currentLit;
             this.ticksUntilToggle = ticksUntilToggle;
             this.hasPlayedSound = false;
+            this.lifeTimeRemaining = lifeTimeRemaining;
         }
     }
 
