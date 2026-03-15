@@ -121,3 +121,5 @@ runs/
 !gradle-wrapper.jar
 
 linshi/
+libs_codes/
+.vscode/

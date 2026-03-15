@@ -161,6 +161,9 @@ repositories {
         url "https://maven.squiddev.cc"
         content { includeGroup "cc.tweaked" }
     }
+    maven {
+        url "https://maven.firstdarkdev.xyz/snapshots"
+    }
 }
 
 dependencies {
