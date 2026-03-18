@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -28,7 +27,6 @@ public final class TeamOverlay {
     private static final TeamOverlay INSTANCE = new TeamOverlay();
 
     private static final int ANIM_TICKS = 8;
-    private static final int PANEL_W = 210;
     private static final int PANEL_MARGIN = 8;
     private static final int PANEL_TOP = 20;
 
@@ -47,15 +45,6 @@ public final class TeamOverlay {
         if (mc == null || mc.level == null) return;
         if (mc.isPaused()) return;
         INSTANCE.tick(mc);
-    }
-
-    @SubscribeEvent
-    public static void onOverlayPre(RenderGuiOverlayEvent.Pre event) {
-        if (event.getOverlay() == VanillaGuiOverlay.PLAYER_LIST.type()) {
-            if (INSTANCE.isActive()) {
-                event.setCanceled(true);
-            }
-        }
     }
 
     @Mod.EventBusSubscriber(modid = MirageGFBS.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -85,16 +74,17 @@ public final class TeamOverlay {
         return t * t * (3f - 2f * t);
     }
 
+    private String formatName(String name) {
+        if (name != null && name.length() > 14) {
+            return name.substring(0, 10) + "...";
+        }
+        return name;
+    }
+
     private void render(GuiGraphics g, float partialTick, int sw, int sh) {
         if (!isActive()) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.getConnection() == null) return;
-
-        float eased = smoothInOut(progress);
-        int hideOffset = PANEL_W + 10;
-        int right = sw - PANEL_MARGIN;
-        int x = (int) (right - PANEL_W + (1f - eased) * hideOffset);
-        int y = PANEL_TOP;
 
         int headerH = 18;
         int lineH = 12;
@@ -119,28 +109,55 @@ public final class TeamOverlay {
         List<TeamClientState.ClientTeam> teams = new ArrayList<>(TeamClientState.teamsView().values());
         teams.sort(Comparator.comparing(TeamClientState.ClientTeam::name, String::compareToIgnoreCase));
 
-        int maxLines = Math.max(4, (sh - y - 16) / lineH);
-        int usedLines = 0;
+        int maxLines = Math.max(4, (sh - PANEL_TOP - 16) / lineH);
         int contentLines = 1;
+
+        int maxTextWidth = 0;
+        int headerWidth = 8 + mc.font.width("Teams") + 20 + mc.font.width("G.F.B.S. Sys.") + 8;
+        maxTextWidth = Math.max(maxTextWidth, headerWidth);
+
         for (TeamClientState.ClientTeam t : teams) {
+            contentLines += 1;
+            maxTextWidth = Math.max(maxTextWidth, 14 + mc.font.width(t.name()) + 8);
+
             List<String> players = teamToPlayers.getOrDefault(t.id(), List.of());
-            contentLines += 1 + players.size();
+            contentLines += players.size();
+            for (String p : players) {
+                String disp = formatName(p);
+                maxTextWidth = Math.max(maxTextWidth, 22 + mc.font.width(disp) + 8);
+            }
         }
-        if (!noTeamPlayers.isEmpty()) contentLines += 1 + noTeamPlayers.size();
+        if (!noTeamPlayers.isEmpty()) {
+            contentLines += 1 + noTeamPlayers.size();
+            maxTextWidth = Math.max(maxTextWidth, 14 + mc.font.width("No Team") + 8);
+            for (String p : noTeamPlayers) {
+                String disp = formatName(p);
+                maxTextWidth = Math.max(maxTextWidth, 22 + mc.font.width(disp) + 8);
+            }
+        }
+
+        int panelWidth = Math.max(120, maxTextWidth);
+
+        float eased = smoothInOut(progress);
+        int hideOffset = panelWidth + 10;
+        int right = sw - PANEL_MARGIN;
+        int x = (int) (right - panelWidth + (1f - eased) * hideOffset);
+        int y = PANEL_TOP;
 
         int panelH = headerH + 8 + Math.min(maxLines, contentLines) * lineH + 6;
         int bg = 0xAA0E0E0E;
         int header = 0xCC1A1A1A;
 
         RenderSystem.enableBlend();
-        g.fill(x, y, x + PANEL_W, y + panelH, bg);
-        g.fill(x, y, x + PANEL_W, y + headerH, header);
+        g.fill(x, y, x + panelWidth, y + panelH, bg);
+        g.fill(x, y, x + panelWidth, y + headerH, header);
         g.drawString(mc.font, "Teams", x + 8, y + 5, 0xFFFFFF, false);
         String brand = "G.F.B.S. Sys.";
-        int brandX = x + PANEL_W - 8 - mc.font.width(brand);
+        int brandX = x + panelWidth - 8 - mc.font.width(brand);
         g.drawString(mc.font, brand, brandX, y + 5, 0xE0E0E0, false);
 
         int cy = y + headerH + 6;
+        int usedLines = 0;
         usedLines++;
 
         for (TeamClientState.ClientTeam t : teams) {
@@ -154,7 +171,8 @@ public final class TeamOverlay {
             List<String> players = teamToPlayers.getOrDefault(t.id(), List.of());
             for (String p : players) {
                 if (usedLines >= maxLines) break;
-                g.drawString(mc.font, p, x + 22, cy + 2, 0xEAEAEA, false);
+                String disp = formatName(p);
+                g.drawString(mc.font, disp, x + 22, cy + 2, 0xEAEAEA, false);
                 cy += lineH;
                 usedLines++;
             }
@@ -167,7 +185,8 @@ public final class TeamOverlay {
 
             for (String p : noTeamPlayers) {
                 if (usedLines >= maxLines) break;
-                g.drawString(mc.font, p, x + 22, cy + 2, 0xD0D0D0, false);
+                String disp = formatName(p);
+                g.drawString(mc.font, disp, x + 22, cy + 2, 0xD0D0D0, false);
                 cy += lineH;
                 usedLines++;
             }
