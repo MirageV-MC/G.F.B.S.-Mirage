@@ -1,50 +1,39 @@
 {
-  "parent": "minecraft:block/block",
-  "ambientocclusion": false,
-  "textures": {
-    "particle": "mirage_gfbs:block/red_alarm_lamp_on_glass",
-    "base": "mirage_gfbs:block/red_alarm_lamp_base",
-    "lamp": "mirage_gfbs:block/red_alarm_lamp_on_glass"
-  },
-  "elements": [
-    {
-      "name": "base",
-      "from": [2, 0, 2],
-      "to":   [14, 2, 14],
-      "faces": {
-        "down":  { "texture": "#base", "uv": [2, 2, 14, 14] },
-        "up":    { "texture": "#base", "uv": [2, 2, 14, 14] },
-        "north": { "texture": "#base", "uv": [2, 14, 14, 16] },
-        "south": { "texture": "#base", "uv": [2, 14, 14, 16] },
-        "west":  { "texture": "#base", "uv": [2, 14, 14, 16] },
-        "east":  { "texture": "#base", "uv": [2, 14, 14, 16] }
-      }
-    },
-    {
-      "name": "lamp_body",
-      "from": [4, 2, 4],
-      "to":   [12, 10, 12],
-      "faces": {
-        "down":  { "texture": "#lamp", "uv": [4, 4, 12, 12] },
-        "up":    { "texture": "#lamp", "uv": [4, 4, 12, 12] },
-        "north": { "texture": "#lamp", "uv": [4, 6, 12, 14] },
-        "south": { "texture": "#lamp", "uv": [4, 6, 12, 14] },
-        "west":  { "texture": "#lamp", "uv": [4, 6, 12, 14] },
-        "east":  { "texture": "#lamp", "uv": [4, 6, 12, 14] }
-      }
-    },
-    {
-      "name": "lamp_cap",
-      "from": [5, 10, 5],
-      "to":   [11, 12, 11],
-      "faces": {
-        "down":  { "texture": "#lamp", "uv": [5, 5, 11, 11] },
-        "up":    { "texture": "#lamp", "uv": [5, 5, 11, 11] },
-        "north": { "texture": "#lamp", "uv": [5, 14, 11, 16] },
-        "south": { "texture": "#lamp", "uv": [5, 14, 11, 16] },
-        "west":  { "texture": "#lamp", "uv": [5, 14, 11, 16] },
-        "east":  { "texture": "#lamp", "uv": [5, 14, 11, 16] }
-      }
-    }
-  ]
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/block",
+	"ambientocclusion": false,
+	"textures": {
+		"base": "mirage_gfbs:block/red_alarm_lamp_base",
+		"particle": "mirage_gfbs:block/red_alarm_lamp_on_glass",
+		"lamp": "mirage_gfbs:block/red_alarm_lamp_on_glass"
+	},
+	"elements": [
+		{
+			"name": "base",
+			"from": [2, 0, 2],
+			"to": [14, 2, 14],
+			"faces": {
+				"north": {"uv": [2, 14, 14, 16], "texture": "#base"},
+				"east": {"uv": [2, 14, 14, 16], "texture": "#base"},
+				"south": {"uv": [2, 14, 14, 16], "texture": "#base"},
+				"west": {"uv": [2, 14, 14, 16], "texture": "#base"},
+				"up": {"uv": [2, 2, 14, 14], "texture": "#base"},
+				"down": {"uv": [2, 2, 14, 14], "texture": "#base"}
+			}
+		},
+		{
+			"name": "lamp_body",
+			"from": [4, 2, 4],
+			"to": [12, 7, 12],
+			"faces": {
+				"north": {"uv": [4, 6, 12, 14], "texture": "#lamp"},
+				"east": {"uv": [4, 6, 12, 14], "texture": "#lamp"},
+				"south": {"uv": [4, 6, 12, 14], "texture": "#lamp"},
+				"west": {"uv": [4, 6, 12, 14], "texture": "#lamp"},
+				"up": {"uv": [4, 4, 12, 12], "texture": "#lamp"},
+				"down": {"uv": [4, 4, 12, 12], "texture": "#lamp"}
+			}
+		}
+	]
 }
