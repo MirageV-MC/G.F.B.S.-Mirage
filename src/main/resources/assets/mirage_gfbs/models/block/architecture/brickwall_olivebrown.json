@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "mirage_gfbs:block/architecture/brickwall_olivebrown"
+  }
+}

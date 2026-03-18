@@ -28,6 +28,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.gfbs.MirageGFBS;
+import org.mirage.gfbs.objects.items.BuildItemRegistration;
 import org.mirage.gfbs.objects.items.ItemRegistration;
 import org.mirage.gfbs.advanced.broadsystem.BroadSystemRegistry;
 import org.mirage.gfbs.ccio.CCIoRegistry;
@@ -37,8 +38,15 @@ public class CreativeModeTabRegistration {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MirageGFBS.MODID);
     
     public static final RegistryObject<CreativeModeTab> GFBS_TAB = CREATIVE_MODE_TABS.register("mirage_gfbs_tab", () -> CreativeModeTab.builder()
-            .title(Component.literal("G.F.B.S."))
+            .title(Component.literal("GFBS"))
             .icon(() -> new ItemStack(CCIoRegistry.CC_IO_BRIDGE_ITEM.get(),1))
+            .displayItems((parameters, output) -> {
+            })
+            .build());
+
+    public static final RegistryObject<CreativeModeTab> GFBS_BUILD_BLOCK_TAB = CREATIVE_MODE_TABS.register("mirage_gfbs_build_block_tab", () -> CreativeModeTab.builder()
+            .title(Component.literal("GFBS QS建筑方块"))
+            .icon(() -> new ItemStack(BuildItemRegistration.QS_WALL_ITEM.get(),1))
             .displayItems((parameters, output) -> {
             })
             .build());
@@ -57,7 +65,6 @@ public class CreativeModeTabRegistration {
 
             //event.accept(ItemRegistration.RWL_ITEM.get());
 
-            event.accept(ItemRegistration.QS_WALL_ITE.get());
             event.accept(ItemRegistration.QS_TRADEMARK_PICTURE_ITEM.get());
 
             event.accept(BroadSystemRegistry.SPEAKER_BLOCK_ITEM.get());
@@ -65,6 +72,21 @@ public class CreativeModeTabRegistration {
             event.accept(CCIoRegistry.CC_IO_BRIDGE_ITEM.get());
 
             event.accept(ItemRegistration.BLACK_HOLE_ITEM.get());
+        }
+
+        if (event.getTab() == GFBS_BUILD_BLOCK_TAB.get()) {
+            event.accept(BuildItemRegistration.QS_WALL_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_BLUE_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_GRAY_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_OLIVEBROWN_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_P_RED_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_Q_BLUE_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_Q_OLIVEBROWN_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_S_GRAY_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_SP_ED_ITEM.get());
+            event.accept(BuildItemRegistration.BRICKWALL_WHITE_ITEM.get());
+            event.accept(BuildItemRegistration.FLOOR_BLACK_ITEM.get());
+            event.accept(BuildItemRegistration.FLOOR_WHITE_ITEM.get());
         }
     }
 }

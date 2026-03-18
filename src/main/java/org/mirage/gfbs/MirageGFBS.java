@@ -132,6 +132,7 @@ public class MirageGFBS {
 
         BlockRegistration.init();
         ItemRegistration.init();
+        org.mirage.gfbs.objects.items.BuildItemRegistration.init();
         CCIoRegistry.init();
 
         Registrar.init();

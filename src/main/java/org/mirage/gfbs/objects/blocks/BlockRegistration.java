@@ -119,6 +119,50 @@ public class BlockRegistration {
             BLOCKS.register("qs_wall", () ->
                     new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
 
+    public static final RegistryObject<Block> BRICKWALL_BLUE =
+            BLOCKS.register("brickwall_blue", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_GRAY =
+            BLOCKS.register("brickwall_gray", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_OLIVEBROWN =
+            BLOCKS.register("brickwall_olivebrown", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_P_RED =
+            BLOCKS.register("brickwall_p_red", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_Q_BLUE =
+            BLOCKS.register("brickwall_q_blue", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_Q_OLIVEBROWN =
+            BLOCKS.register("brickwall_q_olivebrown", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_S_GRAY =
+            BLOCKS.register("brickwall_s_gray", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_SP_ED =
+            BLOCKS.register("brickwall_sp_ed", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> BRICKWALL_WHITE =
+            BLOCKS.register("brickwall_white", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> FLOOR_BLACK =
+            BLOCKS.register("floor_black", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
+    public static final RegistryObject<Block> FLOOR_WHITE =
+            BLOCKS.register("floor_white", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
     //画
 
     public static final RegistryObject<Block> QS_TRADEMARK_PICTURE_BLOCK =
