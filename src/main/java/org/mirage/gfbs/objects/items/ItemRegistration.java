@@ -70,12 +70,6 @@ public class ItemRegistration {
 //            ITEMS.register("rwl",
 //                    () -> new BlockItem(BlockRegistration.RWL.get(), new Item.Properties()));
 
-    // 建筑方块
-
-    public static final RegistryObject<Item> QS_WALL_ITE =
-            ITEMS.register("qs_wall",
-                    () -> new BlockItem(BlockRegistration.QS_WALL.get(), new Item.Properties()));
-
     // 贴图方块
     public static final RegistryObject<Item> QS_TRADEMARK_PICTURE_ITEM =
             ITEMS.register("qs_trademark_picture",

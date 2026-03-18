@@ -621,8 +621,6 @@ public final class FluorescentTubeClientAPI {
         private static final int MAX_FLICKER_INTERVAL_TICKS = 18;     // 最大闪烁间隔 18 ticks (0.9 秒)
         private static final int MIN_INTENSE_INTERVAL_TICKS = 1;      // 高强度最小间隔 1 tick (0.05 秒)
         private static final int MAX_INTENSE_INTERVAL_TICKS = 3;      // 高强度最大间隔 3 ticks (0.15 秒)
-        private static final int NORMAL_FLICKER_COUNT_MIN = 1;        // 普通闪烁最少次数
-        private static final int NORMAL_FLICKER_COUNT_MAX = 3;        // 普通闪烁最多次数
 
         /**
          * 闪烁阶段
@@ -633,9 +631,8 @@ public final class FluorescentTubeClientAPI {
         private int normalFlickerState = 0; // 0=关，1=开
 
         BlinkTask(int durationTicks, double averageFrequencyHz, @Nullable Boolean finalState) {
-            // 任务总时长延长到 2 倍，以容纳最长寿的灯管
-            this.remainingTicks = durationTicks * 2;
-            this.totalDurationTicks = durationTicks; // 这里保留原始参数作为基准
+            this.remainingTicks = durationTicks;
+            this.totalDurationTicks = durationTicks;
             this.initialFrequencyHz = averageFrequencyHz;
             this.decayRate = averageFrequencyHz / Math.max(durationTicks, 1);
             this.finalState = finalState;
