@@ -164,6 +164,8 @@ public class MirageGFBS {
             ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
                 GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
                 GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
+
+                GateClientAPI.applyClientState(GateTypes.TARTARUS_GATE, data.getBoolean("tartarus_gate"));
             });
         }
 
@@ -289,6 +291,11 @@ public class MirageGFBS {
                                         gfbs_gate_upd_joined_data.putBoolean("check_point_gate", open)
                                 );
 
+                        GateUtils.getGateOpenState(level, GateTypes.TARTARUS_GATE)
+                                .ifPresent(open ->
+                                        gfbs_gate_upd_joined_data.putBoolean("tartarus_gate", open)
+                                );
+
                         org.mirage.gfbs.Phenomenon.network.Network.NetworkHandler.sendToPlayer(player, "gfbs_gate_upd_joined", gfbs_gate_upd_joined_data);
 
                         // END
@@ -314,6 +321,8 @@ public class MirageGFBS {
 
         MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), true, "check_point_gate");
         MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), false, "gate");
+
+        MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), false, "tartarus_gate");
     }
 
     public static void setServerInstance(MinecraftServer serverInstance) {
