@@ -8,11 +8,11 @@
 - MirageV 服务器官方群聊: QQ 568707834
 
 - 模组开发成员
-  - Convex89524 : 主要代码、制作
-  - Nuclear_rea : 主要规划
-  - Tiankeng12279 : 建模
-  - code_40 : 建模
-  - Avarl : CC:Tweaked桥接
+  - [Convex89524](https://space.bilibili.com/597076097) : 主要代码、制作
+  - [Nuclear-rea](https://space.bilibili.com/521401626) : 主要规划
+  - [Tiankeng12279](https://space.bilibili.com/390947073) : 建模
+  - [code_40](https://space.bilibili.com/3493292213799074) : 建模
+  - [Avarl]() : CC:Tweaked桥接
 
 - 本MOD依赖的MOD:
   - [GFBS : Auralis](https://github.com/MirageV-MC/G.F.B.S.-Auralis)
