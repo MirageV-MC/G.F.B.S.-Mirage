@@ -508,7 +508,7 @@ public class DmrMeltdown {
 
         Task.delay(()->{
             executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b4 voice @a ~ ~ ~ 1 1 1");
-        }, 127232, TimeUnit.MILLISECONDS);
+        }, 128232, TimeUnit.MILLISECONDS);
 
         Task.delay(()->{
             broadcast("mirage_gfbs:faas.dmr_o");
