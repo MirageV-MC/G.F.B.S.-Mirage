@@ -70,11 +70,19 @@ public class GateBlockRenderer extends GeoBlockRenderer<GateBlockEntity> {
             var state = blockEntity.getBlockState();
             if (state.hasProperty(GateBlock.AXIS)) {
                 Direction.Axis axis = state.getValue(GateBlock.AXIS);
+                
+                poseStack.translate(0.5, 0, 0.5);
+                
                 if (axis == Direction.Axis.Z) {
-                    poseStack.translate(0.5, 0, 0.5);
                     poseStack.mulPose(Axis.YP.rotationDegrees(90.0f));
-                    poseStack.translate(-0.5, 0, -0.5);
                 }
+                
+                String typeId = blockEntity.getGateType().id();
+                if ("gate".equals(typeId) || "check_point_gate".equals(typeId)) {
+                    poseStack.translate(0.0, 0.0, -0.1875f);
+                }
+                
+                poseStack.translate(-0.5, 0, -0.5);
             }
         }
 

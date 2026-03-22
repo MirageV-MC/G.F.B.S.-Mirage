@@ -81,12 +81,12 @@ public class GateBlock extends Block implements EntityBlock {
     };
 
     private static final BlockPos[] COLLISION_OFFSETS_2 = new BlockPos[]{
-            new BlockPos(0, 0, 3),
-            new BlockPos(0, 1, 3),
-            new BlockPos(0, 2, 3),
-            new BlockPos(0, 0, -3),
-            new BlockPos(0, 1, -3),
-            new BlockPos(0, 2, -3),
+            // new BlockPos(0, 0, 3),
+            // new BlockPos(0, 1, 3),
+            // new BlockPos(0, 2, 3),
+            // new BlockPos(0, 0, -3),
+            // new BlockPos(0, 1, -3),
+            // new BlockPos(0, 2, -3),
     };
 
     public GateBlock(Properties properties, Supplier<Block> collisionBlockSupplier, GateType gateType) {
@@ -396,8 +396,17 @@ public class GateBlock extends Block implements EntityBlock {
         Direction dir = context.getHorizontalDirection();
         Direction.Axis axis = dir.getAxis();
 
+        // 同步全局大门状态
+        boolean globalOpen = false;
+        Level level = context.getLevel();
+        if (level instanceof ServerLevel serverLevel) {
+            globalOpen = org.mirage.gfbs.Utils.GateUtils.getGateOpenState(serverLevel, this.gateType).orElse(false);
+        } else {
+            globalOpen = org.mirage.gfbs.api.GateClientAPI.getGlobalState(this.gateType);
+        }
+
         return this.defaultBlockState()
-                .setValue(OPEN, Boolean.FALSE)
+                .setValue(OPEN, globalOpen)
                 .setValue(AXIS, axis);
     }
 
