@@ -163,6 +163,10 @@ public class BlockRegistration {
             BLOCKS.register("floor_white", () ->
                     new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
 
+    public static final RegistryObject<Block> FLOOR_OLIVEBROWN =
+            BLOCKS.register("floor_olivebrown", () ->
+                    new Block(BlockBehaviour.Properties.of().strength(20.0F, 18.0F)));
+
     //画
 
     public static final RegistryObject<Block> QS_TRADEMARK_PICTURE_BLOCK =
@@ -182,6 +186,16 @@ public class BlockRegistration {
                                     .noOcclusion()
                                     .lightLevel(state -> 15)
                     ));
+
+    // Colored Doors
+    public static final RegistryObject<Block> BLUE_DOOR = BLOCKS.register("blue_door",
+            () -> new org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock(Block.Properties.of().strength(3.0F).noOcclusion(), org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock.DoorColor.BLUE));
+    public static final RegistryObject<Block> RED_DOOR = BLOCKS.register("red_door",
+            () -> new org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock(Block.Properties.of().strength(3.0F).noOcclusion(), org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock.DoorColor.RED));
+    public static final RegistryObject<Block> BLACK_DOOR = BLOCKS.register("black_door",
+            () -> new org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock(Block.Properties.of().strength(3.0F).noOcclusion(), org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock.DoorColor.BLACK));
+    public static final RegistryObject<Block> ORANGE_DOOR = BLOCKS.register("orange_door",
+            () -> new org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock(Block.Properties.of().strength(3.0F).noOcclusion(), org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock.DoorColor.ORANGE));
 
     public static void init(){}
 }

@@ -6,7 +6,7 @@
 				"identifier": "geometry.door",
 				"texture_width": 64,
 				"texture_height": 64,
-				"visible_bounds_width": 3,
+				"visible_bounds_width": 4,
 				"visible_bounds_height": 3.5,
 				"visible_bounds_offset": [0, 1.25, 0]
 			},
@@ -157,7 +157,7 @@
 						},
 						{
 							"origin": [-6.999, 11.35355, 7.56066],
-							"size": [0, 2, 1.5],
+							"size": [0, 3.3, 1.5],
 							"uv": {
 								"north": {"uv": [0, 0], "uv_size": [0, 2]},
 								"east": {"uv": [36, 20], "uv_size": [1.5, 2]},
@@ -183,7 +183,7 @@
 						},
 						{
 							"origin": [-7, 11.35355, 8.56066],
-							"size": [2, 2, 0.5],
+							"size": [2, 1.65, 0.5],
 							"uv": {
 								"north": {"uv": [4, 36], "uv_size": [2, 2]},
 								"east": {"uv": [11, 38], "uv_size": [0.5, 2]},
@@ -220,27 +220,15 @@
 							}
 						},
 						{
-							"origin": [-7, 12.64645, 8.56066],
-							"size": [2, 2, 0.5],
+							"origin": [-7, 12.99645, 8.56066],
+							"size": [2, 1.65, 0.5],
 							"uv": {
 								"north": {"uv": [8, 36], "uv_size": [2, 2]},
-								"east": {"uv": [39, 27], "uv_size": [0.5, 2]},
+								"east": {"uv": [38, 28], "uv_size": [0.5, 2]},
 								"south": {"uv": [10, 36], "uv_size": [2, 2]},
 								"west": {"uv": [35, 39], "uv_size": [0.5, 2]},
 								"up": {"uv": [39, 29], "uv_size": [2, 0.5]},
 								"down": {"uv": [38, 39.5], "uv_size": [2, -0.5]}
-							}
-						},
-						{
-							"origin": [-7, 12.64645, 7.56066],
-							"size": [0, 2, 1.5],
-							"uv": {
-								"north": {"uv": [0, 0], "uv_size": [0, 2]},
-								"east": {"uv": [35, 36], "uv_size": [1.5, 2]},
-								"south": {"uv": [0, 0], "uv_size": [0, 2]},
-								"west": {"uv": [37, 24], "uv_size": [1.5, 2]},
-								"up": {"uv": [0, 0], "uv_size": [0, 1.5]},
-								"down": {"uv": [0, 1.5], "uv_size": [0, -1.5]}
 							}
 						},
 						{

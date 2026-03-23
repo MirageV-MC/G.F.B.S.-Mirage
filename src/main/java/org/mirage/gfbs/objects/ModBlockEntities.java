@@ -58,4 +58,13 @@ public class ModBlockEntities {
     public static final RegistryObject<BlockEntityType<BlackHoleBlockEntity>> BLACK_HOLE_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("black_hole",
                     () -> BlockEntityType.Builder.of(BlackHoleBlockEntity::new, BlockRegistration.BLACK_HOLE.get()).build(null));
+
+    public static final RegistryObject<BlockEntityType<org.mirage.gfbs.objects.blockEntity.ColoredDoor.ColoredDoorBlockEntity>> COLORED_DOOR =
+            BLOCK_ENTITIES.register("colored_door",
+                    () -> BlockEntityType.Builder.of(org.mirage.gfbs.objects.blockEntity.ColoredDoor.ColoredDoorBlockEntity::new, 
+                            BlockRegistration.BLUE_DOOR.get(),
+                            BlockRegistration.RED_DOOR.get(),
+                            BlockRegistration.BLACK_DOOR.get(),
+                            BlockRegistration.ORANGE_DOOR.get()
+                    ).build(null));
 }
