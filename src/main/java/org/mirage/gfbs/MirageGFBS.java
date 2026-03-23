@@ -387,6 +387,8 @@ public class MirageGFBS {
             BlockEntityRenderers.register(ModBlockEntities.GATE.get(), GateBlockRenderer::new);
             BlockEntityRenderers.register(ModBlockEntities.CHECK_POINT_GATE.get(), GateBlockRenderer::new);
 
+            BlockEntityRenderers.register(ModBlockEntities.COLORED_DOOR.get(), org.mirage.gfbs.objects.renderer.ColoredDoor.ColoredDoorRenderer::new);
+
             // END #114
 
             GateClientAPI.register();

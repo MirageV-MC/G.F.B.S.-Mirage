@@ -22,6 +22,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 import org.mirage.gfbs.objects.blocks.BlockRegistration;
+import org.mirage.gfbs.objects.items.ColoredDoor.ColoredDoorGeoItem;
+import net.minecraft.resources.ResourceLocation;
 
 import static org.mirage.gfbs.MirageGFBS.ITEMS;
 
@@ -78,7 +80,22 @@ public class ItemRegistration {
     // 黑洞方块
     public static final RegistryObject<Item> BLACK_HOLE_ITEM =
             ITEMS.register("black_hole",
-                    () -> new BlockItem(BlockRegistration.BLACK_HOLE.get(), new Item.Properties()));
+                    () -> new BlockItem(BlockRegistration.BLACK_HOLE.get(), new Item.Properties()) {
+                        @Override
+                        public void appendHoverText(net.minecraft.world.item.ItemStack stack,
+                                                    @javax.annotation.Nullable net.minecraft.world.level.Level level,
+                                                    java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                                    net.minecraft.world.item.TooltipFlag flag) {
+                            tooltip.add(net.minecraft.network.chat.Component.translatable("item.mirage_gfbs.black_hole.tooltip").withStyle(net.minecraft.ChatFormatting.GRAY));
+                            super.appendHoverText(stack, level, tooltip, flag);
+                        }
+                    });
+
+    // Colored Doors
+    public static final RegistryObject<Item> BLUE_DOOR_ITEM = ITEMS.register("blue_door", () -> new ColoredDoorGeoItem(BlockRegistration.BLUE_DOOR.get(), new Item.Properties(), new ResourceLocation("mirage_gfbs", "textures/block/doors/door_blue.png")));
+    public static final RegistryObject<Item> RED_DOOR_ITEM = ITEMS.register("red_door", () -> new ColoredDoorGeoItem(BlockRegistration.RED_DOOR.get(), new Item.Properties(), new ResourceLocation("mirage_gfbs", "textures/block/doors/door_red.png")));
+    public static final RegistryObject<Item> BLACK_DOOR_ITEM = ITEMS.register("black_door", () -> new ColoredDoorGeoItem(BlockRegistration.BLACK_DOOR.get(), new Item.Properties(), new ResourceLocation("mirage_gfbs", "textures/block/doors/door_black.png")));
+    public static final RegistryObject<Item> ORANGE_DOOR_ITEM = ITEMS.register("orange_door", () -> new ColoredDoorGeoItem(BlockRegistration.ORANGE_DOOR.get(), new Item.Properties(), new ResourceLocation("mirage_gfbs", "textures/block/doors/door_orange.png")));
 
     public static void init(){}
 }

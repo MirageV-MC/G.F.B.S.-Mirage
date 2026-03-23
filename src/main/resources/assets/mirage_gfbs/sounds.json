@@ -59,6 +59,14 @@
       "mirage_gfbs:alarm/war_a"
     ]
   },
+
+  "alarm.meltdown2_a": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:alarm/meltdown2_a"
+    ]
+  },
+
   "boom.boom2_b": {
     "category": "music",
     "sounds": [
@@ -125,6 +133,14 @@
       "mirage_gfbs:boom/dmr_b_q"
     ]
   },
+
+  "boom.boom5_b": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:boom/boom5_b"
+    ]
+  },
+
   "cics.c1a0_01": {
     "category": "master",
     "sounds": [
@@ -1565,6 +1581,32 @@
       "mirage_gfbs:mobile/hacking"
     ]
   },
+
+  "mobile.big_elevator_move": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:mobile/big_elevator_move"
+    ]
+  },
+  "mobile.big_elevator_moving": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:mobile/big_elevator_moving"
+    ]
+  },
+  "mobile.door_close": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:mobile/door_close"
+    ]
+  },
+  "mobile.elevator_stop": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:mobile/elevator_stop"
+    ]
+  },
+
   "music.adminroom_chair_duang": {
     "category": "music",
     "sounds": [
@@ -2112,6 +2154,32 @@
       "mirage_gfbs:surroundings/water"
     ]
   },
+  "surroundings.nose1": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/nose1"
+    ]
+  },
+
+  "surroundings.server.noise_01": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/server/noise_01"
+    ]
+  },
+  "surroundings.server.noise_02": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/server/noise_02"
+    ]
+  },
+  "surroundings.server.noise_03": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:surroundings/server/noise_03"
+    ]
+  },
+
   "war.main90": {
     "category": "music",
     "sounds": [

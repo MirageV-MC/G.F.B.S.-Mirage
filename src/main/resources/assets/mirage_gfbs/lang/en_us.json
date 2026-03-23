@@ -20,6 +20,7 @@
   "block.mirage_gfbs.brickwall_white": "白色砖墙",
   "block.mirage_gfbs.floor_black": "黑地板材质",
   "block.mirage_gfbs.floor_white": "白地板材质",
+  "block.mirage_gfbs.floor_olivebrown": "橄榄棕地板材质",
   
   "block.mirage_gfbs.speaker": "扬声器",
   "block.mirage_gfbs.tartarus_gate": "塔塔鲁斯大型烙件闸门",
@@ -27,5 +28,10 @@
   "item.mirage_gfbs.black_hole.tooltip": "炫酷的DMR暗物质低密度黑洞，以及能把你吸进奇点的引力。",
 
   "block.mirage_gfbs.cc_io_bridge": "GFBS CC I/O 桥",
-  "item.mirage_gfbs.cc_io_bridge.tooltip": "把此方块放置到高级电脑旁时,将会自动启用GFBS桥。"
+  "item.mirage_gfbs.cc_io_bridge.tooltip": "把此方块放置到高级电脑旁时,将会自动启用GFBS桥。",
+
+  "block.mirage_gfbs.blue_door": "蓝门",
+  "block.mirage_gfbs.red_door": "红门",
+  "block.mirage_gfbs.black_door": "黑门",
+  "block.mirage_gfbs.orange_door": "橙门"
 }

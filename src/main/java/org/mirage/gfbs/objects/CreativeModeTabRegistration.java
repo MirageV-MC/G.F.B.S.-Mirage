@@ -62,6 +62,11 @@ public class CreativeModeTabRegistration {
             event.accept(ItemRegistration.GATE_ITEM.get());
             event.accept(ItemRegistration.CHECK_POINT_GATE_ITEM.get());
             event.accept(ItemRegistration.TARTARUS_GATE_ITEM.get());
+            
+            event.accept(ItemRegistration.BLUE_DOOR_ITEM.get());
+            event.accept(ItemRegistration.RED_DOOR_ITEM.get());
+            event.accept(ItemRegistration.BLACK_DOOR_ITEM.get());
+            event.accept(ItemRegistration.ORANGE_DOOR_ITEM.get());
 
             //event.accept(ItemRegistration.RWL_ITEM.get());
 
@@ -87,6 +92,7 @@ public class CreativeModeTabRegistration {
             event.accept(BuildItemRegistration.BRICKWALL_WHITE_ITEM.get());
             event.accept(BuildItemRegistration.FLOOR_BLACK_ITEM.get());
             event.accept(BuildItemRegistration.FLOOR_WHITE_ITEM.get());
+            event.accept(BuildItemRegistration.FLOOR_OLIVEBROWN_ITEM.get());
         }
     }
 }

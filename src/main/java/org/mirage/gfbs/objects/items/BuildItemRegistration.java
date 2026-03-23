@@ -61,4 +61,8 @@ public class BuildItemRegistration {
             ITEMS.register("floor_white",
                     () -> new BlockItem(BlockRegistration.FLOOR_WHITE.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> FLOOR_OLIVEBROWN_ITEM =
+            ITEMS.register("floor_olivebrown",
+                    () -> new BlockItem(BlockRegistration.FLOOR_OLIVEBROWN.get(), new Item.Properties()));
+
 }
