@@ -58,6 +58,7 @@ public class DmrexAfter {
             NetworkHandler.sendToAll("mirage_dmr_boom_h_event_client_a3");
             server.execute(()->{
                 MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate");
+                MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate_x6");
             });
             FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
             FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);

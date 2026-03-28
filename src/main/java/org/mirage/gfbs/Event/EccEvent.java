@@ -269,6 +269,7 @@ public class EccEvent {
             server.execute(() -> {
                 MirageGFBsGateApiCommand.exec(_serverLevel, false, "gate");
                 MirageGFBsGateApiCommand.exec(_serverLevel, false, "check_point_gate");
+                MirageGFBsGateApiCommand.exec(_serverLevel, false, "check_point_gate_x6");
             });
         }, 222500, TimeUnit.MILLISECONDS);
 
@@ -297,6 +298,7 @@ public class EccEvent {
         NetworkHandler.sendToAll("mirage_ecc_boom_h_event_client_a2");
         server.execute(()->{
             MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate");
+            MirageGFBsGateApiCommand.exec(_serverLevel, true, "check_point_gate_x6");
         });
         FluorescentTubeCommandRegistry.turnOnAllTubes(_serverLevel);
         FluorescentTubeCommandRegistry.setInstabilityMode(_serverLevel, FluorescentTubeCommandRegistry.InstabilityMode.NONE);

@@ -103,15 +103,19 @@ public class BlockRegistration {
 
     public static final RegistryObject<Block> GATE =
             BLOCKS.register("gate", () ->
-                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.STANDARD));
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.STANDARD, org.mirage.gfbs.objects.ModBlockEntities.GATE));
 
     public static final RegistryObject<Block> CHECK_POINT_GATE =
             BLOCKS.register("check_point_gate", () ->
-                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.CHECK_POINT));
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.CHECK_POINT, org.mirage.gfbs.objects.ModBlockEntities.CHECK_POINT_GATE));
+
+    public static final RegistryObject<Block> CHECK_POINT_GATE_X6 =
+            BLOCKS.register("check_point_gate_x6", () ->
+                    new GateBlock(Block.Properties.of().strength(5.0F), BlockRegistration.GATE_COLLISION, GateTypes.CHECK_POINT_X6, org.mirage.gfbs.objects.ModBlockEntities.CHECK_POINT_GATE));
 
     public static final RegistryObject<Block> TARTARUS_GATE =
             BLOCKS.register("tartarus_gate", () ->
-                    new TartarusGateBlock(Block.Properties.of().strength(5.0F), GateTypes.TARTARUS_GATE));
+                    new TartarusGateBlock(Block.Properties.of().strength(5.0F), GateTypes.TARTARUS_GATE, org.mirage.gfbs.objects.ModBlockEntities.GATE));
 
     // 建筑方块
 

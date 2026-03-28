@@ -23,6 +23,9 @@
   "block.mirage_gfbs.floor_olivebrown": "橄榄棕地板材质",
   
   "block.mirage_gfbs.speaker": "扬声器",
+  "block.mirage_gfbs.gate": "闸门",
+  "block.mirage_gfbs.check_point_gate": "安检闸门",
+  "block.mirage_gfbs.check_point_gate_x6": "安检闸门 (x6)",
   "block.mirage_gfbs.tartarus_gate": "塔塔鲁斯大型烙件闸门",
   "block.mirage_gfbs.black_hole": "黑洞",
   "item.mirage_gfbs.black_hole.tooltip": "炫酷的DMR暗物质低密度黑洞，以及能把你吸进奇点的引力。",

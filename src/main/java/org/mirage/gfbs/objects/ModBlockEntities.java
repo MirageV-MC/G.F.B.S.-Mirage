@@ -44,7 +44,8 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("check_point_gate",
                     () -> BlockEntityType.Builder.of(
                             GateBlockEntity::new,
-                            BlockRegistration.CHECK_POINT_GATE.get()
+                            BlockRegistration.CHECK_POINT_GATE.get(),
+                            BlockRegistration.CHECK_POINT_GATE_X6.get()
                     ).build(null));
 
     public static final RegistryObject<BlockEntityType<QSTrademarkPictureBlockEntity>> QS_TRADEMARK_PICTURE_BLOCK_ENTITY =

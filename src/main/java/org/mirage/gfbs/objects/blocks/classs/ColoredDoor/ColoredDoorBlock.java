@@ -28,11 +28,13 @@ import org.mirage.gfbs.objects.blockEntity.ColoredDoor.ColoredDoorBlockEntity;
 
 import net.minecraft.sounds.SoundSource;
 
+import net.minecraft.world.level.block.state.properties.DoorHingeSide;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.Vec3;
 
 public class ColoredDoorBlock extends BaseEntityBlock {
 
@@ -42,6 +44,7 @@ public class ColoredDoorBlock extends BaseEntityBlock {
     public static final BooleanProperty COLLIDABLE = BooleanProperty.create("collidable");
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
+    public static final EnumProperty<DoorHingeSide> HINGE = BlockStateProperties.DOOR_HINGE;
 
     protected static final VoxelShape SHAPE_NORTH = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 2.0D);
     protected static final VoxelShape SHAPE_SOUTH = Block.box(0.0D, 0.0D, 14.0D, 16.0D, 16.0D, 16.0D);
@@ -69,6 +72,7 @@ public class ColoredDoorBlock extends BaseEntityBlock {
                 .setValue(COLLIDABLE, Boolean.TRUE)
                 .setValue(FACING, Direction.NORTH)
                 .setValue(HALF, DoubleBlockHalf.LOWER)
+                .setValue(HINGE, DoorHingeSide.LEFT)
         );
     }
 
@@ -78,7 +82,7 @@ public class ColoredDoorBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(OPEN, COLLIDABLE, PLAYER_CAN_OPEN, POWERED, FACING, HALF);
+        builder.add(OPEN, COLLIDABLE, PLAYER_CAN_OPEN, POWERED, FACING, HALF, HINGE);
     }
 
     @Nullable
@@ -89,9 +93,45 @@ public class ColoredDoorBlock extends BaseEntityBlock {
         if (blockpos.getY() < level.getMaxBuildHeight() - 1 && level.getBlockState(blockpos.above()).canBeReplaced(context)) {
             return this.defaultBlockState()
                     .setValue(FACING, context.getHorizontalDirection())
-                    .setValue(HALF, DoubleBlockHalf.LOWER);
+                    .setValue(HALF, DoubleBlockHalf.LOWER)
+                    .setValue(HINGE, this.getHinge(context));
         } else {
             return null;
+        }
+    }
+
+    private DoorHingeSide getHinge(BlockPlaceContext context) {
+        BlockGetter level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction direction = context.getHorizontalDirection();
+        BlockPos posUp = pos.above();
+        Direction directionCCW = direction.getCounterClockWise();
+        BlockPos posLeft = pos.relative(directionCCW);
+        BlockState stateLeft = level.getBlockState(posLeft);
+        BlockPos posLeftUp = posUp.relative(directionCCW);
+        BlockState stateLeftUp = level.getBlockState(posLeftUp);
+        Direction directionCW = direction.getClockWise();
+        BlockPos posRight = pos.relative(directionCW);
+        BlockState stateRight = level.getBlockState(posRight);
+        BlockPos posRightUp = posUp.relative(directionCW);
+        BlockState stateRightUp = level.getBlockState(posRightUp);
+        int leftMatch = (stateLeft.is(this) || stateLeftUp.is(this)) ? -1 : 0;
+        int rightMatch = (stateRight.is(this) || stateRightUp.is(this)) ? 1 : 0;
+        boolean hasLeftSolid = stateLeft.isCollisionShapeFullBlock(level, posLeft) || stateLeftUp.isCollisionShapeFullBlock(level, posLeftUp);
+        boolean hasRightSolid = stateRight.isCollisionShapeFullBlock(level, posRight) || stateRightUp.isCollisionShapeFullBlock(level, posRightUp);
+        if ((!hasLeftSolid || hasRightSolid) && leftMatch <= 0 && rightMatch <= 0) {
+            if ((!hasRightSolid || hasLeftSolid) && leftMatch <= 0 && rightMatch <= 0) {
+                int ox = direction.getStepX();
+                int oz = direction.getStepZ();
+                Vec3 vec3 = context.getClickLocation();
+                double x = vec3.x - (double)pos.getX();
+                double z = vec3.z - (double)pos.getZ();
+                return (ox >= 0 || !(z < 0.5D)) && (ox <= 0 || !(z > 0.5D)) && (oz >= 0 || !(x > 0.5D)) && (oz <= 0 || !(x < 0.5D)) ? DoorHingeSide.LEFT : DoorHingeSide.RIGHT;
+            } else {
+                return DoorHingeSide.RIGHT;
+            }
+        } else {
+            return DoorHingeSide.LEFT;
         }
     }
 
@@ -104,7 +144,7 @@ public class ColoredDoorBlock extends BaseEntityBlock {
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
         DoubleBlockHalf half = state.getValue(HALF);
         if (direction.getAxis() == Direction.Axis.Y && half == DoubleBlockHalf.LOWER == (direction == Direction.UP)) {
-            return neighborState.is(this) && neighborState.getValue(HALF) != half ? state.setValue(FACING, neighborState.getValue(FACING)).setValue(OPEN, neighborState.getValue(OPEN)).setValue(COLLIDABLE, neighborState.getValue(COLLIDABLE)).setValue(PLAYER_CAN_OPEN, neighborState.getValue(PLAYER_CAN_OPEN)).setValue(POWERED, neighborState.getValue(POWERED)) : Blocks.AIR.defaultBlockState();
+            return neighborState.is(this) && neighborState.getValue(HALF) != half ? state.setValue(FACING, neighborState.getValue(FACING)).setValue(OPEN, neighborState.getValue(OPEN)).setValue(COLLIDABLE, neighborState.getValue(COLLIDABLE)).setValue(PLAYER_CAN_OPEN, neighborState.getValue(PLAYER_CAN_OPEN)).setValue(POWERED, neighborState.getValue(POWERED)).setValue(HINGE, neighborState.getValue(HINGE)) : Blocks.AIR.defaultBlockState();
         } else {
             return half == DoubleBlockHalf.LOWER && direction == Direction.DOWN && !state.canSurvive(level, currentPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
         }
@@ -262,6 +302,20 @@ public class ColoredDoorBlock extends BaseEntityBlock {
         BlockEntity be = level.getBlockEntity(lowerPos);
         if (be instanceof ColoredDoorBlockEntity doorBlockEntity) {
             doorBlockEntity.openDoor();
+        }
+
+        Direction facing = lowerState.getValue(FACING);
+        DoorHingeSide hinge = lowerState.getValue(HINGE);
+        for (Direction dir : new Direction[]{facing.getClockWise(), facing.getCounterClockWise()}) {
+            BlockPos neighborPos = lowerPos.relative(dir);
+            BlockState neighborState = level.getBlockState(neighborPos);
+            if (neighborState.is(this) && neighborState.getValue(HALF) == DoubleBlockHalf.LOWER) {
+                if (neighborState.getValue(FACING) == facing && neighborState.getValue(HINGE) != hinge) {
+                    if (!neighborState.getValue(OPEN) && neighborState.getValue(COLLIDABLE)) {
+                        this.openDoorFromAnyHalf(level, neighborPos, neighborState);
+                    }
+                }
+            }
         }
     }
 

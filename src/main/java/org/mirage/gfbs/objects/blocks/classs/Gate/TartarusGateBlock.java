@@ -52,8 +52,8 @@ public class TartarusGateBlock extends GateBlock {
         }
     }
 
-    public TartarusGateBlock(Properties properties, GateType gateType) {
-        super(properties, null, gateType);
+    public TartarusGateBlock(Properties properties, GateType gateType, java.util.function.Supplier<net.minecraft.world.level.block.entity.BlockEntityType<GateBlockEntity>> blockEntityTypeSupplier) {
+        super(properties, null, gateType, blockEntityTypeSupplier);
     }
 
     @Override

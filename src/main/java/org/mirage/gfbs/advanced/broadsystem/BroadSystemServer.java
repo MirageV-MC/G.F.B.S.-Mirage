@@ -87,10 +87,6 @@ public class BroadSystemServer {
 
             BlockPos pos = location.pos();
 
-            if (!level.isLoaded(pos)) {
-                level.getChunk(pos);
-            }
-
             if (level.isLoaded(pos)) {
                 BroadSystemNetwork.sendStartBroadcast(level, pos, soundEvent, volume, pitch, startTime);
 
@@ -115,10 +111,6 @@ public class BroadSystemServer {
             if (level == null) continue;
 
             BlockPos pos = location.pos();
-
-            if (!level.isLoaded(pos)) {
-                level.getChunk(pos);
-            }
 
             if (level.isLoaded(pos)) {
                 BroadSystemNetwork.sendStopBroadcast(level, pos);
