@@ -138,9 +138,9 @@ public class BlackHoleProRenderer {
         }
     }
 
+    private static final ResourceLocation NOISE_TEXTURE = new ResourceLocation("textures/block/stone.png");
+
     private static int createNoiseTexture() {
-        return Minecraft.getInstance().getTextureManager().getTexture(
-                new ResourceLocation("textures/block/stone.png")
-        ).getId();
+        return Minecraft.getInstance().getTextureManager().getTexture(NOISE_TEXTURE).getId();
     }
 }

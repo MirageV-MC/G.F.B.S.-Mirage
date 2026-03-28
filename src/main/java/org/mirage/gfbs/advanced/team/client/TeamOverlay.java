@@ -32,6 +32,11 @@ public final class TeamOverlay {
 
     private float progress = 0f;
 
+    private final Map<String, List<String>> teamToPlayers = new HashMap<>();
+    private final List<String> noTeamPlayers = new ArrayList<>();
+    private final List<PlayerInfo> online = new ArrayList<>();
+    private final List<TeamClientState.ClientTeam> teams = new ArrayList<>();
+
     public static final IGuiOverlay OVERLAY = (ForgeGui gui, GuiGraphics graphics, float partialTick, int screenWidth, int screenHeight) ->
             INSTANCE.render(graphics, partialTick, screenWidth, screenHeight);
 
@@ -89,11 +94,13 @@ public final class TeamOverlay {
         int headerH = 18;
         int lineH = 12;
 
-        Map<String, List<String>> teamToPlayers = new HashMap<>();
-        List<String> noTeamPlayers = new ArrayList<>();
+        teamToPlayers.values().forEach(List::clear);
+        noTeamPlayers.clear();
+        online.clear();
+        teams.clear();
 
         Map<UUID, String> membership = TeamClientState.membershipsOnlineView();
-        List<PlayerInfo> online = new ArrayList<>(mc.getConnection().getOnlinePlayers());
+        online.addAll(mc.getConnection().getOnlinePlayers());
         online.sort(Comparator.comparing(p -> p.getProfile().getName(), String::compareToIgnoreCase));
         for (PlayerInfo info : online) {
             UUID uuid = info.getProfile().getId();
@@ -106,7 +113,7 @@ public final class TeamOverlay {
             }
         }
 
-        List<TeamClientState.ClientTeam> teams = new ArrayList<>(TeamClientState.teamsView().values());
+        teams.addAll(TeamClientState.teamsView().values());
         teams.sort(Comparator.comparing(TeamClientState.ClientTeam::name, String::compareToIgnoreCase));
 
         int maxLines = Math.max(4, (sh - PANEL_TOP - 16) / lineH);

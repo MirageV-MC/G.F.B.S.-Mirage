@@ -324,12 +324,20 @@ public final class FluorescentTubeClientAPI {
         flashAll(duration, frequency, Boolean.TRUE);
     }
 
+    private static long lastScanTime = 0;
+
     private static void ensureRegisteredTubes(ClientLevel level) {
         synchronized (REGISTERED_TUBES) {
             if (!REGISTERED_TUBES.isEmpty()) {
                 return;
             }
         }
+
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastScanTime < 5000) {
+            return;
+        }
+        lastScanTime = currentTime;
 
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {
