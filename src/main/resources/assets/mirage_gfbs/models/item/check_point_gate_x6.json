@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mirage_gfbs:item/gate/check_point_gate_x6"
+  }
+}

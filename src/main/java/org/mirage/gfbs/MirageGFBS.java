@@ -163,6 +163,7 @@ public class MirageGFBS {
         if (FMLEnvironment.dist == Dist.CLIENT){
             ClientEventHandler.registerEvent("gfbs_gate_upd_joined", (data)->{
                 GateClientAPI.applyClientState(GateTypes.CHECK_POINT, data.getBoolean("check_point_gate"));
+                GateClientAPI.applyClientState(GateTypes.CHECK_POINT_X6, data.getBoolean("check_point_gate_x6"));
                 GateClientAPI.applyClientState(GateTypes.STANDARD, data.getBoolean("gate"));
 
                 GateClientAPI.applyClientState(GateTypes.TARTARUS_GATE, data.getBoolean("tartarus_gate"));
@@ -291,6 +292,11 @@ public class MirageGFBS {
                                         gfbs_gate_upd_joined_data.putBoolean("check_point_gate", open)
                                 );
 
+                        GateUtils.getGateOpenState(level, GateTypes.CHECK_POINT_X6)
+                                .ifPresent(open ->
+                                        gfbs_gate_upd_joined_data.putBoolean("check_point_gate_x6", open)
+                                );
+
                         GateUtils.getGateOpenState(level, GateTypes.TARTARUS_GATE)
                                 .ifPresent(open ->
                                         gfbs_gate_upd_joined_data.putBoolean("tartarus_gate", open)
@@ -320,6 +326,7 @@ public class MirageGFBS {
         LOGGER.info("server started.");
 
         MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), true, "check_point_gate");
+        MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), true, "check_point_gate_x6");
         MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), false, "gate");
 
         MirageGFBsGateApiCommand.exec(server.overworld().getLevel(), false, "tartarus_gate");

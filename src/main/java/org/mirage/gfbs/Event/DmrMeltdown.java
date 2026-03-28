@@ -607,6 +607,7 @@ public class DmrMeltdown {
             server.execute(()->{
                 MirageGFBsGateApiCommand.exec(_serverLevel, false, "gate");
                 MirageGFBsGateApiCommand.exec(_serverLevel, false, "check_point_gate");
+                MirageGFBsGateApiCommand.exec(_serverLevel, false, "check_point_gate_x6");
             });
         }, 189059, TimeUnit.MILLISECONDS);
 

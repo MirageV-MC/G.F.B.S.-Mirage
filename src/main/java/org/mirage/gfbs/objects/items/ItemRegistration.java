@@ -62,6 +62,10 @@ public class ItemRegistration {
             ITEMS.register("check_point_gate",
                     () -> new BlockItem(BlockRegistration.CHECK_POINT_GATE.get(), new Item.Properties()));
 
+    public static final RegistryObject<Item> CHECK_POINT_GATE_X6_ITEM =
+            ITEMS.register("check_point_gate_x6",
+                    () -> new BlockItem(BlockRegistration.CHECK_POINT_GATE_X6.get(), new Item.Properties()));
+
     public static final RegistryObject<Item> TARTARUS_GATE_ITEM =
             ITEMS.register("tartarus_gate",
                     () -> new BlockItem(BlockRegistration.TARTARUS_GATE.get(), new Item.Properties()));

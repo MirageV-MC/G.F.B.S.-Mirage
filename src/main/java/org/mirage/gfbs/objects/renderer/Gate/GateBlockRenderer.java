@@ -78,6 +78,14 @@ public class GateBlockRenderer extends GeoBlockRenderer<GateBlockEntity> {
                 }
                 
                 String typeId = blockEntity.getGateType().id();
+                
+                if ("check_point_gate_x6".equals(typeId)) {
+                    poseStack.translate(0.0, 0.0, 0.5f);
+                }
+
+                // Removed the extra -0.1875f offset for the x6 gate as per user request to center it perfectly.
+                // Keeping it for older gates to maintain their visual consistency if needed, 
+                // but x6 should be aligned precisely to the grid.
                 if ("gate".equals(typeId) || "check_point_gate".equals(typeId)) {
                     poseStack.translate(0.0, 0.0, -0.1875f);
                 }

@@ -2,13 +2,14 @@ package org.mirage.gfbs.objects.blockEntity.ColoredDoor;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.server.level.ServerLevel;
-import org.mirage.gfbs.Tools.Task;
+import net.minecraft.world.phys.AABB;
 import org.mirage.gfbs.ModSoundEvents;
+import org.mirage.gfbs.Tools.Task;
 import org.mirage.gfbs.objects.ModBlockEntities;
 import org.mirage.gfbs.objects.blocks.classs.ColoredDoor.ColoredDoorBlock;
 import software.bernie.geckolib.animatable.GeoBlockEntity;
@@ -30,7 +31,7 @@ public class ColoredDoorBlockEntity extends BlockEntity implements GeoBlockEntit
     private Future<?> autoCloseTask = null;
     private Future<?> closeSoundTask = null;
     private Future<?> collisionEnableTask = null;
-    
+
     private boolean lastOpen = false;
 
     public ColoredDoorBlockEntity(BlockPos pos, BlockState state) {
@@ -75,6 +76,19 @@ public class ColoredDoorBlockEntity extends BlockEntity implements GeoBlockEntit
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        BlockPos pos = this.getBlockPos();
+        return new AABB(
+                pos.getX() - 1.0D,
+                pos.getY(),
+                pos.getZ() - 1.0D,
+                pos.getX() + 2.0D,
+                pos.getY() + 2.0D,
+                pos.getZ() + 2.0D
+        );
     }
 
     public void openDoor() {

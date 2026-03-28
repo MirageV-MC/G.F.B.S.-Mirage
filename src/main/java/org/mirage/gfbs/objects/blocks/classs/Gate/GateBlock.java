@@ -61,6 +61,7 @@ public class GateBlock extends Block implements EntityBlock {
 
     private final Supplier<Block> collisionBlockSupplier;
     private final GateType gateType;
+    private final Supplier<net.minecraft.world.level.block.entity.BlockEntityType<GateBlockEntity>> blockEntityTypeSupplier;
 
     private static final BlockPos[] COLLISION_OFFSETS = new BlockPos[]{
             new BlockPos(0, 0, 0),
@@ -80,6 +81,27 @@ public class GateBlock extends Block implements EntityBlock {
             new BlockPos(0, 2, -2)
     };
 
+    private static final BlockPos[] COLLISION_OFFSETS_X6 = new BlockPos[]{
+            new BlockPos(0, 0, 0),
+            new BlockPos(0, 1, 0),
+            new BlockPos(0, 2, 0),
+            new BlockPos(0, 0, 1),
+            new BlockPos(0, 1, 1),
+            new BlockPos(0, 2, 1),
+            new BlockPos(0, 0, 2),
+            new BlockPos(0, 1, 2),
+            new BlockPos(0, 2, 2),
+            new BlockPos(0, 0, 3),
+            new BlockPos(0, 1, 3),
+            new BlockPos(0, 2, 3),
+            new BlockPos(0, 0, -1),
+            new BlockPos(0, 1, -1),
+            new BlockPos(0, 2, -1),
+            new BlockPos(0, 0, -2),
+            new BlockPos(0, 1, -2),
+            new BlockPos(0, 2, -2)
+    };
+
     private static final BlockPos[] COLLISION_OFFSETS_2 = new BlockPos[]{
             // new BlockPos(0, 0, 3),
             // new BlockPos(0, 1, 3),
@@ -89,10 +111,11 @@ public class GateBlock extends Block implements EntityBlock {
             // new BlockPos(0, 2, -3),
     };
 
-    public GateBlock(Properties properties, Supplier<Block> collisionBlockSupplier, GateType gateType) {
+    public GateBlock(Properties properties, Supplier<Block> collisionBlockSupplier, GateType gateType, Supplier<net.minecraft.world.level.block.entity.BlockEntityType<GateBlockEntity>> blockEntityTypeSupplier) {
         super(properties);
         this.collisionBlockSupplier = collisionBlockSupplier;
         this.gateType = (gateType == null ? GateTypes.STANDARD : gateType);
+        this.blockEntityTypeSupplier = blockEntityTypeSupplier;
         this.registerDefaultState(
                 this.stateDefinition.any()
                         .setValue(OPEN, Boolean.FALSE)
@@ -175,6 +198,8 @@ public class GateBlock extends Block implements EntityBlock {
         Direction.Axis axis = gateState.hasProperty(AXIS)
                 ? gateState.getValue(AXIS)
                 : Direction.Axis.Z;
+        
+        BlockPos[] offsetsToUse = (this.gateType != null && "check_point_gate_x6".equals(this.gateType.id())) ? COLLISION_OFFSETS_X6 : COLLISION_OFFSETS;
 
         if (canSleep) {
             Task.delay(() -> {
@@ -191,7 +216,7 @@ public class GateBlock extends Block implements EntityBlock {
                             ? currentState.getValue(AXIS)
                             : Direction.Axis.Z;
 
-                    for (BlockPos offset : COLLISION_OFFSETS) {
+                    for (BlockPos offset : offsetsToUse) {
                         BlockPos realOffset = rotateOffsetForAxis(offset, currentAxis);
                         BlockPos targetPos = gatePos.offset(realOffset);
                         BlockState existing = level.getBlockState(targetPos);
@@ -215,7 +240,7 @@ public class GateBlock extends Block implements EntityBlock {
                 }
             }
         } else {
-            for (BlockPos offset : COLLISION_OFFSETS) {
+            for (BlockPos offset : offsetsToUse) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
                 BlockState existing = level.getBlockState(targetPos);
@@ -244,7 +269,7 @@ public class GateBlock extends Block implements EntityBlock {
         if (axis == Direction.Axis.X) {
             return offset;
         } else {
-            return new BlockPos(-offset.getZ(), offset.getY(), offset.getX());
+            return new BlockPos(offset.getZ(), offset.getY(), -offset.getX());
         }
     }
 
@@ -262,15 +287,17 @@ public class GateBlock extends Block implements EntityBlock {
         Direction.Axis axis = gateState.hasProperty(AXIS) ? gateState.getValue(AXIS) : Direction.Axis.Z;
 
         Set<BlockPos> positionsToRemove = new HashSet<>();
+        
+        BlockPos[] offsetsToUse = (this.gateType != null && "check_point_gate_x6".equals(this.gateType.id())) ? COLLISION_OFFSETS_X6 : COLLISION_OFFSETS;
 
         if (onlyCore){
-            for (BlockPos offset : COLLISION_OFFSETS) {
+            for (BlockPos offset : offsetsToUse) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
                 positionsToRemove.add(targetPos.immutable());
             }
         } else {
-            for (BlockPos offset : COLLISION_OFFSETS) {
+            for (BlockPos offset : offsetsToUse) {
                 BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                 BlockPos targetPos = gatePos.offset(realOffset);
                 positionsToRemove.add(targetPos.immutable());
@@ -287,7 +314,7 @@ public class GateBlock extends Block implements EntityBlock {
 
         try {
             if (onlyCore){
-                for (BlockPos offset : COLLISION_OFFSETS) {
+                for (BlockPos offset : offsetsToUse) {
                     BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                     BlockPos targetPos = gatePos.offset(realOffset);
                     BlockState existing = level.getBlockState(targetPos);
@@ -296,7 +323,7 @@ public class GateBlock extends Block implements EntityBlock {
                     }
                 }
             } else {
-                for (BlockPos offset : COLLISION_OFFSETS) {
+                for (BlockPos offset : offsetsToUse) {
                     BlockPos realOffset = rotateOffsetForAxis(offset, axis);
                     BlockPos targetPos = gatePos.offset(realOffset);
                     BlockState existing = level.getBlockState(targetPos);
@@ -329,6 +356,10 @@ public class GateBlock extends Block implements EntityBlock {
         return gateType;
     }
 
+
+    public Supplier<net.minecraft.world.level.block.entity.BlockEntityType<GateBlockEntity>> getBlockEntityTypeSupplier() {
+        return blockEntityTypeSupplier;
+    }
 
     public void applyOpenStateDirect(Level level, BlockPos gatePos, boolean open) {
         if (level.isClientSide) return;

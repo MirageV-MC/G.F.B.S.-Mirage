@@ -229,8 +229,8 @@ public class GateBlockEntity extends BlockEntity implements GeoBlockEntity {
     }
 
     private static BlockEntityType<?> resolveType(BlockState state) {
-        if (state.is(BlockRegistration.CHECK_POINT_GATE.get())) {
-            return ModBlockEntities.CHECK_POINT_GATE.get();
+        if (state.getBlock() instanceof GateBlock gateBlock && gateBlock.getBlockEntityTypeSupplier() != null) {
+            return gateBlock.getBlockEntityTypeSupplier().get();
         }
         return ModBlockEntities.GATE.get();
     }
