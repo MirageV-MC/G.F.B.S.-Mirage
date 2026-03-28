@@ -24,3 +24,9 @@
 - 《Minecraft》是 Mojang/Microsoft 的商标
 
 - QS能源研究设施Wiki: https://quantum-science.fandom.com/wiki/Quantum_Science_Energy_Research_Facility
+
+---
+
+> *If there is any infringement, please contact: 1527824288@qq.com*
+>
+> *如有侵权，请联系：1527824288@qq.com*
