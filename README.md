@@ -27,6 +27,6 @@
 
 ---
 
-> *If there is any infringement, please contact: 1527824288@qq.com*
+> *If this project infringes upon your rights, please contact: 1527824288@qq.com*
 >
 > *如有侵权，请联系：1527824288@qq.com*
