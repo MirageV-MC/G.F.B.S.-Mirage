@@ -53,11 +53,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
+import org.mirage.gfbs.ServerConfig.ServerConfigApi;
 import org.mirage.gfbs.Event.EccEvent;
 import org.mirage.gfbs.Phenomenon.event.BlackHoleCommand;
 import org.mirage.gfbs.Event.DmrMeltdown;
 import org.mirage.gfbs.Event.DmrexAfter;
 import org.mirage.gfbs.Event.Main90Alpha;
+import org.mirage.gfbs.ServerConfig.instance.GFBSServerConfig;
 import org.mirage.gfbs.objects.CreativeModeTabRegistration;
 import org.mirage.gfbs.objects.ModBlockEntities;
 import org.mirage.gfbs.objects.ModEntities;
@@ -319,6 +321,10 @@ public class MirageGFBS {
         setServerInstance(event.getServer());
 
         ApiRegisterer.register(server);
+
+        ServerConfigApi.init();
+        GFBSServerConfig.init();
+        LOGGER.info("Server config system initialized.");
     }
 
     @SubscribeEvent
@@ -371,6 +377,8 @@ public class MirageGFBS {
         MirageGFBsBroadSystemCommand.register(event.getDispatcher());
 
         MirageGFBsTeamCommand.register(event.getDispatcher());
+
+        MirageGFBsServerConfigCommand.register(event.getDispatcher());
     }
 
     public static CustomFogModule customFogModule;
@@ -417,7 +425,8 @@ public class MirageGFBS {
 
     private void onJvmShutdown() {
         GFBSClientConfigAPI.saveToDisk();
-        LOGGER.info("已保存所有客户端配置.");
+        ServerConfigApi.saveToDisk();
+        LOGGER.info("已保存所有本端配置.");
     }
 
     @SubscribeEvent

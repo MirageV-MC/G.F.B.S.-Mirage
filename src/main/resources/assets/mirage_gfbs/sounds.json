@@ -2591,5 +2591,66 @@
     "sounds": [
       "mirage_gfbs:misc/ecc/reactor/rupture2"
     ]
+  },
+
+  "misc.blackhole.music.blackhole": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/music/blackhole"
+    ]
+  },
+  "misc.blackhole.music.blackhole_p": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/music/blackhole_p"
+    ]
+  },
+  "misc.blackhole.reactor.explosion1": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/explosion1"
+    ]
+  },
+  "misc.blackhole.reactor.explosion2": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/explosion2"
+    ]
+  },
+  "misc.blackhole.reactor.move": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/move"
+    ]
+  },
+  "misc.blackhole.reactor.overload": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/overload"
+    ]
+  },
+  "misc.blackhole.reactor.reactor": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/reactor"
+    ]
+  },
+  "misc.blackhole.reactor.repture": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/reactor/repture"
+    ]
+  },
+  "misc.blackhole.facility.quake1": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/facility/quake1"
+    ]
+  },
+  "misc.blackhole.facility.quake2": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/facility/quake2"
+    ]
   }
 }
