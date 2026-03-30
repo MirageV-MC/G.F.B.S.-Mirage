@@ -199,10 +199,6 @@ public class DmrMeltdown {
                 Task.sleep(9000);
 
                 executeCommandAsync("playsound mirage_gfbs:surroundings.dmr_up_nb_b voice @a ~ ~ ~ 1 1 1");
-
-                for (ServerPlayer player : allPlayers) {
-                    CameraShakeCommand.triggerCameraShake(player, 16, 0.05f, 14800, 990, 11290);
-                }
             }, 112403, TimeUnit.MILLISECONDS);
 
             trackDelay(()->{
@@ -660,7 +656,7 @@ public class DmrMeltdown {
 
         trackFuture(Task.spawn(()->{
             for (ServerPlayer player : players) {
-                CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 1800, 290, 1290);
+                CameraShakeCommand.triggerCameraShake(player, 15, 0.01f, 1800, 290, 1290);
             }
 
             trackDelay(()->{
@@ -668,7 +664,7 @@ public class DmrMeltdown {
                     CameraShakeCommand.triggerCameraShake(player, 15, 0.1f, 4800, 490, 3290);
                 }
                 FluorescentTubeCommandRegistry.flashAllTubes(_serverLevel, 75, 6D);
-            },500, TimeUnit.MILLISECONDS);
+            },1200, TimeUnit.MILLISECONDS);
         }));
     }
 

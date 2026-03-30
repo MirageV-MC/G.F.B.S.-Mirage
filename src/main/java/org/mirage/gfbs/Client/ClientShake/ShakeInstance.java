@@ -4,26 +4,54 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
+/**
+ * G.F.B.S. Mirage (mirage_gfbs) - A Minecraft Mod
+ * Copyright (C) 2025-2029 Mirage-MC
+
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 public class ShakeInstance {
-    public float speed;
-    public float maxAmplitude;
-    public int duration;
-    public int riseTime;
-    public int fallTime;
-    public long startTime;
+    public final float speed;
+    public final float maxAmplitude;
+    public final int duration;
+    public final int riseTime;
+    public final int fallTime;
+    public final long startTime;
 
     private float currentAmplitude = 0;
     private Vec3 currentShakeDirection = Vec3.ZERO;
     private Vec3 targetShakeDirection = Vec3.ZERO;
     private long lastDirectionChangeTime = 0;
-    
+
     private Vec3 posOffset = Vec3.ZERO;
     private Vec3 posVelocity = Vec3.ZERO;
-    
+
     private Vec3 rotImpulse = Vec3.ZERO;
     private Vec3 rotImpulseVel = Vec3.ZERO;
-    
+    private Vec3 targetKick = Vec3.ZERO;
+    private double kickSmoothFactor = 0.0;
+
+    private float targetImpulse = 0f;
+    private float impulseSmoothFactor = 0f;
+
     private final Random random = new Random();
+
+    private volatile boolean finished = false;
+    private volatile Vec3 cachedShakeOffset = Vec3.ZERO;
+    private volatile Vec3 cachedRotationOffset = Vec3.ZERO;
+    private volatile Vec3 cachedPositionOffset = Vec3.ZERO;
 
     public ShakeInstance(float speed, float maxAmplitude, int duration, int riseTime, int fallTime) {
         this.speed = speed;
@@ -35,17 +63,56 @@ public class ShakeInstance {
     }
 
     public boolean isFinished() {
-        return System.currentTimeMillis() - startTime > duration;
+        return finished;
     }
 
-    public Vec3 calculateShakeOffset() {
-        if (isFinished()) return Vec3.ZERO;
+    public void update() {
+        long now = System.currentTimeMillis();
+        long elapsed = now - startTime;
 
-        long elapsed = System.currentTimeMillis() - startTime;
+        if (elapsed > duration) {
+            finished = true;
+            cachedShakeOffset = Vec3.ZERO;
+            cachedRotationOffset = Vec3.ZERO;
+            cachedPositionOffset = Vec3.ZERO;
+            return;
+        }
+
         currentAmplitude = calculateCurrentAmplitude(elapsed);
-        
-        if (currentAmplitude <= 0) return Vec3.ZERO;
 
+        if (currentAmplitude <= 0) {
+            cachedShakeOffset = Vec3.ZERO;
+            cachedRotationOffset = Vec3.ZERO;
+            cachedPositionOffset = Vec3.ZERO;
+            return;
+        }
+
+        Vec3 shakeOffset = calculateShakeOffsetInternal(elapsed);
+        cachedShakeOffset = shakeOffset;
+
+        updateDirectionInternal(now);
+
+        cachedRotationOffset = calculateRotationOffsetInternal(shakeOffset, elapsed);
+        cachedPositionOffset = calculateCameraPositionOffsetInternal(elapsed);
+    }
+
+    public Vec3 getShakeOffset() {
+        return cachedShakeOffset;
+    }
+
+    public Vec3 getRotationOffset() {
+        return cachedRotationOffset;
+    }
+
+    public Vec3 getPositionOffset() {
+        return cachedPositionOffset;
+    }
+
+    public Vec3 getCurrentShakeDirection() {
+        return currentShakeDirection;
+    }
+
+    private Vec3 calculateShakeOffsetInternal(long elapsed) {
         double timeFactor = elapsed * speed / 1000.0;
 
         double xOffset = Math.sin(timeFactor) * currentAmplitude;
@@ -67,12 +134,9 @@ public class ShakeInstance {
         return new Vec3(xOffset, yOffset, zOffset);
     }
 
-    public Vec3 calculateCameraPositionOffset() {
-        if (isFinished()) return Vec3.ZERO;
-
-        long elapsed = System.currentTimeMillis() - startTime;
+    private Vec3 calculateCameraPositionOffsetInternal(long elapsed) {
         float amp = currentAmplitude;
-        
+
         if (amp <= 0) return Vec3.ZERO;
 
         double t = elapsed * speed / 1000.0;
@@ -100,11 +164,10 @@ public class ShakeInstance {
 
         return posOffset;
     }
-    
-    public void updateDirection() {
-        long now = System.currentTimeMillis();
+
+    private void updateDirectionInternal(long now) {
         long DIRECTION_CHANGE_INTERVAL = 80;
-        
+
         if (now - lastDirectionChangeTime > DIRECTION_CHANGE_INTERVAL) {
             double changeIntensity = 0.5 + 0.5 * (currentAmplitude / maxAmplitude);
             targetShakeDirection = targetShakeDirection.scale(1.0 - changeIntensity)
@@ -118,8 +181,8 @@ public class ShakeInstance {
         Vec3 directionDiff = targetShakeDirection.subtract(currentShakeDirection);
         currentShakeDirection = currentShakeDirection.add(directionDiff.scale(smoothFactor)).normalize();
     }
-    
-    public Vec3 getRotationOffset(Vec3 shakeOffset) {
+
+    private Vec3 calculateRotationOffsetInternal(Vec3 shakeOffset, long elapsed) {
         double amp = shakeOffset.length();
         double intensity = amp / Math.max(1e-6f, maxAmplitude);
 
@@ -128,7 +191,7 @@ public class ShakeInstance {
 
         Vec3 baseRot = currentShakeDirection.scale(amp);
 
-        double t = (System.currentTimeMillis() - startTime) * 0.001;
+        double t = elapsed * 0.001;
         Vec3 microRot = new Vec3(
                 ClientShakeHandler.improvedNoise(t * 28.0 + 11.0),
                 ClientShakeHandler.improvedNoise(t * 31.0 + 23.0),
@@ -136,14 +199,22 @@ public class ShakeInstance {
         ).scale(amp * 0.22);
 
         if (random.nextFloat() < 0.0035f * intensity) {
-            Vec3 kick = new Vec3(
+            Vec3 newKick = new Vec3(
                     (random.nextFloat() * 2f - 1f),
                     (random.nextFloat() * 2f - 1f) * 0.65,
                     (random.nextFloat() * 2f - 1f) * 0.35
-            ).scale(amp * (1.2 + 1.8 * intensity));
-            rotImpulseVel = rotImpulseVel.add(kick);
+            ).scale(amp * (0.6 + 0.9 * intensity));
+            targetKick = newKick;
+            kickSmoothFactor = 0.0;
         }
-        
+
+        if (kickSmoothFactor < 1.0) {
+            kickSmoothFactor = Math.min(1.0, kickSmoothFactor + 0.08);
+            double ease = kickSmoothFactor * kickSmoothFactor * (3.0 - 2.0 * kickSmoothFactor);
+            Vec3 smoothedKick = targetKick.scale(ease);
+            rotImpulseVel = rotImpulseVel.add(smoothedKick.scale(0.15));
+        }
+
         double springK = 0.18 + 0.10 * intensity;
         double springD = 0.78;
         rotImpulseVel = rotImpulseVel.scale(springD).add(rotImpulse.scale(-springK));
@@ -156,16 +227,16 @@ public class ShakeInstance {
         );
 
         Vec3 rot = baseRot.add(microRot).add(rotImpulse).add(inertial);
-        
+
         double yaw = rot.x * 12.0 * nonLinearity * dampingFactor;
         double pitch = rot.y * 13.5 * nonLinearity * dampingFactor;
         double roll = rot.z * 12.2 * nonLinearity * dampingFactor;
-        
+
         double facingBias = (0.6 + 0.4 * intensity) * amp;
         yaw += ClientShakeHandler.improvedNoise(t * 6.0 + 300.0) * facingBias * 2.4;
         pitch += ClientShakeHandler.improvedNoise(t * 6.5 + 500.0) * facingBias * 1.6;
         roll += ClientShakeHandler.improvedNoise(t * 6.2 + 700.0) * facingBias * 1.8;
-        
+
         return new Vec3(yaw, pitch, roll);
     }
 
@@ -193,8 +264,15 @@ public class ShakeInstance {
             float highFreqNoise = (float) ClientShakeHandler.improvedNoise(elapsed * 0.06 + 200) * noiseAmplitude * 0.4f;
 
             if (random.nextFloat() < 0.005f * (baseAmplitude / maxAmplitude)) {
-                float impulse = (random.nextFloat() * 2.0f - 1.0f) * noiseAmplitude * 1.5f;
-                lowFreqNoise += impulse;
+                targetImpulse = (random.nextFloat() * 2.0f - 1.0f) * noiseAmplitude * 0.8f;
+                impulseSmoothFactor = 0f;
+            }
+
+            if (impulseSmoothFactor < 1.0f) {
+                impulseSmoothFactor = Math.min(1.0f, impulseSmoothFactor + 0.06f);
+                float ease = impulseSmoothFactor * impulseSmoothFactor * (3.0f - 2.0f * impulseSmoothFactor);
+                float smoothedImpulse = targetImpulse * ease;
+                lowFreqNoise += smoothedImpulse;
             }
 
             return Math.max(0, baseAmplitude + lowFreqNoise + midFreqNoise + highFreqNoise);
