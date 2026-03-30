@@ -1691,6 +1691,13 @@
     ],
     "stream": true
   },
+  "music.leisure_3_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:music/leisure_3_m"
+    ],
+    "stream": true
+  },
   "music.new_p1_m": {
     "category": "music",
     "sounds": [
@@ -2651,6 +2658,43 @@
     "category": "music",
     "sounds": [
       "mirage_gfbs:misc/blackhole/facility/quake2"
+    ]
+  },
+  "misc.blackhole.broadcast.core_explosion": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/blackhole/broadcast/core_explosion"
+    ]
+  },
+
+  "misc.global.alarm.overheat": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/global/alarm/overheat"
+    ]
+  },
+  "misc.global.alarm.overload": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/global/alarm/overload"
+    ]
+  },
+  "misc.global.facility.power_outage": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/global/facility/power_outage"
+    ]
+  },
+  "misc.global.facility.quake1": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/global/facility/quake1"
+    ]
+  },
+  "misc.global.dmusic.leisure_2_m": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/global/dmusic/leisure_2_m"
     ]
   }
 }

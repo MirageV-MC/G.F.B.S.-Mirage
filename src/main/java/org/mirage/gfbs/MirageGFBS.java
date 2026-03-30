@@ -50,15 +50,14 @@ import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import org.mirage.gfbs.Client.ClientExposureEvents;
+import org.mirage.gfbs.Client.ClientShake.ClientShakeHandler;
 import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
+import org.mirage.gfbs.Event.*;
 import org.mirage.gfbs.ServerConfig.ServerConfigApi;
-import org.mirage.gfbs.Event.EccEvent;
 import org.mirage.gfbs.Phenomenon.event.BlackHoleCommand;
-import org.mirage.gfbs.Event.DmrMeltdown;
-import org.mirage.gfbs.Event.DmrexAfter;
-import org.mirage.gfbs.Event.Main90Alpha;
 import org.mirage.gfbs.ServerConfig.instance.GFBSServerConfig;
 import org.mirage.gfbs.objects.CreativeModeTabRegistration;
 import org.mirage.gfbs.objects.ModBlockEntities;
@@ -241,6 +240,8 @@ public class MirageGFBS {
             EccEvent.p2(context, context.getSource().getServer().getPlayerList().getPlayers());
         });
 
+        MirageGFBsEventCommand.registerHandler("blackhole", BlackHole::execute);
+
         //DEBUG
         MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_none_music", (context)->{
             DmrMeltdown.execute(context, false, false);
@@ -392,6 +393,9 @@ public class MirageGFBS {
         public static void onClientSetup(FMLClientSetupEvent event) {
             LOGGER.info("CLIENT SETUP");
 
+            ClientExposureEvents.init();
+            ClientShakeHandler.init();
+
             customFogModule = new CustomFogModule();
 
             // RENDER REGISTER #114
@@ -410,6 +414,7 @@ public class MirageGFBS {
 
             DmrexAfter.clientExec();
             EccEvent.clientExec();
+            BlackHole.clientExec();
         }
 
         @SubscribeEvent
@@ -424,6 +429,8 @@ public class MirageGFBS {
     }
 
     private void onJvmShutdown() {
+        ClientExposureEvents.shutdown();
+        ClientShakeHandler.shutdown();
         GFBSClientConfigAPI.saveToDisk();
         ServerConfigApi.saveToDisk();
         LOGGER.info("已保存所有本端配置.");

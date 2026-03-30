@@ -28,12 +28,12 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = "mirage_gfbs", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ClientShakeHandler {
-    // Deprecated static fields kept for compatibility, but logic moved to ShakeInstance
     public static float currentAmplitude = 0;
     public static long startTime = 0;
     public static float speed;
@@ -43,41 +43,56 @@ public class ClientShakeHandler {
     public static int fallTime;
 
     private static final Random random = new Random();
-    private static final List<ShakeInstance> activeShakes = new ArrayList<>();
+    private static final List<ShakeInstance> activeShakes = Collections.synchronizedList(new ArrayList<>());
+    private static final Object shakeListLock = new Object();
 
-    // ===== Public =====
+    public static void init() {
+        ShakeAnimationThread.start();
+    }
+
+    public static void shutdown() {
+        ShakeAnimationThread.stop();
+    }
 
     public static void resetShake() {
-        activeShakes.clear();
+        synchronized (shakeListLock) {
+            activeShakes.clear();
+        }
         startTime = 0;
         currentAmplitude = 0;
     }
 
     public static void addShake(float speed, float maxAmplitude, int duration, int riseTime, int fallTime) {
-        activeShakes.add(new ShakeInstance(speed, maxAmplitude, duration, riseTime, fallTime));
+        synchronized (shakeListLock) {
+            activeShakes.add(new ShakeInstance(speed, maxAmplitude, duration, riseTime, fallTime));
+        }
     }
 
-    // ===== Events =====
+    public static void updateAllShakes() {
+        synchronized (shakeListLock) {
+            activeShakes.removeIf(ShakeInstance::isFinished);
+            for (ShakeInstance shake : activeShakes) {
+                shake.update();
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onCameraAngles(ViewportEvent.ComputeCameraAngles event) {
-        if (activeShakes.isEmpty()) return;
-
-        activeShakes.removeIf(ShakeInstance::isFinished);
-
-        if (activeShakes.isEmpty()) return;
+        List<ShakeInstance> shakesSnapshot;
+        synchronized (shakeListLock) {
+            if (activeShakes.isEmpty()) return;
+            shakesSnapshot = new ArrayList<>(activeShakes);
+        }
 
         double totalYaw = 0;
         double totalPitch = 0;
         double totalRoll = 0;
 
-        for (ShakeInstance shake : activeShakes) {
-            Vec3 shakeOffset = shake.calculateShakeOffset();
-            if (shakeOffset.equals(Vec3.ZERO)) continue;
+        for (ShakeInstance shake : shakesSnapshot) {
+            Vec3 rot = shake.getRotationOffset();
+            if (rot.equals(Vec3.ZERO)) continue;
 
-            shake.updateDirection();
-
-            Vec3 rot = shake.getRotationOffset(shakeOffset);
             totalYaw += rot.x;
             totalPitch += rot.y;
             totalRoll += rot.z;
@@ -90,15 +105,19 @@ public class ClientShakeHandler {
 
     @SubscribeEvent
     public static void onCameraPosition(ViewportEvent event) {
-        if (activeShakes.isEmpty()) return;
-
         String simple = event.getClass().getSimpleName();
         if (!"ComputeCameraPosition".equals(simple)) return;
 
+        List<ShakeInstance> shakesSnapshot;
+        synchronized (shakeListLock) {
+            if (activeShakes.isEmpty()) return;
+            shakesSnapshot = new ArrayList<>(activeShakes);
+        }
+
         Vec3 totalLocalOffset = Vec3.ZERO;
 
-        for (ShakeInstance shake : activeShakes) {
-            Vec3 localOffset = shake.calculateCameraPositionOffset();
+        for (ShakeInstance shake : shakesSnapshot) {
+            Vec3 localOffset = shake.getPositionOffset();
             totalLocalOffset = totalLocalOffset.add(localOffset);
         }
 
@@ -129,8 +148,6 @@ public class ClientShakeHandler {
         }
     }
 
-    // ===== Helpers =====
-
     public static Vec3 generateRandomDirection(Random rand) {
         double x = rand.nextGaussian() * 0.5;
         double y = rand.nextGaussian() * 0.5;
@@ -142,8 +159,7 @@ public class ClientShakeHandler {
 
         return direction;
     }
-    
-    // Maintain compatibility for the private no-arg version if needed, or just redirect
+
     private static Vec3 generateRandomDirection() {
         return generateRandomDirection(random);
     }
