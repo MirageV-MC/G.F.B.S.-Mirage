@@ -5,7 +5,7 @@
     "dstrgb": "zero"
   },
   "vertex": "mirage_gfbs:post",
-  "fragment": "mirage_gfbs:copy",
+  "fragment": "mirage_gfbs:horror",
   "attributes": [ "Position", "UV0" ],
   "samplers": [
     { "name": "DiffuseSampler" }
