@@ -2,7 +2,7 @@
 
 <img width="600" height="177" alt="Quantum_Science_Logo_With_Text" src="https://github.com/user-attachments/assets/d0560b1a-1735-4dda-abc1-a4545e441a80" />
 
-### 欢迎来到MRC(麦迪逊研究设施), 我们为整个康涅狄格州发电!
+### 欢迎来到MRC(麦迪逊研究中心), 我们为整个康涅狄格州发电!
 
 - 本模组是为 MirageV MC Forge服务器专门开发，但代码完全开源，可自由使用，但必须遵守许可证。
 - MirageV 服务器官方群聊: QQ 568707834
