@@ -1,5 +1,8 @@
 # G.F.B.S. Mirage
+- 此项目已迁移至: https://github.com/LytharaLab/GFBS-Main
+- 以下为曾经的自述文件内容。
 
+---
 <img width="600" height="177" alt="Quantum_Science_Logo_With_Text" src="https://github.com/user-attachments/assets/d0560b1a-1735-4dda-abc1-a4545e441a80" />
 
 ### 欢迎来到MRC(麦迪逊研究中心), 我们为整个康涅狄格州发电!
