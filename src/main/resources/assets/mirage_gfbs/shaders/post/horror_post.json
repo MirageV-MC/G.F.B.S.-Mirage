@@ -1,0 +1,15 @@
+{
+  "targets": [ "swap" ],
+  "passes": [
+    {
+      "name": "mirage_gfbs:horror",
+      "intarget": "minecraft:main",
+      "outtarget": "swap"
+    },
+    {
+      "name": "mirage_gfbs:copy",
+      "intarget": "swap",
+      "outtarget": "minecraft:main"
+    }
+  ]
+}

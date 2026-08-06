@@ -2696,5 +2696,18 @@
     "sounds": [
       "mirage_gfbs:misc/global/dmusic/leisure_2_m"
     ]
+  },
+
+  "misc.seedseedseedseedseed.heartbeat": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/seedseedseedseedseed/heartbeat"
+    ]
+  },
+  "misc.seedseedseedseedseed.music": {
+    "category": "music",
+    "sounds": [
+      "mirage_gfbs:misc/seedseedseedseedseed/music"
+    ]
   }
 }

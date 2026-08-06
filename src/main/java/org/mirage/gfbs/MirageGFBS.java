@@ -56,6 +56,7 @@ import org.mirage.gfbs.Client.ClientShake.ShakeQsClient;
 import org.mirage.gfbs.ClientConfig.GFBSClientConfigAPI;
 import org.mirage.gfbs.Command.*;
 import org.mirage.gfbs.Event.*;
+import org.mirage.gfbs.Event.SEED.SPREAD.SPREAD.SPREAD.SPREAD.TREE.SPREADSEEDSPREADSEED;
 import org.mirage.gfbs.ServerConfig.ServerConfigApi;
 import org.mirage.gfbs.Phenomenon.event.BlackHoleCommand;
 import org.mirage.gfbs.ServerConfig.instance.GFBSServerConfig;
@@ -241,6 +242,9 @@ public class MirageGFBS {
         });
 
         MirageGFBsEventCommand.registerHandler("blackhole", BlackHole::execute);
+
+        // YOU DONT SEE THIS SE██████████████████████
+        MirageGFBsEventCommand.registerHandler("SOW_THE_SEED", SPREADSEEDSPREADSEED::execute);
 
         //DEBUG
         MirageGFBsEventCommand.registerHandler("debug_dmr_meltdown_none_music", (context)->{
